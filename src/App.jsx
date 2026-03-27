@@ -267,28 +267,28 @@ return(
     </div>
 
     {/* ── main content ── */}
-    <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"0 20px",position:"relative",zIndex:1,textAlign:"center"}}>
-      <div style={{background:"rgba(13,17,23,.75)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:24,padding:"36px 28px 32px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.06)"}}>
+    <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"0 20px",position:"relative",zIndex:1,textAlign:"center",gap:12}}>
 
-      {/* big logo */}
-      <div style={{animation:"tada .8s ease-out both"}}>
-        <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
-        <div style={{fontSize:12,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:3,textTransform:"uppercase"}}>Food Logic</div>
+      {/* logo card */}
+      <div style={{background:"rgba(13,17,23,.75)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:20,padding:"28px 28px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.06)"}}>
+        <div style={{animation:"tada .8s ease-out both"}}>
+          <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
+          <div style={{fontSize:12,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:3,textTransform:"uppercase"}}>Food Logic</div>
+        </div>
+        <div style={{marginTop:20,height:22,position:"relative",overflow:"hidden",width:"100%"}}>
+          <div key={flavIdx} className="fade" style={{fontSize:15,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.8}}>{LAND_LINES[flavIdx%LAND_LINES.length]}</div>
+        </div>
       </div>
 
-      {/* rotating tagline */}
-      <div style={{marginTop:24,height:24,position:"relative",overflow:"hidden",width:"100%"}}>
-        <div key={flavIdx} className="fade" style={{fontSize:16,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.8}}>{LAND_LINES[flavIdx%LAND_LINES.length]}</div>
+      {/* how-it-works card */}
+      <div style={{background:"rgba(13,17,23,.75)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:20,padding:"20px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.06)"}}>
+        <div style={{fontSize:14,color:"var(--tx2)",lineHeight:"1.7"}}>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
       </div>
-
-      {/* subtitle */}
-      <div style={{fontSize:14,color:"var(--tx2)",marginTop:20,lineHeight:"1.7",maxWidth:280,margin:"20px auto 0"}}>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
 
       {/* CTA */}
-      <button className="jfl-cta" style={{marginTop:32,padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",borderRadius:16}} onClick={function(){go("home");}}>
+      <button className="jfl-cta" style={{padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:340,borderRadius:16}} onClick={function(){go("home");}}>
         <span>{"What should we eat? \u2192"}</span>
       </button>
-      </div>
     </div>
 
     {/* ── footer ── */}

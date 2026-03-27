@@ -342,7 +342,7 @@ return(
     <BottomNav go={go} active="home" setSel={setSel}/>
   </div>}
     {/* ═══ STEP 1 ═══ */}
-  {vw==="step1"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100vh"}}>
+  {vw==="step1"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     <TopBar title="Who's eating?" back={function(){go("home");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
       <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
@@ -379,7 +379,7 @@ return(
   </div>}
 
   {/* ═══ QUICKPICK — who's eating → straight to results ═══ */}
-  {vw==="quickpick"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100vh"}}>
+  {vw==="quickpick"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     <TopBar title={"Quick pick: "+mctx.label} sub="Who's eating?" back={function(){go("home");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
       <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
@@ -401,8 +401,8 @@ return(
   {vw==="qrConfirm"&&(function(){
     var moodObj=MOODS.find(function(m){return m.id===sel.mood;})||{label:"Balanced",emoji:"⚖️",c:"#4A9EFF",desc:"A little of everything"};
     var members=(sel.sp||[]).map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(Boolean);
-    return <div className="fade">
-      <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
+    return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
+      <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px",overflow:"auto"}}>
         <div style={{textAlign:"center",width:"100%",maxWidth:340}}>
           <span style={{fontSize:64}}>{sel.qrEmoji||moodObj.emoji}</span>
           <div style={{fontSize:24,fontWeight:700,color:"var(--tx1)",marginTop:12}}>{sel.qrLabel||"Quick Resolve"}</div>
@@ -425,6 +425,7 @@ return(
           </div>
         </div>
       </div>
+      <BottomNav go={go} active="decide" setSel={setSel}/>
     </div>;
   })()||null}
 
@@ -434,8 +435,8 @@ return(
     var spCount=(sel.sp||[]).length+(sel.xa||0)+(sel.xk||0);
     var isSolo1=spCount<=1;var isDuo1=spCount===2;
     function setAccepted(v){setSel(function(s){return Object.assign({},s,{obAns:v});});}
-    return <div className="fade">
-      <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
+    return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
+      <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px",overflow:"auto"}}>
         {accepted===undefined&&<div style={{textAlign:"center",width:"100%",maxWidth:340}}>
           <span style={{fontSize:80}}>{rest.emoji}</span>
           <div style={{fontSize:18,color:"var(--tx2)",marginTop:20,fontWeight:500}}>{rule.callout}</div>
@@ -467,6 +468,7 @@ return(
           </div>
         </div>}
       </div>
+      <BottomNav go={go} active="decide" setSel={setSel}/>
     </div>;})()||null}
 
   {/* ═══ STEP 2 ═══ */}
@@ -670,7 +672,7 @@ return(
     </div>;})()||null}
 
   {/* ═══ HISTORY ═══ */}
-  {vw==="history"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100vh"}}>
+  {vw==="history"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     {sel.hf==="rest"?<TopBar title="Restaurant Detail" back={function(){setSel(function(s){return Object.assign({},s,{hf:s.hfPrev||"all"});});}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
     :<div style={{position:"relative",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"space-between"}}><div style={{zIndex:1}}><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div><div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px",fontSize:14,fontWeight:700,color:"var(--tx1)"}}>Order History</div><div style={{display:"flex",alignItems:"center",gap:8,zIndex:1}}><button onClick={cycleTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.7}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"🌙":"☀️";})()}</button><button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))"}}>{"ℹ️"}</button></div></div>}
     <div style={{flex:1,padding:"10px 16px",overflow:"auto"}}>
@@ -918,7 +920,7 @@ return(
 
   
   {/* ═══ SETTINGS ═══ */}
-  {vw==="settings"&&<div style={{display:"flex",flexDirection:"column",height:"100vh"}}>
+  {vw==="settings"&&<div style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     <div style={{flex:1,overflow:"auto"}}><SettingsPanel go={go} rests={rests} setR={setR} ppl={ppl} setPpl={setPpl} setSel={setSel} groups={groups} setGroups={setGroups} qrCustom={qrCustom} setQR={setQR} needsRefresh={needsRefresh} daysSinceRefresh={daysSinceRefresh} dataRefresh={dataRefresh} setDR={setDR} customMealTimes={customMealTimes} setMealTimes={setMealTimes} obvRules={activeObvRules} setObvRules={setObvRules} gs2={gs2} setGs2={setGs2}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/></div>
     <BottomNav go={go} active="settings" setSel={setSel}/>
   </div>}

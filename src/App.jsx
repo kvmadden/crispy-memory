@@ -279,8 +279,10 @@ return(
           <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
           <div style={{fontSize:16,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:4,textTransform:"uppercase"}}>Food Logic</div>
         </div>
-        <div style={{marginTop:20,height:22,position:"relative",overflow:"hidden",width:"100%"}}>
-          <div key={flavIdx} className="fade" style={{fontSize:15,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.8}}>{LAND_LINES[flavIdx%LAND_LINES.length]}</div>
+        <div style={{marginTop:20,padding:"10px 16px",borderRadius:12,background:isDk?"rgba(255,255,255,.04)":"rgba(0,0,0,.03)",border:isDk?"1px solid rgba(255,255,255,.06)":"1px solid rgba(0,0,0,.04)"}}>
+          <div style={{height:20,position:"relative",overflow:"hidden",width:"100%"}}>
+            <div key={flavIdx} className="fade" style={{fontSize:14,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.85}}>{LAND_LINES[flavIdx%LAND_LINES.length]}</div>
+          </div>
         </div>
       </div>
 
@@ -292,7 +294,7 @@ return(
               {si>0&&<div style={{flex:1,height:3,margin:"0 -2px",marginBottom:16,borderRadius:2,background:"linear-gradient(90deg,var(--ac),var(--ac)) no-repeat left/0% 100%,transparent",animation:"lineFill"+si+" 7s ease-in-out infinite"}}></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>
                 <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.04)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 7s ease-in-out infinite"}}>{step.e}</div>
-                <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase"}}>{step.l}</span>
+                <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",animation:"labelOn"+si+" 7s ease-in-out infinite"}}>{step.l}</span>
               </div>
             </React.Fragment>;
           })}
@@ -2846,6 +2848,9 @@ var CSS = [
 "@keyframes stepOn2{0%,54%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}60%,72%{box-shadow:0 0 0 2px rgba(244,114,182,.5),0 0 14px rgba(244,114,182,.2)}82%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
 "@keyframes lineFill1{0%{background-size:0% 100%;opacity:0}6%,12%{background-size:0% 100%;opacity:1}28%,72%{background-size:100% 100%;opacity:1}82%,100%{background-size:100% 100%;opacity:0}}",
 "@keyframes lineFill2{0%{background-size:0% 100%;opacity:0}32%,38%{background-size:0% 100%;opacity:1}54%,72%{background-size:100% 100%;opacity:1}82%,100%{background-size:100% 100%;opacity:0}}",
+"@keyframes labelOn0{0%,4%{color:var(--tx3);text-shadow:none}8%,72%{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.3)}82%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn1{0%,28%{color:var(--tx3);text-shadow:none}34%,72%{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.3)}82%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn2{0%,54%{color:var(--tx3);text-shadow:none}60%,72%{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.3)}82%,100%{color:var(--tx3);text-shadow:none}}",
 ".landingPulse{animation:ctaPulse 3s ease-in-out 2s infinite}",
 "@keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(244,114,182,.2)}50%{box-shadow:0 4px 30px rgba(244,114,182,.45)}}",
 ".slide-in{animation:slideIn .3s ease-out both}",

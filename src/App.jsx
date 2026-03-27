@@ -287,7 +287,7 @@ return(
       {/* how-it-works flow */}
       <div style={Object.assign({},cardStyle,{borderRadius:20,padding:"16px 20px",width:"100%",maxWidth:340})}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
-          {[{e:"🫶",l:"Squad"},{e:"🎯",l:"Vibes"},{e:"😋",l:"Eat!"}].map(function(step,si){
+          {[{e:"🫶",l:"Squad"},{e:"🌀",l:"Vibes"},{e:"😋",l:"Eat!"}].map(function(step,si){
             var glowDelay=si*1.6;
             var lineDelay=(si-1)*1.6+0.8;
             return <React.Fragment key={si}>

@@ -240,19 +240,15 @@ return(
 
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
-    var EMOJIS=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-    var ROWS=useMemo(function(){for(var rows=[],s=7919,r=0;r<3;r++){var items=[];for(var j=0;j<6;j++){s=(s*16807+r*6+j)%2147483647;items.push({e:EMOJIS[s%EMOJIS.length],sinDelay:((s=(s*16807)%2147483647)%30)/10,sinDur:((s=(s*16807)%2147483647)%3)+4});}s=(s*16807)%2147483647;var sz=(s%12)+26;s=(s*16807)%2147483647;var dur=(s%6)+16;s=(s*16807)%2147483647;var op=(s%6)+10;var top=(r*30)+10;rows.push({items:items,sz:sz,dur:dur,op:op,top:top,rev:r%2===1});}return rows;},[]);
+    var FLOATS=useMemo(function(){var pool=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];var used=[];var a=[];var s=7919;for(var i=0;i<10;i++){s=(s*16807+i)%2147483647;var idx=s%pool.length;while(used.indexOf(idx)>=0){idx=(idx+1)%pool.length;}used.push(idx);var e=pool[idx];s=(s*16807)%2147483647;var top=(s%75)+5;s=(s*16807)%2147483647;var sz=(s%16)+22;s=(s*16807)%2147483647;var dur=(s%12)+18;s=(s*16807)%2147483647;var sinDur=(s%4)+4;s=(s*16807)%2147483647;var sinDelay=((s%40))/10;s=(s*16807)%2147483647;var phase=-(s%Math.floor(dur));s=(s*16807)%2147483647;var op=(s%8)+8;s=(s*16807)%2147483647;var rev=s%2===0;a.push({e:e,top:top,sz:sz,dur:dur,sinDur:sinDur,sinDelay:sinDelay,phase:phase,op:op,rev:rev});}return a;},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
-    {/* ── scrolling emoji rows ── */}
+    {/* ── floating emojis ── */}
     <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
-      {ROWS.map(function(row,ri){
-        var content=row.items.map(function(item,ei){return <span key={ei} style={{display:"inline-block",fontSize:row.sz,padding:"0 28px",animation:"emojiSine"+ri%3+" "+item.sinDur+"s ease-in-out "+item.sinDelay+"s infinite"}}>{item.e}</span>;});
-        return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:row.op/100}}>
-          <div style={{display:"inline-block",animation:"emojiScroll "+row.dur+"s linear infinite",animationDirection:row.rev?"reverse":"normal"}}>
-            {content}{content}
-          </div>
+      {FLOATS.map(function(f,i){
+        return <div key={i} style={{position:"absolute",top:f.top+"%",left:0,animation:"emojiDrift "+f.dur+"s linear "+f.phase+"s infinite",animationDirection:f.rev?"reverse":"normal"}}>
+          <span style={{display:"inline-block",fontSize:f.sz,opacity:f.op/100,animation:"emojiSine"+i%3+" "+f.sinDur+"s ease-in-out "+f.sinDelay+"s infinite"}}>{f.e}</span>
         </div>;
       })}
     </div>
@@ -291,7 +287,7 @@ return(
     </div>
 
     {/* ── footer ── */}
-    <div style={{padding:"12px 28px 24px",textAlign:"center",flexShrink:0,position:"relative",zIndex:1}}>
+    <div style={{padding:"8px 28px 16px",textAlign:"center",flexShrink:0,position:"relative",zIndex:1}}>
       <div style={{fontSize:9,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase",opacity:.5}}>{"\u00A9 2026 Madden Frameworks"}</div>
       <div style={{fontSize:11,color:"var(--tx3)",marginTop:3,fontStyle:"italic",opacity:.4}}>{"Smart systems. Better judgment."}</div>
     </div>
@@ -2835,10 +2831,10 @@ var CSS = [
 ".jfl-cta-hero{padding:18px 14px;border-radius:14px;box-shadow:0 2px 12px rgba(244,114,182,.2);animation:ctaGlow 3s ease-in-out infinite}",
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
-"@keyframes emojiScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}",
-"@keyframes emojiSine0{0%,100%{transform:translateY(12px)}50%{transform:translateY(-28px)}}",
-"@keyframes emojiSine1{0%,100%{transform:translateY(18px)}50%{transform:translateY(-36px)}}",
-"@keyframes emojiSine2{0%,100%{transform:translateY(8px)}50%{transform:translateY(-22px)}}",
+"@keyframes emojiDrift{0%{transform:translateX(-40px)}100%{transform:translateX(calc(100vw + 40px))}}",
+"@keyframes emojiSine0{0%,100%{transform:translateY(15px)}50%{transform:translateY(-35px)}}",
+"@keyframes emojiSine1{0%,100%{transform:translateY(20px)}50%{transform:translateY(-40px)}}",
+"@keyframes emojiSine2{0%,100%{transform:translateY(10px)}50%{transform:translateY(-25px)}}",
 "@keyframes podiumPop{0%{opacity:0;transform:scale(.5) translateY(8px)}60%{opacity:1;transform:scale(1.1) translateY(-2px)}100%{transform:scale(1) translateY(0)}}",
 ".float-in{animation:floatIn .4s ease-out both}",
 ".podium-pop{animation:podiumPop .4s ease-out both}",

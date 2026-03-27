@@ -123,7 +123,7 @@ return{rule:rule,rest:rest};
 return null;
 }
 
-function TopBar(p){var isDark=p.theme==="dark"||(p.theme==="auto"&&typeof window!=="undefined"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);var themeIcon=isDark?"🌙":"☀️";return <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)"}}><div style={{display:"flex",alignItems:"center",gap:6,zIndex:1}}>{p.back&&<button onClick={p.back} style={{background:"none",border:"none",color:"var(--tx2)",fontSize:18,cursor:"pointer",padding:"2px 4px 2px 0",fontFamily:"inherit"}}>←</button>}<div><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div></div><div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px"}}><div style={{fontSize:14,fontWeight:700,color:"var(--tx1)"}}>{p.title||""}</div>{p.sub&&<div style={{fontSize:12,color:"var(--tx3)",marginTop:1}}>{p.sub}</div>}</div><div style={{display:"flex",alignItems:"center",gap:8,zIndex:1}}>{p.onTheme&&<button onClick={p.onTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.7}}>{themeIcon}</button>}{p.onInfo?<button onClick={p.onInfo} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))"}}>{"ℹ️"}</button>:<div style={{width:20}}></div>}</div></div>;}
+function TopBar(p){var isDark=p.theme==="dark"||(p.theme==="auto"&&typeof window!=="undefined"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);var themeIcon=isDark?"🌙":"☀️";return <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)"}}><div style={{display:"flex",alignItems:"center",gap:6,zIndex:1}}>{p.back&&<button onClick={p.back} style={{background:"none",border:"none",color:"var(--tx2)",fontSize:18,cursor:"pointer",padding:"2px 4px 2px 0",fontFamily:"inherit"}}>←</button>}<div onClick={p.onLogo} style={{cursor:p.onLogo?"pointer":"default"}}><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div></div><div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px"}}><div style={{fontSize:14,fontWeight:700,color:"var(--tx1)"}}>{p.title||""}</div>{p.sub&&<div style={{fontSize:12,color:"var(--tx3)",marginTop:1}}>{p.sub}</div>}</div><div style={{display:"flex",alignItems:"center",gap:8,zIndex:1}}>{p.onTheme&&<button onClick={p.onTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.7}}>{themeIcon}</button>}{p.onInfo?<button onClick={p.onInfo} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))"}}>{"ℹ️"}</button>:<div style={{width:20}}></div>}</div></div>;}
 
 function BottomNav(p){var go=p.go,active=p.active,setSel=p.setSel;
 var tabs=[{id:"dashboard",l:"Dashboard",e:"💎"},{id:"decide",l:"Decide",e:"🎯"},{id:"history",l:"History",e:"📋"},{id:"settings",l:"Settings",e:"⚙️"}];
@@ -148,6 +148,7 @@ var _gs=useState(saved&&saved.gs&&typeof saved.gs==="object"&&!Array.isArray(sav
 var _3=useState(saved&&Array.isArray(saved.h)?saved.h:[]);var hist=_3[0],setH=_3[1];
 var _4=useState("landing");var vw=_4[0],go=_4[1];
 var _aboutOpen=useState(false);var aboutOpen=_aboutOpen[0],setAboutOpen=_aboutOpen[1];
+var _logoConfirm=useState(false);var logoConfirm=_logoConfirm[0],setLogoConfirm=_logoConfirm[1];
 var _flav=useState(0);var flavIdx=_flav[0],setFlavIdx=_flav[1];
 var HERO_FLAVORS=["67 restaurants. 1 answer.","Let the algorithm decide.","No more scrolling DoorDash.","Your taste profile has opinions."];
 useEffect(function(){var t=setInterval(function(){setFlavIdx(function(i){return(i+1)%4;});},6000);return function(){clearInterval(t);};},[]);
@@ -240,6 +241,19 @@ return(
     </div>
   </div>;})()}
 
+  {logoConfirm&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.5)",backdropFilter:"blur(4px)"}} onClick={function(){setLogoConfirm(false);}}></div>
+    <div className="pop" style={{position:"relative",background:"var(--bg1)",border:"1px solid var(--bdr)",borderRadius:16,padding:"24px 20px",width:"85%",maxWidth:300,textAlign:"center"}}>
+      <div style={{fontSize:32,marginBottom:12}}>🏠</div>
+      <div style={{fontSize:16,fontWeight:700,color:"var(--tx1)",marginBottom:6}}>Back to start?</div>
+      <div style={{fontSize:13,color:"var(--tx2)",marginBottom:20,lineHeight:"1.5"}}>This will take you back to the welcome screen.</div>
+      <div style={{display:"flex",gap:10}}>
+        <button onClick={function(){setLogoConfirm(false);}} style={{flex:1,padding:12,borderRadius:10,border:"1px solid var(--bdr)",background:"var(--bg2)",color:"var(--tx2)",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Stay</button>
+        <button onClick={function(){setLogoConfirm(false);go("landing");setRes(null);}} className="jfl-cta" style={{flex:1,padding:12,borderRadius:10,fontSize:14,fontWeight:600}}>Go back</button>
+      </div>
+    </div>
+  </div>}
+
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
     var ROWS=LANDING_ROWS;
@@ -317,7 +331,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
   {vw==="dashboard"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     {/* ── Branded header ── */}
     <div style={{padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
-      <div>
+      <div onClick={function(){setLogoConfirm(true);}} style={{cursor:"pointer"}}>
         <div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
         <div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div>
       </div>
@@ -418,7 +432,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
   </div>}
     {/* ═══ STEP 1 ═══ */}
   {vw==="step1"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
-    <TopBar title="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
+    <TopBar title="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
       <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
@@ -455,7 +469,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
   {/* ═══ QUICKPICK — who's eating → straight to results ═══ */}
   {vw==="quickpick"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
-    <TopBar title={"Quick pick: "+mctx.label} sub="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
+    <TopBar title={"Quick pick: "+mctx.label} sub="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
       <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
@@ -547,7 +561,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     </div>;})()||null}
 
   {/* ═══ STEP 2 ═══ */}
-  {vw==="step2"&&<MoodQuiz sel={sel} up={up} mctx={mctx} resolve={resolve} go={go} ppl={ppl}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>}
+  {vw==="step2"&&<MoodQuiz sel={sel} up={up} mctx={mctx} resolve={resolve} go={go} ppl={ppl}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>}
 
   {/* ═══ RESULTS ═══ */}
   {vw==="results"&&results&&(function(){
@@ -587,7 +601,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
     return <div className="slide-in" key={res.rid+"-"+resIdx} style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
       <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",flexShrink:0}}>
-        <div style={{zIndex:1}}><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div>
+        <div style={{zIndex:1,cursor:"pointer"}} onClick={function(){setLogoConfirm(true);}}><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div>
         <div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)"}}>{mctx.emoji+" "+mctx.label+" Resolved"}</span>
           <span style={{width:1,height:12,background:"var(--bdr)",display:"inline-block"}}></span>
@@ -748,7 +762,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
   {/* ═══ HISTORY ═══ */}
   {vw==="history"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
-    {sel.hf==="rest"?<TopBar title="Restaurant Detail" back={function(){setSel(function(s){return Object.assign({},s,{hf:s.hfPrev||"all"});});}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
+    {sel.hf==="rest"?<TopBar title="Restaurant Detail" back={function(){setSel(function(s){return Object.assign({},s,{hf:s.hfPrev||"all"});});}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>
     :<div style={{position:"relative",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"space-between"}}><div style={{zIndex:1}}><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div><div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px",fontSize:14,fontWeight:700,color:"var(--tx1)"}}>Order History</div><div style={{display:"flex",alignItems:"center",gap:8,zIndex:1}}><button onClick={cycleTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.7}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"🌙":"☀️";})()}</button><button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))"}}>{"ℹ️"}</button></div></div>}
     <div style={{flex:1,padding:"10px 16px",overflow:"auto"}}>
       {sel.hf==="rest"&&(function(){var r=rests.find(function(x){return x.id===sel.hrid;});if(!r)return null;var orderScenarios=r.orders||[];return <div>
@@ -996,7 +1010,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
   
   {/* ═══ SETTINGS ═══ */}
   {vw==="settings"&&<div style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
-    <div style={{flex:1,overflow:"auto"}}><SettingsPanel go={go} rests={rests} setR={setR} ppl={ppl} setPpl={setPpl} setSel={setSel} groups={groups} setGroups={setGroups} qrCustom={qrCustom} setQR={setQR} needsRefresh={needsRefresh} daysSinceRefresh={daysSinceRefresh} dataRefresh={dataRefresh} setDR={setDR} customMealTimes={customMealTimes} setMealTimes={setMealTimes} obvRules={activeObvRules} setObvRules={setObvRules} gs2={gs2} setGs2={setGs2}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/></div>
+    <div style={{flex:1,overflow:"auto"}}><SettingsPanel go={go} rests={rests} setR={setR} ppl={ppl} setPpl={setPpl} setSel={setSel} groups={groups} setGroups={setGroups} qrCustom={qrCustom} setQR={setQR} needsRefresh={needsRefresh} daysSinceRefresh={daysSinceRefresh} dataRefresh={dataRefresh} setDR={setDR} customMealTimes={customMealTimes} setMealTimes={setMealTimes} obvRules={activeObvRules} setObvRules={setObvRules} gs2={gs2} setGs2={setGs2}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/></div>
     <BottomNav go={go} active="settings" setSel={setSel}/>
   </div>}
 </div>
@@ -1687,7 +1701,7 @@ if(resolved){
 if(resolved.narrowH2H){
 return <div className="fade">
 <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
-<TopBar title={"\u2694\uFE0F Tiebreaker Complete"}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
+<TopBar title={"\u2694\uFE0F Tiebreaker Complete"}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
 <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px",position:"relative"}}>
 {/* Glow */}
 <div style={{position:"absolute",width:250,height:250,borderRadius:"50%",background:"linear-gradient(135deg,var(--ac),#C4956A)",opacity:.08,filter:"blur(80px)",top:"12%"}}></div>
@@ -1717,7 +1731,7 @@ return <div className="fade">
 /* ═══ PHASE 1 MOOD LOCKED ═══ */
 return <div className="fade">
 <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
-<TopBar title="Mood locked in" sub={sel.qrLabel?(sel.qrEmoji+" "+sel.qrLabel):""}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
+<TopBar title="Mood locked in" sub={sel.qrLabel?(sel.qrEmoji+" "+sel.qrLabel):""}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
 <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px",position:"relative"}}>
 {/* Glow backdrop */}
 <div style={{position:"absolute",width:180,height:180,borderRadius:"50%",background:resolved.c,opacity:.08,filter:"blur(60px)",top:"18%"}}></div>
@@ -1774,7 +1788,7 @@ var greeting=whoNames.length===1&&guestCt===0?"Alright "+whoNames[0]+",":(whoNam
 var groupMatch6=null;
 if(totalPeople>=6){var spSorted=(sel.sp||[]).slice().sort().join(",");var allGroups=props.groups||[];for(var gi=0;gi<allGroups.length;gi++){var g=allGroups[gi];if(g.people.slice().sort().join(",")===spSorted){groupMatch6=g;break;}}}
 return <div className="fade">
-<TopBar title="What's the mood?"  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
+<TopBar title="What's the mood?"  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
 <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flex:1,overflow:"auto",padding:"20px 24px"}}>
 {/* Who's eating */}
 <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:12,marginBottom:20}}>
@@ -1857,7 +1871,7 @@ return <div className="fade">
 </div>;
 }
 return <div className="fade">
-<TopBar title={isSolo?"Pick your mood":"Pick the mood"}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
+<TopBar title={isSolo?"Pick your mood":"Pick the mood"}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
 <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
 <div style={{fontSize:13,color:"var(--tx2)",marginBottom:14}}>Pick what feels right. This shapes which restaurants surface.</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
@@ -1952,7 +1966,7 @@ if(h2hIntro){
   var isNarrowH2H=phase==="narrow";
   return <div className="fade">
     <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
-      <TopBar title={"\u2694\uFE0F Head to Head"} sub={isNarrowH2H?"Tiebreaker round":"Settling the score"} back={function(){setH2hIntro(false);setH2H(null);setDisagrees(0);}}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
+      <TopBar title={"\u2694\uFE0F Head to Head"} sub={isNarrowH2H?"Tiebreaker round":"Settling the score"} back={function(){setH2hIntro(false);setH2H(null);setDisagrees(0);}}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
       <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px",position:"relative"}}>
         {/* Glow */}
         <div style={{position:"absolute",width:220,height:220,borderRadius:"50%",background:isNarrowH2H?"linear-gradient(135deg,#F472B6,#C4956A)":"linear-gradient(135deg,#4A9EFF,#F472B6)",opacity:.1,filter:"blur(70px)",top:"15%",pointerEvents:"none"}}></div>
@@ -1991,7 +2005,7 @@ if(h2hIntro){
 
 if(!hq)return null;
 return <div className="fade">
-  <TopBar title={"\u2694\uFE0F Head to Head"} sub={"Question "+(h2h.qi+1)+" of "+h2h.qs.length} back={function(){setH2H(null);setDisagrees(0);}}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
+  <TopBar title={"\u2694\uFE0F Head to Head"} sub={"Question "+(h2h.qi+1)+" of "+h2h.qs.length} back={function(){setH2H(null);setDisagrees(0);}}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
   <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
     <div style={{textAlign:"center",marginBottom:20}}>
       <span style={{fontSize:36}}>{hq.e}</span>
@@ -2027,7 +2041,7 @@ var answeredThisRound=0;
 qs.forEach(function(q,i){var key=(phase==="narrow"?"n":"r")+round+"q"+i;if(ans["_"+key])answeredThisRound++;});
 
 return <div className="fade">
-<TopBar title={phase==="narrow"?"Narrowing it down":"Quick vibe check"} sub={sel.qrLabel?(sel.qrEmoji+" "+sel.qrLabel):(phase==="narrow"?"Almost there":"")}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
+<TopBar title={phase==="narrow"?"Narrowing it down":"Quick vibe check"} sub={sel.qrLabel?(sel.qrEmoji+" "+sel.qrLabel):(phase==="narrow"?"Almost there":"")}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
 <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
 {phase==="narrow"&&sel.mood&&(function(){var m=MOODS.find(function(mm){return mm.id===sel.mood;});return m?<div style={{marginBottom:14}}>
 <div style={{display:"inline-flex",alignItems:"center",gap:8,padding:"8px 16px",borderRadius:20,background:"rgba(244,114,182,.06)",border:"1px solid rgba(244,114,182,.15)"}}>

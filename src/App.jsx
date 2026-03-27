@@ -127,10 +127,10 @@ function TopBar(p){var isDark=p.theme==="dark"||(p.theme==="auto"&&typeof window
 
 function BottomNav(p){var go=p.go,active=p.active,setSel=p.setSel;
 var tabs=[{id:"home",l:"Home",e:"🏠"},{id:"decide",l:"Decide",e:"🎯"},{id:"history",l:"History",e:"📋"},{id:"settings",l:"Settings",e:"⚙️"}];
-return <div style={{display:"flex",alignItems:"center",background:"var(--bg2)",borderTop:"1px solid var(--bdr)",padding:"6px 0 10px",flexShrink:0}}>
+return <div style={{display:"flex",alignItems:"center",background:"var(--bg2)",borderTop:"1px solid var(--bdr)",padding:"10px 0 14px",flexShrink:0}}>
 {tabs.map(function(t,i){var on=t.id==="decide"?false:active===t.id;return <div key={t.id} style={{display:"contents"}}>{i>0&&<div style={{width:1,height:24,background:"var(--bdr)",opacity:.4,flexShrink:0}}></div>}<button onClick={function(){if(t.id==="decide"){go("step1");}else{go(t.id);}}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
-<span style={{fontSize:18}}>{t.e}</span>
-<span style={{fontSize:11,fontWeight:on?700:500,color:on?"var(--ac)":"var(--tx3)"}}>{t.l}</span>
+<span style={{fontSize:22}}>{t.e}</span>
+<span style={{fontSize:12,fontWeight:on?700:500,color:on?"var(--ac)":"var(--tx3)"}}>{t.l}</span>
 </button></div>;})}
 
   </div>;
@@ -241,10 +241,10 @@ return(
 {/* HOME */}
   {vw==="home"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100vh"}}>
     {/* ── Branded header ── */}
-    <div style={{padding:"6px 16px 4px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+    <div style={{padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
       <div>
-        <div style={{fontSize:18,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
-        <div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:1,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div>
+        <div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
+        <div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div>
       </div>
       <div style={{display:"flex",alignItems:"center",gap:4}}>
         <button onClick={cycleTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.7}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"🌙":"☀️";})()}</button>
@@ -253,12 +253,12 @@ return(
     </div>
 
     {/* ── Main content ── */}
-    <div style={{flex:1,padding:"6px 16px 4px",display:"flex",flexDirection:"column",gap:6,overflow:"auto"}}>
+    <div style={{flex:1,padding:"8px 16px 0",display:"flex",flexDirection:"column",gap:8,overflow:"auto"}}>
 
       {/* ── Meal selector ── */}
       {(function(){var meals=[{id:"breakfast",l:"Brkfst"},{id:"brunch",l:"Brunch"},{id:"lunch",l:"Lunch"},{id:"dinner",l:"Dinner"},{id:"latenight",l:"Late"}];
         return <div style={{display:"flex",gap:4}}>
-          {meals.map(function(m){var on=mctx.meal===m.id;return <button key={m.id} onClick={function(){setMealOverride(mctx.meal===m.id?null:m.id);}} style={{flex:1,padding:"5px 0",borderRadius:8,border:on?"1px solid var(--ac)":"1px solid var(--bdr)",background:on?"rgba(244,114,182,.12)":"var(--bg1)",color:on?"var(--ac)":"var(--tx3)",fontSize:11,fontWeight:on?700:600,cursor:"pointer",fontFamily:"inherit",transition:"all .12s",textAlign:"center"}}>
+          {meals.map(function(m){var on=mctx.meal===m.id;return <button key={m.id} onClick={function(){setMealOverride(mctx.meal===m.id?null:m.id);}} style={{flex:1,padding:"7px 0",borderRadius:8,border:on?"1px solid var(--ac)":"1px solid var(--bdr)",background:on?"rgba(244,114,182,.12)":"var(--bg1)",color:on?"var(--ac)":"var(--tx3)",fontSize:11,fontWeight:on?700:600,cursor:"pointer",fontFamily:"inherit",transition:"all .12s",textAlign:"center"}}>
             {m.l}
           </button>;})}
         </div>;})()}
@@ -294,36 +294,36 @@ return(
         /* Compute date range from most recent ld */
         var latestLd=null;rests.forEach(function(r){if(r.ld&&(!latestLd||r.ld>latestLd))latestLd=r.ld;});
         var rangeText="";var rangeLabel="";if(latestLd){var ld=new Date(latestLd+"T12:00:00");var mons=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];var fmtNice=function(d){return mons[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();};if(moFilter==="90d"){var from=new Date(ld.getTime()-90*86400000);rangeLabel="90 days";rangeText=fmtNice(from)+" -- "+fmtNice(ld);}else if(moFilter==="365d"){var from=new Date(ld.getTime()-365*86400000);rangeLabel="365 days";rangeText=fmtNice(from)+" -- "+fmtNice(ld);}else{var earliest=null;rests.forEach(function(r){var d=r.fd||r.ld;if(d&&r.to>0&&(!earliest||d<earliest))earliest=d;});if(earliest){var ef=new Date(earliest+"T12:00:00");var diffMs=ld.getTime()-ef.getTime();var diffDays=Math.floor(diffMs/86400000);var yy=Math.floor(diffDays/365);var rem=diffDays%365;var mm=Math.floor(rem/30);var dd=rem%30;var parts=[];if(yy>0)parts.push(yy+(yy===1?" year":" years"));if(mm>0)parts.push(mm+(mm===1?" month":" months"));if(dd>0)parts.push(dd+(dd===1?" day":" days"));rangeLabel=parts.join(", ")||"0 days";rangeText=fmtNice(ef)+" -- "+fmtNice(ld);}}}
-        return <div className="jfl-card" style={{padding:"8px 10px"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+        return <div className="jfl-card" style={{padding:10}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
             <div className="jfl-label" style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:14,height:1,background:"#D4A574",opacity:.5}}></div>Most ordered</div>
             <div style={{display:"flex",alignItems:"center",gap:4}}>
               {["90d","365d","all"].map(function(f){return <button key={f} onClick={function(){setMoFilter(f);}} style={{padding:"3px 10px",borderRadius:12,border:"1px solid "+(moFilter===f?"var(--ac)":"var(--bdr)"),background:moFilter===f?"rgba(244,114,182,.1)":"transparent",color:moFilter===f?"var(--ac)":"var(--tx3)",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{f==="90d"?"Recently":f==="365d"?"Past Year":"All Time"}</button>;})}
             </div>
           </div>
-          {rangeLabel&&<div style={{textAlign:"center",marginBottom:4,padding:"3px 0",borderTop:"1px solid var(--bdr)",borderBottom:"1px solid var(--bdr)",lineHeight:"1.4",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}><span style={{fontSize:10,fontWeight:700,color:"var(--tx2)"}}>{rangeLabel}</span>{rangeText&&<span style={{fontSize:9,color:"var(--tx3)"}}>{rangeText}</span>}</div>}
+          {rangeLabel&&<div style={{textAlign:"center",marginBottom:6,padding:"5px 0",borderTop:"1px solid var(--bdr)",borderBottom:"1px solid var(--bdr)",lineHeight:"1.4",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}><span style={{fontSize:11,fontWeight:700,color:"var(--tx2)"}}>{rangeLabel}</span>{rangeText&&<span style={{fontSize:10,color:"var(--tx3)"}}>{rangeText}</span>}</div>}
           {top[0]?<div style={{display:"flex",alignItems:"flex-end",justifyContent:"center",gap:8}}>
             {top[1]&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"rest",hfPrev:"all",hrid:top[1].id});});go("history");}} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0}}>
               <span style={{fontSize:12,fontWeight:700,color:"#A8B4C0"}}>2nd</span>
-              <div style={{background:"var(--bg2)",borderRadius:8,padding:"6px 4px",width:"100%",textAlign:"center",border:"1px solid #A8B4C0",marginTop:3,boxShadow:"0 1px 6px rgba(168,180,192,.1)"}}>
-                <span className="podium-pop" style={{fontSize:18,display:"inline-block",animationDelay:".3s"}}>{top[1].emoji}</span>
-                <div style={{fontSize:10,fontWeight:600,color:"var(--tx2)",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[1].sn||top[1].name}</div>
+              <div style={{background:"var(--bg2)",borderRadius:8,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #A8B4C0",marginTop:3,boxShadow:"0 1px 6px rgba(168,180,192,.1)"}}>
+                <span className="podium-pop" style={{fontSize:22,display:"inline-block",animationDelay:".3s"}}>{top[1].emoji}</span>
+                <div style={{fontSize:11,fontWeight:600,color:"var(--tx2)",marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[1].sn||top[1].name}</div>
                 <div style={{fontSize:12,fontWeight:700,color:"#A8B4C0"}}>{gCt(top[1])}</div>
               </div>
             </button>}
             <button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"rest",hfPrev:"all",hrid:top[0].id});});go("history");}} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1.15,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0}}>
               <span style={{fontSize:14,fontWeight:700,color:"var(--yel)"}}>{"\uD83C\uDFC6"}</span>
-              <div style={{background:"var(--bg2)",borderRadius:10,padding:"6px 4px",width:"100%",textAlign:"center",border:"2px solid var(--ac)",marginTop:3,boxShadow:"0 2px 10px rgba(244,114,182,.12)"}}>
-                <span className="podium-pop" style={{fontSize:24,display:"inline-block",animationDelay:".15s"}}>{top[0].emoji}</span>
-                <div style={{fontSize:12,fontWeight:700,color:"var(--tx1)",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[0].sn||top[0].name}</div>
-                <div style={{fontSize:12,fontWeight:700,color:"var(--ac)",marginTop:1}}>{gCt(top[0])}</div>
+              <div style={{background:"var(--bg2)",borderRadius:10,padding:"10px 4px",width:"100%",textAlign:"center",border:"2px solid var(--ac)",marginTop:3,boxShadow:"0 2px 10px rgba(244,114,182,.12)"}}>
+                <span className="podium-pop" style={{fontSize:30,display:"inline-block",animationDelay:".15s"}}>{top[0].emoji}</span>
+                <div style={{fontSize:13,fontWeight:700,color:"var(--tx1)",marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[0].sn||top[0].name}</div>
+                <div style={{fontSize:13,fontWeight:700,color:"var(--ac)",marginTop:1}}>{gCt(top[0])}</div>
               </div>
             </button>
             {top[2]&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"rest",hfPrev:"all",hrid:top[2].id});});go("history");}} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0}}>
               <span style={{fontSize:12,fontWeight:700,color:"#B8976A"}}>3rd</span>
-              <div style={{background:"var(--bg2)",borderRadius:8,padding:"6px 4px",width:"100%",textAlign:"center",border:"1px solid #B8976A",marginTop:3,boxShadow:"0 1px 6px rgba(184,151,106,.06)"}}>
-                <span className="podium-pop" style={{fontSize:16,display:"inline-block",animationDelay:".45s"}}>{top[2].emoji}</span>
-                <div style={{fontSize:10,fontWeight:600,color:"#B8976A",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[2].sn||top[2].name}</div>
+              <div style={{background:"var(--bg2)",borderRadius:8,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #B8976A",marginTop:3,boxShadow:"0 1px 6px rgba(184,151,106,.06)"}}>
+                <span className="podium-pop" style={{fontSize:20,display:"inline-block",animationDelay:".45s"}}>{top[2].emoji}</span>
+                <div style={{fontSize:11,fontWeight:600,color:"#B8976A",marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[2].sn||top[2].name}</div>
                 <div style={{fontSize:12,fontWeight:700,color:"#B8976A"}}>{gCt(top[2])}</div>
               </div>
             </button>}
@@ -331,10 +331,10 @@ return(
         </div>;})()}
 
       {/* ── Stats row ── */}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6}}>
-        <button className="jfl-stat" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"favs"});});go("history");}} style={{cursor:"pointer",padding:"6px 6px",borderTop:"2px solid var(--ac)"}}><div style={{fontSize:16,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#E8458A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return r.fav;}).length}</div><div className="jfl-stat-l">Favorites</div></button>
-        <button className="jfl-stat" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"active"});});go("history");}} style={{cursor:"pointer",padding:"6px 6px",borderTop:"2px solid #D4A574"}}><div style={{fontSize:16,fontWeight:700,background:"linear-gradient(135deg,#D4A574,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return!r.bo;}).length}</div><div className="jfl-stat-l">In Rotation</div></button>
-        <button className="jfl-stat" onClick={function(){go("history");}} style={{cursor:"pointer",padding:"6px 6px",borderTop:"2px solid",borderImage:"linear-gradient(135deg,#F472B6,#C4956A) 1"}}><div style={{fontSize:16,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.reduce(function(s,r){return s+r.to;},0)}</div><div className="jfl-stat-l">Total Orders</div></button>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+        <button className="jfl-stat" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"favs"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid var(--ac)"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#E8458A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return r.fav;}).length}</div><div className="jfl-stat-l">Favorites</div></button>
+        <button className="jfl-stat" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"active"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid #D4A574"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#D4A574,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return!r.bo;}).length}</div><div className="jfl-stat-l">In Rotation</div></button>
+        <button className="jfl-stat" onClick={function(){go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid",borderImage:"linear-gradient(135deg,#F472B6,#C4956A) 1"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.reduce(function(s,r){return s+r.to;},0)}</div><div className="jfl-stat-l">Total Orders</div></button>
       </div>
 
     </div>
@@ -2770,7 +2770,7 @@ var CSS = [
 "input[type='range']{accent-color:var(--ac);width:100%}",
 ".jfl-overlay{position:fixed;inset:0;background:rgba(13,17,23,.95);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center}",
 ".jfl-cta{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#F472B6,#C4956A);color:white;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;font-size:15px;font-weight:600;transition:transform .15s;text-shadow:0 1px 3px rgba(0,0,0,.25)}",
-".jfl-cta-hero{padding:12px 14px;border-radius:14px;box-shadow:0 2px 12px rgba(244,114,182,.2);animation:ctaGlow 3s ease-in-out infinite}",
+".jfl-cta-hero{padding:18px 14px;border-radius:14px;box-shadow:0 2px 12px rgba(244,114,182,.2);animation:ctaGlow 3s ease-in-out infinite}",
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
 "@keyframes podiumPop{0%{opacity:0;transform:scale(.5) translateY(8px)}60%{opacity:1;transform:scale(1.1) translateY(-2px)}100%{transform:scale(1) translateY(0)}}",
@@ -2779,10 +2779,10 @@ var CSS = [
 ".jfl-btn{padding:10px 16px;border:1px solid var(--bdr);border-radius:10px;background:var(--bg1);color:var(--tx2);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s}",
 ".jfl-card{background:var(--bg1);border-radius:12px;padding:14px;border:1px solid var(--bdr)}",
 ".jfl-label{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:1px}",
-".jfl-stat{background:var(--bg1);border-radius:10px;padding:8px 10px;border:1px solid var(--bdr);text-align:center;cursor:pointer;font-family:inherit;transition:border-color .15s}",
+".jfl-stat{background:var(--bg1);border-radius:10px;padding:14px 10px;border:1px solid var(--bdr);text-align:center;cursor:pointer;font-family:inherit;transition:border-color .15s}",
 ".jfl-stat:active{border-color:var(--ac)}",
 ".jfl-stat-n{font-size:20px;font-weight:700;color:var(--tx1)}",
-".jfl-stat-l{font-size:11px;font-weight:600;color:var(--tx2);margin-top:2px}",
+".jfl-stat-l{font-size:12px;font-weight:600;color:var(--tx2);margin-top:4px}",
 ".jfl-nav{padding:14px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg1);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx2)}",
 ".jfl-qr{display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg2);cursor:pointer;font-family:inherit;text-align:left}",
 ".jfl-chip{display:flex;align-items:center;gap:8px;padding:11px 14px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg1);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx2);transition:all .12s}",

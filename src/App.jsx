@@ -246,7 +246,7 @@ return(
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
     {/* ── emoji rows ── */}
-    <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
+    <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",animation:"emojiFadeIn 1.5s ease-out both"}}>
       {ROWS.map(function(row,ri){
         var content=row.items.map(function(item,ei){return <span key={ei} style={{display:"inline-block",fontSize:row.sz,padding:"0 40px",animation:"emojiSine"+ri%3+" "+item.sinDur+"s ease-in-out "+item.sinDelay+"s infinite"}}>{item.e}</span>;});
         return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:.15}}>
@@ -2836,6 +2836,7 @@ var CSS = [
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
 "@keyframes emojiScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}",
+"@keyframes emojiFadeIn{0%{opacity:0}100%{opacity:1}}",
 "@keyframes emojiSine0{0%,100%{transform:translateY(22px)}50%{transform:translateY(-44px)}}",
 "@keyframes emojiSine1{0%,100%{transform:translateY(28px)}50%{transform:translateY(-50px)}}",
 "@keyframes emojiSine2{0%,100%{transform:translateY(16px)}50%{transform:translateY(-36px)}}",

@@ -241,7 +241,7 @@ return(
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
     var EMOJIS=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-    var ROWS=useMemo(function(){for(var rows=[],s=7919,r=0;r<4;r++){var items=[];for(var j=0;j<6;j++){s=(s*16807+r*6+j)%2147483647;items.push({e:EMOJIS[s%EMOJIS.length],sinDelay:((s=(s*16807)%2147483647)%30)/10,sinDur:((s=(s*16807)%2147483647)%3)+3});}s=(s*16807)%2147483647;var sz=(s%12)+24;s=(s*16807)%2147483647;var dur=(s%6)+16;s=(s*16807)%2147483647;var op=(s%6)+10;var top=(r*22)+8;rows.push({items:items,sz:sz,dur:dur,op:op,top:top,rev:r%2===1});}return rows;},[]);
+    var ROWS=useMemo(function(){for(var rows=[],s=7919,r=0;r<3;r++){var items=[];for(var j=0;j<6;j++){s=(s*16807+r*6+j)%2147483647;items.push({e:EMOJIS[s%EMOJIS.length],sinDelay:((s=(s*16807)%2147483647)%30)/10,sinDur:((s=(s*16807)%2147483647)%3)+4});}s=(s*16807)%2147483647;var sz=(s%12)+26;s=(s*16807)%2147483647;var dur=(s%6)+16;s=(s*16807)%2147483647;var op=(s%6)+10;var top=(r*30)+10;rows.push({items:items,sz:sz,dur:dur,op:op,top:top,rev:r%2===1});}return rows;},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
@@ -2836,9 +2836,9 @@ var CSS = [
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
 "@keyframes emojiScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}",
-"@keyframes emojiSine0{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}",
-"@keyframes emojiSine1{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}",
-"@keyframes emojiSine2{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}",
+"@keyframes emojiSine0{0%,100%{transform:translateY(12px)}50%{transform:translateY(-28px)}}",
+"@keyframes emojiSine1{0%,100%{transform:translateY(18px)}50%{transform:translateY(-36px)}}",
+"@keyframes emojiSine2{0%,100%{transform:translateY(8px)}50%{transform:translateY(-22px)}}",
 "@keyframes podiumPop{0%{opacity:0;transform:scale(.5) translateY(8px)}60%{opacity:1;transform:scale(1.1) translateY(-2px)}100%{transform:scale(1) translateY(0)}}",
 ".float-in{animation:floatIn .4s ease-out both}",
 ".podium-pop{animation:podiumPop .4s ease-out both}",

@@ -514,7 +514,7 @@ return(
         {accepted===undefined&&<div style={{textAlign:"center",width:"100%",maxWidth:340}}>
           <span style={{fontSize:80}}>{rest.emoji}</span>
           <div style={{fontSize:18,color:"var(--tx2)",marginTop:20,fontWeight:500}}>{rule.callout}</div>
-          <div style={{fontSize:32,fontWeight:700,color:"var(--tx1)",marginTop:14,lineHeight:"1.3"}}>{rule.ask}</div>
+          <div style={{fontSize:24,fontWeight:700,color:"var(--tx1)",marginTop:14,lineHeight:"1.3"}}>{rule.ask}</div>
           <div style={{display:"flex",flexDirection:"column",gap:12,marginTop:36,width:"100%"}}>
             <button className="jfl-cta" style={{padding:18}} onClick={function(){setAccepted(true);}}>
               <span style={{fontSize:17,fontWeight:700}}>Yes, obviously</span>
@@ -535,7 +535,7 @@ return(
         </div>}
         {accepted===false&&<div style={{textAlign:"center",width:"100%",maxWidth:340}} className="fade">
           <span style={{fontSize:80}}>{"\uD83E\uDD28"}</span>
-          <div style={{fontSize:26,fontWeight:700,color:"var(--tx1)",marginTop:20}}>{rule.no}</div>
+          <div style={{fontSize:22,fontWeight:700,color:"var(--tx1)",marginTop:20}}>{rule.no}</div>
           <div style={{marginTop:40,width:"100%"}}>
             <button className="jfl-cta" style={{padding:20,fontSize:17}} onClick={function(){setSel(function(s){return Object.assign({},s,{ob:null,obAns:undefined});});go("step2");}}>Continue to mood check</button>
             <button style={{background:"none",border:"none",color:"var(--tx3)",fontSize:12,cursor:"pointer",fontFamily:"inherit",padding:"6px 0",marginTop:10}} onClick={function(){setSel(function(s){return Object.assign({},s,{ob:null,obAns:undefined});});go("dashboard");}}>Back to dashboard</button>
@@ -558,7 +558,7 @@ return(
       var poolEmpty=results.length===0;
       if(poolEmpty){
         return <div className="fade">
-          <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
+          <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
             <span style={{fontSize:64}}>{"\uD83D\uDEAB"}</span>
             <div style={{fontSize:22,fontWeight:700,color:"var(--tx1)",marginTop:16,textAlign:"center"}}>You vetoed everything</div>
             <div style={{fontSize:14,color:"var(--tx2)",marginTop:10,textAlign:"center"}}>{"Every restaurant in rotation is either closed or burned. There\u2019s nothing left to show."}</div>
@@ -570,7 +570,7 @@ return(
         </div>;
       }
       return <div className="fade">
-        <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
+        <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
           <span style={{fontSize:64}}>🫠</span>
           <div style={{fontSize:22,fontWeight:700,color:"var(--tx1)",marginTop:16,textAlign:"center"}}>{rSolo?"You're impossible tonight.":rDuo?"You two are impossible tonight.":"You all are impossible tonight."}</div>
           <div style={{fontSize:14,color:"var(--tx2)",marginTop:10,textAlign:"center",lineHeight:"1.5"}}>{rSolo?"You rejected every single option. Impressive, honestly.":"Every single option got rejected. Impressive, honestly."}</div>
@@ -584,8 +584,8 @@ return(
     var res=results[resIdx];var rest=res.r;var w=resIdx===0;
     var v=vcfg[res.vetoRisk],cf=ccfg[res.confidence],sn=Math.min(Math.max((res.score-20)/80,0),1);
 
-    return <div className="slide-in" key={res.rid+"-"+resIdx}>
-      <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)"}}>
+    return <div className="slide-in" key={res.rid+"-"+resIdx} style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
+      <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",flexShrink:0}}>
         <div style={{zIndex:1}}><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div>
         <div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)"}}>{mctx.emoji+" "+mctx.label+" Resolved"}</span>
@@ -598,7 +598,7 @@ return(
         </div>
       </div>
       {/* ═══ OPTION 1: FULL DRAMATIC REVEAL ═══ */}
-      {w&&<div style={{padding:"0 16px 16px"}}>
+      {w&&<div style={{padding:"0 16px 16px",flex:1,overflow:"auto"}}>
         {/* Hero section */}
         <div style={{textAlign:"center",position:"relative",padding:"14px 0 10px"}}>
           <div style={{position:"absolute",left:"50%",top:"15%",transform:"translateX(-50%)",width:180,height:180,borderRadius:"50%",background:"linear-gradient(135deg,#F472B6,#C4956A)",opacity:.1,filter:"blur(60px)",pointerEvents:"none"}}></div>
@@ -683,7 +683,7 @@ return(
       </div>}
 
       {/* ═══ OPTIONS 2-3: SAME DRAMATIC LAYOUT WITH MEDALS ═══ */}
-      {!w&&<div style={{padding:"0 16px 20px"}}>
+      {!w&&<div style={{padding:"0 16px 20px",flex:1,overflow:"auto"}}>
         {/* Medal header */}
         <div style={{textAlign:"center",position:"relative",padding:"20px 0 16px"}}>
           <div style={{position:"absolute",left:"50%",top:"20%",transform:"translateX(-50%)",width:180,height:180,borderRadius:"50%",background:resIdx===1?"#C0C0C0":"#B8976A",opacity:.06,filter:"blur(60px)",pointerEvents:"none"}}></div>
@@ -1685,7 +1685,7 @@ if(resolved){
 /* ═══ NARROW H2H REVEAL ═══ */
 if(resolved.narrowH2H){
 return <div className="fade">
-<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
+<div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
 <TopBar title={"\u2694\uFE0F Tiebreaker Complete"}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
 <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px",position:"relative"}}>
 {/* Glow */}
@@ -1715,7 +1715,7 @@ return <div className="fade">
 }
 /* ═══ PHASE 1 MOOD LOCKED ═══ */
 return <div className="fade">
-<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
+<div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
 <TopBar title="Mood locked in" sub={sel.qrLabel?(sel.qrEmoji+" "+sel.qrLabel):""}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
 <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px",position:"relative"}}>
 {/* Glow backdrop */}
@@ -1774,7 +1774,7 @@ var groupMatch6=null;
 if(totalPeople>=6){var spSorted=(sel.sp||[]).slice().sort().join(",");var allGroups=props.groups||[];for(var gi=0;gi<allGroups.length;gi++){var g=allGroups[gi];if(g.people.slice().sort().join(",")===spSorted){groupMatch6=g;break;}}}
 return <div className="fade">
 <TopBar title="What's the mood?"  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
-<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 60px)",padding:"20px 24px"}}>
+<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flex:1,overflow:"auto",padding:"20px 24px"}}>
 {/* Who's eating */}
 <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:12,marginBottom:20}}>
 {totalPeople>=6?<div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}}>
@@ -1815,7 +1815,7 @@ if(mode==="direct"){
 var pickedMood=sel.mood?MOODS.find(function(m){return m.id===sel.mood;}):null;
 if(pickedMood&&directConfirm){
 return <div className="fade">
-<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
+<div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
 <div style={{textAlign:"center",width:"100%",maxWidth:340}}>
 <div className="pop" style={{width:90,height:90,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:"var(--bg1)",border:"2px solid "+pickedMood.c,boxShadow:"0 0 30px "+pickedMood.c+"33",margin:"0 auto"}}>
 <span style={{fontSize:44}}>{pickedMood.emoji}</span>
@@ -1838,7 +1838,7 @@ return <div className="fade">
 }
 if(dismiss){
 return <div className="fade">
-<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
+<div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
 <div style={{textAlign:"center",maxWidth:300}}>
 <span style={{fontSize:64}}>{"🤨"}</span>
 <div style={{fontSize:20,fontWeight:700,color:"var(--tx1)",marginTop:16}}>{isSolo?"Then\u2026 why are you on here?":"Then\u2026 why are you all on here?"}</div>
@@ -1857,7 +1857,7 @@ return <div className="fade">
 }
 return <div className="fade">
 <TopBar title={isSolo?"Pick your mood":"Pick the mood"}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
-<div style={{padding:"20px 16px",display:"flex",flexDirection:"column",minHeight:"calc(100vh - 60px)"}}>
+<div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
 <div style={{fontSize:13,color:"var(--tx2)",marginBottom:14}}>Pick what feels right. This shapes which restaurants surface.</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
 {MOODS.map(function(m){var on=sel.mood===m.id;return <button key={m.id} onClick={function(){up("mood",m.id);}} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"16px 8px 14px",borderRadius:12,border:on?"2px solid "+m.c:"1px solid var(--bdr)",background:on?"var(--bg2)":"var(--bg1)",cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
@@ -1950,7 +1950,7 @@ function resolveH2H(perPerson){
 if(h2hIntro){
   var isNarrowH2H=phase==="narrow";
   return <div className="fade">
-    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
+    <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",background:"var(--bg0)"}}>
       <TopBar title={"\u2694\uFE0F Head to Head"} sub={isNarrowH2H?"Tiebreaker round":"Settling the score"} back={function(){setH2hIntro(false);setH2H(null);setDisagrees(0);}}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
       <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px",position:"relative"}}>
         {/* Glow */}
@@ -1967,7 +1967,7 @@ if(h2hIntro){
           <div className="pop" style={{fontSize:14,color:"var(--tx2)",marginTop:10,textAlign:"center",lineHeight:"1.5",animationDelay:".2s"}}>{"Let\u2019s break this deadlock. Individual votes, winner takes all."}</div>
         </div>}
         {/* Voter preview */}
-        <div className="pop" style={{display:"flex",gap:12,marginTop:24,animationDelay:".35s"}}>
+        <div className="pop" style={{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:12,marginTop:24,animationDelay:".35s"}}>
           {voters.map(function(v){return <div key={v.id} style={{textAlign:"center"}}>
             <div style={{width:48,height:48,borderRadius:"50%",background:"var(--bg2)",border:"2px solid var(--bdr)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>{v.emoji}</div>
             <div style={{fontSize:10,color:"var(--tx3)",marginTop:4,fontWeight:600}}>{v.name}</div>
@@ -1991,7 +1991,7 @@ if(h2hIntro){
 if(!hq)return null;
 return <div className="fade">
   <TopBar title={"\u2694\uFE0F Head to Head"} sub={"Question "+(h2h.qi+1)+" of "+h2h.qs.length} back={function(){setH2H(null);setDisagrees(0);}}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
-  <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",minHeight:"calc(100vh - 60px)"}}>
+  <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
     <div style={{textAlign:"center",marginBottom:20}}>
       <span style={{fontSize:36}}>{hq.e}</span>
       <div style={{fontSize:16,fontWeight:700,color:"var(--tx1)",marginTop:10,lineHeight:"1.4"}}>{fmtQ(hq.q)}</div>
@@ -2027,7 +2027,7 @@ qs.forEach(function(q,i){var key=(phase==="narrow"?"n":"r")+round+"q"+i;if(ans["
 
 return <div className="fade">
 <TopBar title={phase==="narrow"?"Narrowing it down":"Quick vibe check"} sub={sel.qrLabel?(sel.qrEmoji+" "+sel.qrLabel):(phase==="narrow"?"Almost there":"")}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo}/>
-<div style={{padding:"20px 16px",display:"flex",flexDirection:"column",minHeight:"calc(100vh - 60px)"}}>
+<div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
 {phase==="narrow"&&sel.mood&&(function(){var m=MOODS.find(function(mm){return mm.id===sel.mood;});return m?<div style={{marginBottom:14}}>
 <div style={{display:"inline-flex",alignItems:"center",gap:8,padding:"8px 16px",borderRadius:20,background:"rgba(244,114,182,.06)",border:"1px solid rgba(244,114,182,.15)"}}>
 <span style={{fontSize:16}}>{m.emoji}</span>
@@ -2265,7 +2265,7 @@ reader.readAsText(file);
 e.target.value="";
 }
 
-function Sheet(p){return <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,minHeight:"100vh",background:"var(--bg0)",zIndex:100,display:"flex",flexDirection:"column"}}>
+function Sheet(p){return <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,height:"100dvh",overflow:"auto",background:"var(--bg0)",zIndex:100,display:"flex",flexDirection:"column"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 16px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)"}}>
 <div style={{display:"flex",alignItems:"center",gap:8}}>{p.icon&&<span style={{fontSize:24}}>{p.icon}</span>}<span style={{fontSize:16,fontWeight:700,color:"var(--tx1)"}}>{p.title}</span></div>
 <button onClick={p.onClose} style={{background:"none",border:"none",color:"var(--tx2)",fontSize:14,cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>Done</button>
@@ -2303,7 +2303,7 @@ function SubBar(p){return <div style={{position:"relative",display:"flex",alignI
   </div>;}
 
 return(
-<div className="fade" style={{minHeight:"100vh",display:"flex",flexDirection:"column",position:"relative"}}>
+<div className="fade" style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",position:"relative"}}>
 
 
   {/* ═══ SHEETS (always available) ═══ */}

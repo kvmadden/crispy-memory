@@ -241,7 +241,7 @@ return(
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
     var POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[10,28,28,false],[36,24,24,true],[82,30,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
+    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[15,28,28,false],[36,24,24,true],[82,30,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 

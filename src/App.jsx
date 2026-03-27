@@ -249,7 +249,7 @@ return(
     <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",animation:"emojiFadeIn 1.5s ease-out both"}}>
       {ROWS.map(function(row,ri){
         var content=row.items.map(function(item,ei){return <span key={ei} style={{display:"inline-block",fontSize:row.sz,padding:"0 40px",animation:"emojiSine"+ri%3+" "+item.sinDur+"s ease-in-out "+item.sinDelay+"s infinite"}}>{item.e}</span>;});
-        return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:.15}}>
+        return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:.35}}>
           <div style={{display:"inline-block",animation:"emojiScroll "+row.dur+"s linear infinite",animationDirection:row.rev?"reverse":"normal"}}>
             {content}{content}
           </div>
@@ -270,7 +270,7 @@ return(
     <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"0 20px",position:"relative",zIndex:1,textAlign:"center",gap:12}}>
 
       {/* logo card */}
-      <div style={{background:"rgba(13,17,23,.75)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:20,padding:"28px 28px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.06)"}}>
+      <div style={{background:"rgba(13,17,23,.45)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:20,padding:"28px 28px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.08)"}}>
         <div style={{animation:"tada .8s ease-out both"}}>
           <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
           <div style={{fontSize:12,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:3,textTransform:"uppercase"}}>Food Logic</div>
@@ -281,7 +281,7 @@ return(
       </div>
 
       {/* how-it-works card */}
-      <div style={{background:"rgba(13,17,23,.75)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:20,padding:"20px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.06)"}}>
+      <div style={{background:"rgba(13,17,23,.45)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:20,padding:"20px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.08)"}}>
         <div style={{fontSize:14,color:"var(--tx2)",lineHeight:"1.7"}}>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
       </div>
 

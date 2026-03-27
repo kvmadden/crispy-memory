@@ -287,13 +287,11 @@ return(
       {/* how-it-works flow */}
       <div style={Object.assign({},cardStyle,{borderRadius:20,padding:"16px 20px",width:"100%",maxWidth:340})}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
-          {[{e:"🫶",l:"Squad"},{e:"🌀",l:"Vibes"},{e:"😋",l:"Eat!"}].map(function(step,si){
-            var glowDelay=si*1.6;
-            var lineDelay=(si-1)*1.6+0.8;
+          {[{e:"🫶",l:"Squad"},{e:"🌀",l:"Vibes"},{e:"😋",l:"Yum"}].map(function(step,si){
             return <React.Fragment key={si}>
-              {si>0&&<div style={{flex:1,height:2,margin:"0 -2px",marginBottom:16,borderRadius:1,background:"linear-gradient(90deg,var(--ac),var(--ac)) no-repeat left/0% 100%,var(--bdr)",opacity:0.45,animation:"lineFill 6s ease "+lineDelay+"s infinite"}}></div>}
+              {si>0&&<div style={{flex:1,height:3,margin:"0 -2px",marginBottom:16,borderRadius:2,background:"linear-gradient(90deg,var(--ac),var(--ac)) no-repeat left/0% 100%,"+( isDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.08)"),animation:"lineFill"+si+" 7s ease-in-out infinite"}}></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>
-                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.04)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepGlow 6s ease-in-out "+glowDelay+"s infinite"}}>{step.e}</div>
+                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.04)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 7s ease-in-out infinite"}}>{step.e}</div>
                 <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase"}}>{step.l}</span>
               </div>
             </React.Fragment>;
@@ -2843,8 +2841,11 @@ var CSS = [
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",
 ".stagger-1{animation:fade .3s ease-out .05s both}.stagger-2{animation:fade .3s ease-out .12s both}.stagger-3{animation:fade .3s ease-out .19s both}",
 "@keyframes tada{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.96)}100%{transform:scale(1)}}",
-"@keyframes stepGlow{0%,100%{box-shadow:inset 0 0 0 transparent}20%,40%{box-shadow:inset 0 0 10px rgba(255,255,255,.08),inset 0 0 6px rgba(244,114,182,.06)}}",
-"@keyframes lineFill{0%,10%{background-size:0% 100%}25%,45%{background-size:100% 100%}60%,100%{background-size:0% 100%}}",
+"@keyframes stepOn0{0%,4%{box-shadow:0 0 0 0 transparent}8%,78%{box-shadow:0 0 0 2.5px rgba(255,255,255,.45)}86%,100%{box-shadow:0 0 0 0 transparent}}",
+"@keyframes stepOn1{0%,28%{box-shadow:0 0 0 0 transparent}34%,78%{box-shadow:0 0 0 2.5px rgba(255,255,255,.45)}86%,100%{box-shadow:0 0 0 0 transparent}}",
+"@keyframes stepOn2{0%,54%{box-shadow:0 0 0 0 transparent}60%,78%{box-shadow:0 0 0 2.5px rgba(255,255,255,.45)}86%,100%{box-shadow:0 0 0 0 transparent}}",
+"@keyframes lineFill1{0%,12%{background-size:0% 100%}28%,78%{background-size:100% 100%}86%,100%{background-size:0% 100%}}",
+"@keyframes lineFill2{0%,38%{background-size:0% 100%}54%,78%{background-size:100% 100%}86%,100%{background-size:0% 100%}}",
 ".landingPulse{animation:ctaPulse 3s ease-in-out 2s infinite}",
 "@keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(244,114,182,.2)}50%{box-shadow:0 4px 30px rgba(244,114,182,.45)}}",
 ".slide-in{animation:slideIn .3s ease-out both}",

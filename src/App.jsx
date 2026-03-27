@@ -182,6 +182,8 @@ var pick=useCallback(function(res){var s=selRef.current;setH(function(h){return[
 var burn=useCallback(function(id){setR(function(rs){return rs.map(function(r){return r.id===id?Object.assign({},r,{bo:true}):r;});});reroll(false);},[reroll]);
 var daysSinceRefresh=Math.floor((Date.now()-new Date(dataRefresh).getTime())/(1000*60*60*24));
 var needsRefresh=daysSinceRefresh>=90;
+var LANDING_POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
+var LANDING_ROWS=useMemo(function(){var s=7919;var ri=0;return[[13,28,26,false],[40,24,28,true],[80,30,30,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%LANDING_POOL.length;items.push({e:LANDING_POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
 var isSoloResult=(sel.sp||[]).length<=1&&!(sel.xa||0)&&!(sel.xk||0);
 var vcfg=isSoloResult?{low:{c:"var(--grn)",l:"Strong Match"},moderate:{c:"var(--yel)",l:"Decent Match"},high:{c:"var(--red)",l:"Weak Match"}}:{low:{c:"var(--grn)",l:"Low Veto Risk"},moderate:{c:"var(--yel)",l:"Moderate Risk"},high:{c:"var(--red)",l:"High Risk"}};
 var ccfg={high:{l:"High Confidence",c:"var(--grn)"},medium:{l:"Moderate",c:"var(--yel)"},low:{l:"Low",c:"var(--tx3)"}};
@@ -240,8 +242,7 @@ return(
 
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
-    var POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[13,28,26,false],[40,24,28,true],[80,30,30,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
+    var ROWS=LANDING_ROWS;
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);
     var cardStyle=isDk?{background:"rgba(255,255,255,.02)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,.08)"}:{background:"rgba(255,255,255,.15)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,.3)",boxShadow:"0 2px 16px rgba(0,0,0,.04)"};

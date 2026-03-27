@@ -240,18 +240,20 @@ return(
 
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
-    var LAND_EMOJI=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳"];
+    var ROW1=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞"];
+    var ROW2=["🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳"];
+    var ROW3=["🥙","🍟","🥓","🧁","🍰","🥟","🫔","🍤","🥐","🍿","🥙","🍟","🥓","🧁","🍰","🥟","🫔","🍤","🥐","🍿"];
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
-    {/* ── floating emoji background ── */}
-    <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",opacity:.12}}>
-      {LAND_EMOJI.map(function(e,i){
-        var sz=18+Math.random()*22;
-        var left=Math.random()*92+"%";
-        var dur=10+Math.random()*14;
-        var delay=-Math.random()*20;
-        return <span key={i} style={{position:"absolute",fontSize:sz,left:left,top:"-40px",animation:"landFloat "+dur+"s linear "+delay+"s infinite"}}>{e}</span>;
+    {/* ── sine-wave emoji rows ── */}
+    <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
+      {[ROW1,ROW2,ROW3].map(function(row,ri){
+        return <div key={ri} style={{position:"absolute",top:(25+ri*22)+"%",left:0,whiteSpace:"nowrap",animation:"emojiDrift "+(15+ri*2)+"s linear infinite",animationDirection:ri%2===0?"normal":"reverse",opacity:.18}}>
+          <span style={{display:"inline-block",animation:"emojiSine "+(4+ri)+"s ease-in-out infinite"}}>
+            {row.map(function(e,ei){return <span key={ei} style={{display:"inline-block",fontSize:28+ri*4,padding:"0 14px"}}>{e}</span>;})}
+          </span>
+        </div>;
       })}
     </div>
 
@@ -278,22 +280,14 @@ return(
         <div key={flavIdx} className="fade" style={{fontSize:16,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.8}}>{LAND_LINES[flavIdx%LAND_LINES.length]}</div>
       </div>
 
-      {/* glass stats card */}
-      <div style={{marginTop:28,width:"100%",maxWidth:320,background:"rgba(255,255,255,.04)",backdropFilter:"blur(12px)",border:"1px solid rgba(244,114,182,.15)",borderRadius:20,padding:"20px 24px",boxShadow:"0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05)"}}>
-        <div style={{display:"flex",justifyContent:"space-around",textAlign:"center"}}>
-          <div><div style={{fontSize:28,fontWeight:800,color:"var(--ac)"}}>{rests.length}</div><div style={{fontSize:10,fontWeight:600,color:"var(--tx2)",marginTop:2}}>Restaurants</div></div>
-          <div style={{width:1,background:"rgba(244,114,182,.15)"}}></div>
-          <div><div style={{fontSize:28,fontWeight:800,color:"var(--tx1)"}}>{ppl.length}</div><div style={{fontSize:10,fontWeight:600,color:"var(--tx2)",marginTop:2}}>Taste Profiles</div></div>
-          <div style={{width:1,background:"rgba(244,114,182,.15)"}}></div>
-          <div><div style={{fontSize:28,fontWeight:800,color:"#D4A574"}}>{hist.length}</div><div style={{fontSize:10,fontWeight:600,color:"var(--tx2)",marginTop:2}}>Past Orders</div></div>
-        </div>
-      </div>
+      {/* subtitle */}
+      <div style={{fontSize:14,color:"var(--tx2)",marginTop:20,lineHeight:"1.7",maxWidth:280}}>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
 
       {/* CTA */}
-      <button className="jfl-cta" style={{marginTop:32,padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:320,borderRadius:16,position:"relative",overflow:"hidden"}} onClick={function(){go("home");}}>
-        <span style={{position:"relative",zIndex:1}}>{"What should we eat? \u2192"}</span>
+      <button className="jfl-cta" style={{marginTop:36,padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:320,borderRadius:16}} onClick={function(){go("home");}}>
+        <span>{"What should we eat? \u2192"}</span>
       </button>
-      <div style={{fontSize:11,color:"var(--tx3)",marginTop:10,opacity:.6}}>{"All data stays on your device"}</div>
+      <div style={{fontSize:11,color:"var(--tx3)",marginTop:10,opacity:.5}}>{"All data stays on your device"}</div>
     </div>
 
     {/* ── footer ── */}
@@ -2841,7 +2835,8 @@ var CSS = [
 ".jfl-cta-hero{padding:18px 14px;border-radius:14px;box-shadow:0 2px 12px rgba(244,114,182,.2);animation:ctaGlow 3s ease-in-out infinite}",
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
-"@keyframes landFloat{0%{transform:translateY(-40px) rotate(0deg)}100%{transform:translateY(110vh) rotate(360deg)}}",
+"@keyframes emojiDrift{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}",
+"@keyframes emojiSine{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}",
 "@keyframes podiumPop{0%{opacity:0;transform:scale(.5) translateY(8px)}60%{opacity:1;transform:scale(1.1) translateY(-2px)}100%{transform:scale(1) translateY(0)}}",
 ".float-in{animation:floatIn .4s ease-out both}",
 ".podium-pop{animation:podiumPop .4s ease-out both}",

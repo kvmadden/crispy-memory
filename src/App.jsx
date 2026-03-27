@@ -199,11 +199,11 @@ return(
   {busy&&<div className="jfl-overlay"><div className="spin" style={{width:36,height:36,border:"3px solid var(--bdr)",borderTopColor:"var(--ac)",borderRadius:"50%"}}></div><div style={{color:"var(--tx1)",fontWeight:600,marginTop:16,fontSize:14}}>Resolving...</div><div style={{color:"var(--tx3)",fontSize:12,marginTop:8}}>Evaluating inputs and veto risk</div></div>}
 
   {/* ── About panel overlay (renders on all screens) ── */}
-  {aboutOpen&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:999,display:"flex",justifyContent:"flex-end"}}>
-    <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,.7)",backdropFilter:"blur(4px)"}} onClick={function(){setAboutOpen(false);}}></div>
-    <div className="slide-in" style={{position:"relative",width:"85%",maxWidth:340,background:"linear-gradient(180deg,#0D1117 0%,#131920 40%,#161B22 100%)",height:"100%",overflow:"auto",boxShadow:"-8px 0 40px rgba(0,0,0,.5)",borderLeft:"1px solid rgba(244,114,182,.08)"}}>
-      <button onClick={function(){setAboutOpen(false);}} style={{position:"absolute",top:16,right:16,background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.08)",borderRadius:20,width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"var(--tx3)",cursor:"pointer",zIndex:1}}>{"\u2715"}</button>
-      <div style={{padding:"40px 20px 24px",textAlign:"center",background:"radial-gradient(ellipse at 50% 0%,rgba(244,114,182,.08) 0%,transparent 70%)"}}>
+  {aboutOpen&&(function(){var _abt=gs2.theme||"auto";var _abDk=_abt==="dark"||(_abt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:999,display:"flex",justifyContent:"flex-end"}}>
+    <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:_abDk?"rgba(0,0,0,.7)":"rgba(0,0,0,.3)",backdropFilter:"blur(4px)"}} onClick={function(){setAboutOpen(false);}}></div>
+    <div className="slide-in" style={{position:"relative",width:"85%",maxWidth:340,background:_abDk?"linear-gradient(180deg,#0D1117 0%,#131920 40%,#161B22 100%)":"linear-gradient(180deg,#FAF0EC 0%,#F5E6E0 40%,#F0DDD6 100%)",height:"100%",overflow:"auto",boxShadow:_abDk?"-8px 0 40px rgba(0,0,0,.5)":"-8px 0 40px rgba(0,0,0,.12)",borderLeft:_abDk?"1px solid rgba(244,114,182,.08)":"1px solid rgba(200,150,130,.2)"}}>
+      <button onClick={function(){setAboutOpen(false);}} style={{position:"absolute",top:16,right:16,background:_abDk?"rgba(255,255,255,.05)":"rgba(0,0,0,.05)",border:_abDk?"1px solid rgba(255,255,255,.08)":"1px solid rgba(0,0,0,.08)",borderRadius:20,width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"var(--tx3)",cursor:"pointer",zIndex:1}}>{"\u2715"}</button>
+      <div style={{padding:"40px 20px 24px",textAlign:"center",background:_abDk?"radial-gradient(ellipse at 50% 0%,rgba(244,114,182,.08) 0%,transparent 70%)":"radial-gradient(ellipse at 50% 0%,rgba(201,26,94,.06) 0%,transparent 70%)"}}>
         <div style={{fontSize:32,fontWeight:800,letterSpacing:-1,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
         <div style={{fontSize:11,fontWeight:700,color:"var(--tx2)",marginTop:3,letterSpacing:2,textTransform:"uppercase"}}>Food Logic</div>
         <div style={{fontSize:12,color:"var(--tx2)",marginTop:10}}>by Madden Frameworks</div>
@@ -225,11 +225,11 @@ return(
           <div style={{fontSize:12,color:"var(--tx1)",fontWeight:600,marginTop:6}}>{"Now the algorithm handles the hard part."}</div>
         </div>
       </div>
-      <div style={{padding:"16px 20px",background:"rgba(255,255,255,.02)",borderTop:"1px solid rgba(255,255,255,.04)",borderBottom:"1px solid rgba(255,255,255,.04)",display:"flex",gap:0}}>
+      <div style={{padding:"16px 20px",background:_abDk?"rgba(255,255,255,.02)":"rgba(0,0,0,.03)",borderTop:_abDk?"1px solid rgba(255,255,255,.04)":"1px solid rgba(0,0,0,.06)",borderBottom:_abDk?"1px solid rgba(255,255,255,.04)":"1px solid rgba(0,0,0,.06)",display:"flex",gap:0}}>
         <div style={{flex:1,textAlign:"center"}}><div style={{fontSize:14,fontWeight:800,color:"var(--ac)"}}>Unlimited</div><div style={{fontSize:10,color:"var(--tx1)",marginTop:3}}>possibilities</div></div>
-        <div style={{width:1,background:"rgba(255,255,255,.08)"}}></div>
+        <div style={{width:1,background:_abDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.08)"}}></div>
         <div style={{flex:1,textAlign:"center"}}><div style={{fontSize:14,fontWeight:800,color:"#D4A574"}}>Endless</div><div style={{fontSize:10,color:"var(--tx1)",marginTop:3}}>opinions</div></div>
-        <div style={{width:1,background:"rgba(255,255,255,.08)"}}></div>
+        <div style={{width:1,background:_abDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.08)"}}></div>
         <div style={{flex:1,textAlign:"center"}}><div style={{fontSize:14,fontWeight:800,color:"var(--tx1)"}}>One</div><div style={{fontSize:10,color:"var(--tx1)",marginTop:3}}>clear choice</div></div>
       </div>
       <div style={{padding:"28px 20px 40px",textAlign:"center"}}>
@@ -238,7 +238,7 @@ return(
         <div style={{fontSize:9,color:"var(--tx3)",marginTop:14}}>{"\u00A9 2026 Madden Frameworks"}</div>
       </div>
     </div>
-  </div>}
+  </div>;})()}
 
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){

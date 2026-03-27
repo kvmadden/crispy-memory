@@ -288,10 +288,12 @@ return(
       <div style={Object.assign({},cardStyle,{borderRadius:20,padding:"16px 20px",width:"100%",maxWidth:340})}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
           {[{e:"👥",l:"Crew"},{e:"🎲",l:"Vibes"},{e:"🍽️",l:"Eat"}].map(function(step,si){
+            var glowDelay=si*1.2;
+            var lineDelay=(si-1)*1.2+0.6;
             return <React.Fragment key={si}>
-              {si>0&&<div style={{flex:1,height:2,background:"linear-gradient(90deg,var(--ac),var(--ac))",opacity:.25,margin:"0 -2px",marginBottom:16}}></div>}
+              {si>0&&<div style={{flex:1,height:2,background:"var(--bdr)",opacity:.15,margin:"0 -2px",marginBottom:16,borderRadius:1,animation:"lineGlow 3.6s ease-in-out "+lineDelay+"s infinite"}}></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>
-                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.04)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{step.e}</div>
+                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.04)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepGlow 3.6s ease-in-out "+glowDelay+"s infinite"}}>{step.e}</div>
                 <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase"}}>{step.l}</span>
               </div>
             </React.Fragment>;
@@ -2841,6 +2843,8 @@ var CSS = [
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",
 ".stagger-1{animation:fade .3s ease-out .05s both}.stagger-2{animation:fade .3s ease-out .12s both}.stagger-3{animation:fade .3s ease-out .19s both}",
 "@keyframes tada{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.96)}100%{transform:scale(1)}}",
+"@keyframes stepGlow{0%,100%{box-shadow:0 0 0 rgba(244,114,182,0);transform:scale(1)}15%,35%{box-shadow:0 0 20px rgba(244,114,182,.5),0 0 40px rgba(244,114,182,.2);transform:scale(1.12)}50%{box-shadow:0 0 0 rgba(244,114,182,0);transform:scale(1)}}",
+"@keyframes lineGlow{0%,100%{opacity:.15;background:var(--bdr)}15%,35%{opacity:1;background:var(--ac)}50%{opacity:.15;background:var(--bdr)}}",
 ".landingPulse{animation:ctaPulse 3s ease-in-out 2s infinite}",
 "@keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(244,114,182,.2)}50%{box-shadow:0 4px 30px rgba(244,114,182,.45)}}",
 ".slide-in{animation:slideIn .3s ease-out both}",

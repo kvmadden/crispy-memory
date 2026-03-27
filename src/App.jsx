@@ -244,8 +244,8 @@ return(
     var ROWS=useMemo(function(){var s=7919;var ri=0;return[[12,28,28,false],[34,24,24,true],[80,30,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);
-    var cardBg=isDk?"rgba(255,255,255,.03)":"rgba(255,255,255,.45)";
-    var cardBdr=isDk?"rgba(255,255,255,.08)":"rgba(255,255,255,.5)";
+    var cardBg=isDk?"rgba(255,255,255,.03)":"rgba(255,255,255,.3)";
+    var cardBdr=isDk?"rgba(255,255,255,.08)":"rgba(255,255,255,.35)";
     var emojiOp=isDk?.35:.2;
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
@@ -262,11 +262,11 @@ return(
     </div>
 
     {/* ── top bar ── */}
-    <div style={{padding:"10px 20px 0",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,position:"relative",zIndex:1}}>
+    <div style={{padding:"12px 20px 0",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,position:"relative",zIndex:1}}>
       <div style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>Madden Frameworks</div>
-      <div style={{display:"flex",alignItems:"center",gap:4}}>
-        <button onClick={cycleTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.5}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"\uD83C\uDF19":"\u2600\uFE0F";})()}</button>
-        <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.5}}>{"\u2139\uFE0F"}</button>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <button onClick={cycleTheme} style={{background:"none",border:"none",padding:8,cursor:"pointer",fontSize:22,opacity:.6,lineHeight:1}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"\uD83C\uDF19":"\u2600\uFE0F";})()}</button>
+        <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:8,cursor:"pointer",fontSize:22,opacity:.6,lineHeight:1}}>{"\u2139\uFE0F"}</button>
       </div>
     </div>
 
@@ -286,10 +286,10 @@ return(
 
       {/* how-it-works card */}
       <div style={{background:cardBg,backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderRadius:20,padding:"18px 24px",width:"100%",maxWidth:340,border:"1px solid "+cardBdr}}>
-        <div style={{display:"flex",flexDirection:"column",gap:10}}>
-          <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:18}}>{"👥"}</span><span style={{fontSize:13,color:"var(--tx2)",fontWeight:500}}>{"Pick who\u2019s eating"}</span></div>
-          <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:18}}>{"🎯"}</span><span style={{fontSize:13,color:"var(--tx2)",fontWeight:500}}>{"Answer a few vibes"}</span></div>
-          <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:18}}>{"✅"}</span><span style={{fontSize:13,color:"var(--tx2)",fontWeight:500}}>{"Get one clear answer"}</span></div>
+        <div style={{fontSize:15,color:"var(--tx2)",lineHeight:2,fontWeight:500,textAlign:"center"}}>
+          <span style={{color:"var(--ac)",fontWeight:700}}>{"Pick your crew"}</span>{" \u00B7 "}
+          <span style={{color:"var(--ac)",fontWeight:700}}>{"vibe check"}</span>{" \u00B7 "}
+          <span style={{color:"var(--ac)",fontWeight:700}}>{"eat"}</span>
         </div>
       </div>
 

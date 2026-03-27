@@ -267,7 +267,8 @@ return(
     </div>
 
     {/* ── main content ── */}
-    <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"0 28px",position:"relative",zIndex:1,textAlign:"center"}}>
+    <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"0 20px",position:"relative",zIndex:1,textAlign:"center"}}>
+      <div style={{background:"rgba(13,17,23,.75)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:24,padding:"36px 28px 32px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.06)"}}>
 
       {/* big logo */}
       <div style={{animation:"tada .8s ease-out both"}}>
@@ -281,12 +282,13 @@ return(
       </div>
 
       {/* subtitle */}
-      <div style={{fontSize:14,color:"var(--tx2)",marginTop:20,lineHeight:"1.7",maxWidth:280}}>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
+      <div style={{fontSize:14,color:"var(--tx2)",marginTop:20,lineHeight:"1.7",maxWidth:280,margin:"20px auto 0"}}>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
 
       {/* CTA */}
-      <button className="jfl-cta" style={{marginTop:36,padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:320,borderRadius:16}} onClick={function(){go("home");}}>
+      <button className="jfl-cta" style={{marginTop:32,padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",borderRadius:16}} onClick={function(){go("home");}}>
         <span>{"What should we eat? \u2192"}</span>
       </button>
+      </div>
     </div>
 
     {/* ── footer ── */}

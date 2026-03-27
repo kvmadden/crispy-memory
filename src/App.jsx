@@ -239,7 +239,7 @@ return(
   </div>}
 
 {/* HOME */}
-  {vw==="home"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100vh"}}>
+  {vw==="home"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     {/* ── Branded header ── */}
     <div style={{padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
       <div>

@@ -241,7 +241,7 @@ return(
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
     var POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[10,28,20,false],[42,24,17,true],[78,30,23,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:(j*1.3)+(s%10)/10,sinDur:(s=(s*16807)%2147483647)%3+4});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
+    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[10,28,28,false],[42,24,24,true],[78,30,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:(j*1.3)+(s%10)/10,sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
@@ -2836,9 +2836,9 @@ var CSS = [
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
 "@keyframes emojiScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}",
-"@keyframes emojiSine0{0%,100%{transform:translateY(15px)}50%{transform:translateY(-35px)}}",
-"@keyframes emojiSine1{0%,100%{transform:translateY(20px)}50%{transform:translateY(-40px)}}",
-"@keyframes emojiSine2{0%,100%{transform:translateY(10px)}50%{transform:translateY(-25px)}}",
+"@keyframes emojiSine0{0%,100%{transform:translateY(22px)}50%{transform:translateY(-44px)}}",
+"@keyframes emojiSine1{0%,100%{transform:translateY(28px)}50%{transform:translateY(-50px)}}",
+"@keyframes emojiSine2{0%,100%{transform:translateY(16px)}50%{transform:translateY(-36px)}}",
 "@keyframes podiumPop{0%{opacity:0;transform:scale(.5) translateY(8px)}60%{opacity:1;transform:scale(1.1) translateY(-2px)}100%{transform:scale(1) translateY(0)}}",
 ".float-in{animation:floatIn .4s ease-out both}",
 ".podium-pop{animation:podiumPop .4s ease-out both}",

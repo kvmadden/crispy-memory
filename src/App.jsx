@@ -239,33 +239,69 @@ return(
   </div>}
 
 {/* ═══ LANDING ═══ */}
-  {vw==="landing"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden"}}>
-    <div style={{padding:"8px 16px 0",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
-      <div style={{fontSize:11,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>Madden Frameworks</div>
+  {vw==="landing"&&(function(){
+    var LAND_EMOJI=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳"];
+    var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
+    return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
+
+    {/* ── floating emoji background ── */}
+    <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",opacity:.12}}>
+      {LAND_EMOJI.map(function(e,i){
+        var sz=18+Math.random()*22;
+        var left=Math.random()*92+"%";
+        var dur=10+Math.random()*14;
+        var delay=-Math.random()*20;
+        return <span key={i} style={{position:"absolute",fontSize:sz,left:left,top:"-40px",animation:"landFloat "+dur+"s linear "+delay+"s infinite"}}>{e}</span>;
+      })}
+    </div>
+
+    {/* ── top bar ── */}
+    <div style={{padding:"10px 20px 0",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,position:"relative",zIndex:1}}>
+      <div style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>Madden Frameworks</div>
       <div style={{display:"flex",alignItems:"center",gap:4}}>
         <button onClick={cycleTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.5}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"\uD83C\uDF19":"\u2600\uFE0F";})()}</button>
         <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.5}}>{"\u2139\uFE0F"}</button>
       </div>
     </div>
-    <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",padding:"0 28px"}}>
-      <div style={{fontSize:48,fontWeight:800,letterSpacing:-2,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
-      <div style={{fontSize:11,fontWeight:900,color:"var(--tx2)",marginTop:6,letterSpacing:2.5,textTransform:"uppercase"}}>Food Logic</div>
-      <div style={{fontSize:16,color:"var(--tx2)",marginTop:20,lineHeight:"1.6"}}>{"The family food decision engine."}<br/>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
 
-      <div style={{marginTop:36,display:"flex",flexDirection:"column",gap:8}}>
-        <div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:20}}>{"🍕"}</span><span style={{fontSize:14,color:"var(--tx1)",fontWeight:600}}>{rests.length+" restaurants scored and ranked"}</span></div>
-        <div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:20}}>{"👨‍👩‍👧‍👦"}</span><span style={{fontSize:14,color:"var(--tx1)",fontWeight:600}}>{ppl.length+" taste profiles loaded"}</span></div>
-        <div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:20}}>{"🧠"}</span><span style={{fontSize:14,color:"var(--tx1)",fontWeight:600}}>{"Mood + history + veto logic"}</span></div>
+    {/* ── main content ── */}
+    <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"0 28px",position:"relative",zIndex:1,textAlign:"center"}}>
+
+      {/* big logo */}
+      <div style={{animation:"tada .8s ease-out both"}}>
+        <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
+        <div style={{fontSize:12,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:3,textTransform:"uppercase"}}>Food Logic</div>
       </div>
 
-      <button className="jfl-cta" style={{marginTop:40,padding:18,fontSize:17,fontWeight:700}} onClick={function(){go("home");}}>{"What should we eat?"}</button>
-      <div style={{fontSize:12,color:"var(--tx3)",textAlign:"center",marginTop:12}}>{"All data stays on your device."}</div>
+      {/* rotating tagline */}
+      <div style={{marginTop:24,height:24,position:"relative",overflow:"hidden",width:"100%"}}>
+        <div key={flavIdx} className="fade" style={{fontSize:16,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.8}}>{LAND_LINES[flavIdx%LAND_LINES.length]}</div>
+      </div>
+
+      {/* glass stats card */}
+      <div style={{marginTop:28,width:"100%",maxWidth:320,background:"rgba(255,255,255,.04)",backdropFilter:"blur(12px)",border:"1px solid rgba(244,114,182,.15)",borderRadius:20,padding:"20px 24px",boxShadow:"0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05)"}}>
+        <div style={{display:"flex",justifyContent:"space-around",textAlign:"center"}}>
+          <div><div style={{fontSize:28,fontWeight:800,color:"var(--ac)"}}>{rests.length}</div><div style={{fontSize:10,fontWeight:600,color:"var(--tx2)",marginTop:2}}>Restaurants</div></div>
+          <div style={{width:1,background:"rgba(244,114,182,.15)"}}></div>
+          <div><div style={{fontSize:28,fontWeight:800,color:"var(--tx1)"}}>{ppl.length}</div><div style={{fontSize:10,fontWeight:600,color:"var(--tx2)",marginTop:2}}>Taste Profiles</div></div>
+          <div style={{width:1,background:"rgba(244,114,182,.15)"}}></div>
+          <div><div style={{fontSize:28,fontWeight:800,color:"#D4A574"}}>{hist.length}</div><div style={{fontSize:10,fontWeight:600,color:"var(--tx2)",marginTop:2}}>Past Orders</div></div>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <button className="jfl-cta" style={{marginTop:32,padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:320,borderRadius:16,position:"relative",overflow:"hidden"}} onClick={function(){go("home");}}>
+        <span style={{position:"relative",zIndex:1}}>{"What should we eat? \u2192"}</span>
+      </button>
+      <div style={{fontSize:11,color:"var(--tx3)",marginTop:10,opacity:.6}}>{"All data stays on your device"}</div>
     </div>
-    <div style={{padding:"16px 28px 28px",textAlign:"center",flexShrink:0}}>
-      <div style={{fontSize:9,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>{"\u00A9 2026 Madden Frameworks"}</div>
-      <div style={{fontSize:11,color:"var(--tx3)",marginTop:4,fontStyle:"italic"}}>{"Smart systems. Better judgment."}</div>
+
+    {/* ── footer ── */}
+    <div style={{padding:"12px 28px 24px",textAlign:"center",flexShrink:0,position:"relative",zIndex:1}}>
+      <div style={{fontSize:9,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase",opacity:.5}}>{"\u00A9 2026 Madden Frameworks"}</div>
+      <div style={{fontSize:11,color:"var(--tx3)",marginTop:3,fontStyle:"italic",opacity:.4}}>{"Smart systems. Better judgment."}</div>
     </div>
-  </div>}
+  </div>;})()}
 
 {/* HOME */}
   {vw==="home"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
@@ -2805,6 +2841,7 @@ var CSS = [
 ".jfl-cta-hero{padding:18px 14px;border-radius:14px;box-shadow:0 2px 12px rgba(244,114,182,.2);animation:ctaGlow 3s ease-in-out infinite}",
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
+"@keyframes landFloat{0%{transform:translateY(-40px) rotate(0deg)}100%{transform:translateY(110vh) rotate(360deg)}}",
 "@keyframes podiumPop{0%{opacity:0;transform:scale(.5) translateY(8px)}60%{opacity:1;transform:scale(1.1) translateY(-2px)}100%{transform:scale(1) translateY(0)}}",
 ".float-in{animation:floatIn .4s ease-out both}",
 ".podium-pop{animation:podiumPop .4s ease-out both}",

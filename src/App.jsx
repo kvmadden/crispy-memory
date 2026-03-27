@@ -150,7 +150,7 @@ var _4=useState("landing");var vw=_4[0],go=_4[1];
 var _aboutOpen=useState(false);var aboutOpen=_aboutOpen[0],setAboutOpen=_aboutOpen[1];
 var _flav=useState(0);var flavIdx=_flav[0],setFlavIdx=_flav[1];
 var HERO_FLAVORS=["67 restaurants. 1 answer.","Let the algorithm decide.","No more scrolling DoorDash.","Your taste profile has opinions."];
-useEffect(function(){var t=setInterval(function(){setFlavIdx(function(i){return(i+1)%4;});},3500);return function(){clearInterval(t);};},[]);
+useEffect(function(){var t=setInterval(function(){setFlavIdx(function(i){return(i+1)%4;});},6000);return function(){clearInterval(t);};},[]);
 var _5=useState(null);var results=_5[0],setRes=_5[1];
 var _6=useState(0);var rrc=_6[0],setRrc=_6[1];
 var _6b=useState(0);var resIdx=_6b[0],setResIdx=_6b[1];
@@ -240,20 +240,15 @@ return(
 
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
-    var ROW1=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞"];
-    var ROW2=["🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳"];
-    var ROW3=["🥙","🍟","🥓","🧁","🍰","🥟","🫔","🍤","🥐","🍿","🥙","🍟","🥓","🧁","🍰","🥟","🫔","🍤","🥐","🍿"];
+    var EMOJIS=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
+    var SCATTER=useMemo(function(){for(var a=[],s=7919,i=0;i<18;i++){s=(s*16807+i)%2147483647;var e=EMOJIS[s%EMOJIS.length];s=(s*16807)%2147483647;var top=(s%80)+5;s=(s*16807)%2147483647;var sz=(s%20)+20;s=(s*16807)%2147483647;var dur=(s%10)+12;s=(s*16807)%2147483647;var sinDur=(s%5)+3;s=(s*16807)%2147483647;var sinAmp=(s%25)+8;s=(s*16807)%2147483647;var delay=-(s%15);s=(s*16807)%2147483647;var op=(s%12)+8;s=(s*16807)%2147483647;var dir=s%2===0?"normal":"reverse";a.push({e:e,top:top,sz:sz,dur:dur,sinDur:sinDur,sinAmp:sinAmp,delay:delay,op:op,dir:dir});}return a;},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
-    {/* ── sine-wave emoji rows ── */}
+    {/* ── scattered drifting emojis ── */}
     <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
-      {[ROW1,ROW2,ROW3].map(function(row,ri){
-        return <div key={ri} style={{position:"absolute",top:(25+ri*22)+"%",left:0,whiteSpace:"nowrap",animation:"emojiDrift "+(15+ri*2)+"s linear infinite",animationDirection:ri%2===0?"normal":"reverse",opacity:.18}}>
-          <span style={{display:"inline-block",animation:"emojiSine "+(4+ri)+"s ease-in-out infinite"}}>
-            {row.map(function(e,ei){return <span key={ei} style={{display:"inline-block",fontSize:28+ri*4,padding:"0 14px"}}>{e}</span>;})}
-          </span>
-        </div>;
+      {SCATTER.map(function(s,i){
+        return <span key={i} style={{position:"absolute",top:s.top+"%",fontSize:s.sz,opacity:s.op/100,animation:"emojiDrift "+s.dur+"s linear "+s.delay+"s infinite, emojiSine"+i%3+" "+s.sinDur+"s ease-in-out infinite",animationDirection:s.dir+", normal",left:0,whiteSpace:"nowrap"}}>{s.e}</span>;
       })}
     </div>
 
@@ -2835,8 +2830,10 @@ var CSS = [
 ".jfl-cta-hero{padding:18px 14px;border-radius:14px;box-shadow:0 2px 12px rgba(244,114,182,.2);animation:ctaGlow 3s ease-in-out infinite}",
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
-"@keyframes emojiDrift{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}",
-"@keyframes emojiSine{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}",
+"@keyframes emojiDrift{0%{transform:translateX(110vw)}100%{transform:translateX(-60px)}}",
+"@keyframes emojiSine0{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}",
+"@keyframes emojiSine1{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}",
+"@keyframes emojiSine2{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}",
 "@keyframes podiumPop{0%{opacity:0;transform:scale(.5) translateY(8px)}60%{opacity:1;transform:scale(1.1) translateY(-2px)}100%{transform:scale(1) translateY(0)}}",
 ".float-in{animation:floatIn .4s ease-out both}",
 ".podium-pop{animation:podiumPop .4s ease-out both}",

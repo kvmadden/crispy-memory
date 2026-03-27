@@ -146,7 +146,7 @@ var mergedP=useMemo(function(){var base=saved&&saved.p?saved.p:PEOPLE;return bas
 var _2=useState(mergedP);var ppl=_2[0],setPpl=_2[1];
 var _gs=useState(saved&&saved.gs&&typeof saved.gs==="object"&&!Array.isArray(saved.gs)?Object.assign({},GLOBAL_DEFAULTS,saved.gs):Object.assign({},GLOBAL_DEFAULTS));var gs2=_gs[0],setGs2=_gs[1];
 var _3=useState(saved&&Array.isArray(saved.h)?saved.h:[]);var hist=_3[0],setH=_3[1];
-var _4=useState("home");var vw=_4[0],go=_4[1];
+var _4=useState("landing");var vw=_4[0],go=_4[1];
 var _aboutOpen=useState(false);var aboutOpen=_aboutOpen[0],setAboutOpen=_aboutOpen[1];
 var _flav=useState(0);var flavIdx=_flav[0],setFlavIdx=_flav[1];
 var HERO_FLAVORS=["67 restaurants. 1 answer.","Let the algorithm decide.","No more scrolling DoorDash.","Your taste profile has opinions."];
@@ -235,6 +235,35 @@ return(
         <div style={{fontSize:11,color:"var(--tx2)",marginTop:5,fontStyle:"italic"}}>Smart systems. Better judgment.</div>
         <div style={{fontSize:9,color:"var(--tx3)",marginTop:14}}>{"\u00A9 2026 Madden Frameworks"}</div>
       </div>
+    </div>
+  </div>}
+
+{/* ═══ LANDING ═══ */}
+  {vw==="landing"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden"}}>
+    <div style={{padding:"8px 16px 0",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+      <div style={{fontSize:11,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>Madden Frameworks</div>
+      <div style={{display:"flex",alignItems:"center",gap:4}}>
+        <button onClick={cycleTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.5}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"\uD83C\uDF19":"\u2600\uFE0F";})()}</button>
+        <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.5}}>{"\u2139\uFE0F"}</button>
+      </div>
+    </div>
+    <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",padding:"0 28px"}}>
+      <div style={{fontSize:48,fontWeight:800,letterSpacing:-2,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
+      <div style={{fontSize:11,fontWeight:900,color:"var(--tx2)",marginTop:6,letterSpacing:2.5,textTransform:"uppercase"}}>Food Logic</div>
+      <div style={{fontSize:16,color:"var(--tx2)",marginTop:20,lineHeight:"1.6"}}>{"The family food decision engine."}<br/>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
+
+      <div style={{marginTop:36,display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:20}}>{"🍕"}</span><span style={{fontSize:14,color:"var(--tx1)",fontWeight:600}}>{rests.length+" restaurants scored and ranked"}</span></div>
+        <div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:20}}>{"👨‍👩‍👧‍👦"}</span><span style={{fontSize:14,color:"var(--tx1)",fontWeight:600}}>{ppl.length+" taste profiles loaded"}</span></div>
+        <div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:20}}>{"🧠"}</span><span style={{fontSize:14,color:"var(--tx1)",fontWeight:600}}>{"Mood + history + veto logic"}</span></div>
+      </div>
+
+      <button className="jfl-cta" style={{marginTop:40,padding:18,fontSize:17,fontWeight:700}} onClick={function(){go("home");}}>{"What should we eat?"}</button>
+      <div style={{fontSize:12,color:"var(--tx3)",textAlign:"center",marginTop:12}}>{"All data stays on your device."}</div>
+    </div>
+    <div style={{padding:"16px 28px 28px",textAlign:"center",flexShrink:0}}>
+      <div style={{fontSize:9,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>{"\u00A9 2026 Madden Frameworks"}</div>
+      <div style={{fontSize:11,color:"var(--tx3)",marginTop:4,fontStyle:"italic"}}>{"Smart systems. Better judgment."}</div>
     </div>
   </div>}
 

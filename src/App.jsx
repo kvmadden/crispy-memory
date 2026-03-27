@@ -382,7 +382,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
       {(function(){var gCt=function(r){if(moFilter==="90d")return typeof r.to90==="number"?r.to90:(r.lo<90?r.to:0);if(moFilter==="365d")return typeof r.to365==="number"?r.to365:(r.lo<365?r.to:0);return r.to;};var sorted=rests.slice().filter(function(r){return gCt(r)>0;}).sort(function(a,b){return gCt(b)-gCt(a);});var top=sorted.slice(0,3);
         /* Compute date range from most recent ld */
         var latestLd=null;rests.forEach(function(r){if(r.ld&&(!latestLd||r.ld>latestLd))latestLd=r.ld;});
-        var rangeText="";var rangeLabel="";if(latestLd){var ld=new Date(latestLd+"T12:00:00");var mons=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];var fmtNice=function(d){return mons[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();};if(moFilter==="90d"){var from=new Date(ld.getTime()-90*86400000);rangeLabel="90 days";rangeText=fmtNice(from)+" -- "+fmtNice(ld);}else if(moFilter==="365d"){var from=new Date(ld.getTime()-365*86400000);rangeLabel="365 days";rangeText=fmtNice(from)+" -- "+fmtNice(ld);}else{var earliest=null;rests.forEach(function(r){var d=r.fd||r.ld;if(d&&r.to>0&&(!earliest||d<earliest))earliest=d;});if(earliest){var ef=new Date(earliest+"T12:00:00");var diffMs=ld.getTime()-ef.getTime();var diffDays=Math.floor(diffMs/86400000);var yy=Math.floor(diffDays/365);var rem=diffDays%365;var mm=Math.floor(rem/30);var dd=rem%30;var parts=[];if(yy>0)parts.push(yy+(yy===1?" year":" years"));if(mm>0)parts.push(mm+(mm===1?" month":" months"));if(dd>0)parts.push(dd+(dd===1?" day":" days"));rangeLabel=parts.join(", ")||"0 days";rangeText=fmtNice(ef)+" -- "+fmtNice(ld);}}}
+        var rangeText="";var rangeLabel="";if(latestLd){var ld=new Date(latestLd+"T12:00:00");var mons=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];var fmtNice=function(d){return mons[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();};if(moFilter==="90d"){var from=new Date(ld.getTime()-90*86400000);rangeLabel="90 days";rangeText=fmtNice(from)+" \u2013 "+fmtNice(ld);}else if(moFilter==="365d"){var from=new Date(ld.getTime()-365*86400000);rangeLabel="365 days";rangeText=fmtNice(from)+" \u2013 "+fmtNice(ld);}else{var earliest=null;rests.forEach(function(r){var d=r.fd||r.ld;if(d&&r.to>0&&(!earliest||d<earliest))earliest=d;});if(earliest){var ef=new Date(earliest+"T12:00:00");var diffMs=ld.getTime()-ef.getTime();var diffDays=Math.floor(diffMs/86400000);var yy=Math.floor(diffDays/365);var rem=diffDays%365;var mm=Math.floor(rem/30);var dd=rem%30;var parts=[];if(yy>0)parts.push(yy+(yy===1?" year":" years"));if(mm>0)parts.push(mm+(mm===1?" month":" months"));if(dd>0)parts.push(dd+(dd===1?" day":" days"));rangeLabel=parts.join(", ")||"0 days";rangeText=fmtNice(ef)+" \u2013 "+fmtNice(ld);}}}
         return <div className="jfl-card" style={{padding:10}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
             <div className="jfl-label" style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:14,height:1,background:"#D4A574",opacity:.5}}></div>Most ordered</div>
@@ -815,7 +815,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         {/* Filter bar */}
         <div style={{display:"flex",gap:6,marginBottom:10,paddingBottom:10,borderBottom:"1px solid var(--bdr)"}}>
           {[{id:"all",l:"All"},{id:"favs",l:"Favorites"},{id:"active",l:"Active"}].map(function(f){return <button key={f.id} onClick={function(){setSel(function(s){return Object.assign({},s,{hf:f.id});});}} style={{padding:"5px 14px",borderRadius:8,border:"1px solid "+(sel.hf===f.id?"var(--ac)":"var(--bdr)"),background:sel.hf===f.id?"rgba(244,114,182,.15)":"var(--bg1)",color:sel.hf===f.id?"var(--ac)":"var(--tx2)",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{f.l}</button>;})}
-          <button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"insights"});});}} style={{padding:"5px 14px",borderRadius:8,border:"1px solid "+(sel.hf==="insights"?"#D4A574":"rgba(212,165,116,.4)"),background:sel.hf==="insights"?"linear-gradient(135deg,rgba(212,165,116,.25),rgba(251,191,36,.15))":"linear-gradient(135deg,rgba(212,165,116,.1),rgba(251,191,36,.05))",color:sel.hf==="insights"?"#D4A574":"#C4956A",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",letterSpacing:.3}}>{"\u2728 Insights"}</button>
+          <button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"insights"});});}} style={{padding:"5px 14px",borderRadius:8,border:"1px solid "+(sel.hf==="insights"?"#D4A574":"rgba(212,165,116,.5)"),background:sel.hf==="insights"?"linear-gradient(135deg,rgba(212,165,116,.3),rgba(251,191,36,.2))":"linear-gradient(135deg,rgba(212,165,116,.15),rgba(251,191,36,.1))",color:sel.hf==="insights"?"#B8860B":"#A07828",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",letterSpacing:.3,boxShadow:sel.hf!=="insights"?"0 1px 4px rgba(212,165,116,.15)":"none"}}>{"\u2728 Insights"}</button>
         </div>
 
         {/* ═══ INSIGHTS VIEW ═══ */}
@@ -961,7 +961,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
             var noDate=list.filter(function(r){return!r.ld&&!used[r.id];});
             if(noDate.length>0)groups.push({key:"never",label:"No Order Date",emoji:"\u2753",items:noDate});
           }else{
-            var alpha=[{key:"af",label:"A -- F"},{key:"gl",label:"G -- L"},{key:"mr",label:"M -- R"},{key:"sz",label:"S -- Z"}];
+            var alpha=[{key:"af",label:"A \u2013 F"},{key:"gl",label:"G \u2013 L"},{key:"mr",label:"M \u2013 R"},{key:"sz",label:"S \u2013 Z"}];
             alpha.forEach(function(b){var lo=b.key[0].toUpperCase(),hi=b.key[1].toUpperCase();var items=list.filter(function(r){var c=(r.name||"")[0].toUpperCase();return c>=lo&&c<=hi;});if(items.length>0)groups.push({key:b.key,label:b.label,emoji:null,items:items});});
           }
           return <div style={{display:"flex",flexDirection:"column",gap:6}}>
@@ -2870,7 +2870,7 @@ var CSS = [
 "@keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(244,114,182,.2)}50%{box-shadow:0 4px 30px rgba(244,114,182,.45)}}",
 ".slide-in{animation:slideIn .3s ease-out both}",
 ".tada{animation:tada .5s ease-out both}",
-"button:active{transform:scale(.97)}","div::-webkit-scrollbar{display:none}",
+"button{touch-action:manipulation}","button:active{transform:scale(.97)}","div::-webkit-scrollbar{display:none}",
 "input[type='range']{accent-color:var(--ac);width:100%}",
 ".jfl-overlay{position:fixed;inset:0;background:rgba(13,17,23,.95);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center}",
 ".jfl-cta{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#F472B6,#C4956A);color:white;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;font-size:15px;font-weight:600;transition:transform .15s;text-shadow:0 1px 3px rgba(0,0,0,.25)}",

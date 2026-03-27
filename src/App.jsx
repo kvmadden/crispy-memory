@@ -126,7 +126,7 @@ return null;
 function TopBar(p){var isDark=p.theme==="dark"||(p.theme==="auto"&&typeof window!=="undefined"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);var themeIcon=isDark?"🌙":"☀️";return <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)"}}><div style={{display:"flex",alignItems:"center",gap:6,zIndex:1}}>{p.back&&<button onClick={p.back} style={{background:"none",border:"none",color:"var(--tx2)",fontSize:18,cursor:"pointer",padding:"2px 4px 2px 0",fontFamily:"inherit"}}>←</button>}<div><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div></div><div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px"}}><div style={{fontSize:14,fontWeight:700,color:"var(--tx1)"}}>{p.title||""}</div>{p.sub&&<div style={{fontSize:12,color:"var(--tx3)",marginTop:1}}>{p.sub}</div>}</div><div style={{display:"flex",alignItems:"center",gap:8,zIndex:1}}>{p.onTheme&&<button onClick={p.onTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.7}}>{themeIcon}</button>}{p.onInfo?<button onClick={p.onInfo} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))"}}>{"ℹ️"}</button>:<div style={{width:20}}></div>}</div></div>;}
 
 function BottomNav(p){var go=p.go,active=p.active,setSel=p.setSel;
-var tabs=[{id:"home",l:"Home",e:"🏠"},{id:"decide",l:"Decide",e:"🎯"},{id:"history",l:"History",e:"📋"},{id:"settings",l:"Settings",e:"⚙️"}];
+var tabs=[{id:"dashboard",l:"Dashboard",e:"📊"},{id:"decide",l:"Decide",e:"🎯"},{id:"history",l:"History",e:"📋"},{id:"settings",l:"Settings",e:"⚙️"}];
 return <div style={{display:"flex",alignItems:"center",background:"var(--bg2)",borderTop:"1px solid var(--bdr)",padding:"10px 0 14px",flexShrink:0}}>
 {tabs.map(function(t,i){var on=t.id==="decide"?false:active===t.id;return <div key={t.id} style={{display:"contents"}}>{i>0&&<div style={{width:1,height:24,background:"var(--bdr)",opacity:.4,flexShrink:0}}></div>}<button onClick={function(){if(t.id==="decide"){go("step1");}else{go(t.id);}}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
 <span style={{fontSize:22}}>{t.e}</span>
@@ -178,7 +178,7 @@ var togP=useCallback(function(id){setSel(function(s){var has=s.sp.indexOf(id)>=0
 var resolve=useCallback(function(){setBusy(true);setTimeout(function(){var s=selRef.current;setRes(top3(scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);},[rests,ppl,hist]);
 var reroll=useCallback(function(ch){var s=selRef.current;var sc=scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?0.2:0.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
 var deadlock=useCallback(function(){var s=selRef.current;var ds=Object.assign({},s,{sp:["kevin","jenna"],fam:"safe",mood:"safe-default"});var sc=scoreAll(rests,ds,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2);var vwt={low:0,moderate:1,high:2};sc.sort(function(a,b){if(vwt[a.vetoRisk]!==vwt[b.vetoRisk])return vwt[a.vetoRisk]-vwt[b.vetoRisk];return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
-var pick=useCallback(function(res){var s=selRef.current;setH(function(h){return[{id:Date.now().toString(),rid:res.rid,name:res.r.name,emoji:res.r.emoji,date:new Date().toISOString(),people:s.sp,mood:s.mood,order:res.order,rating:null}].concat(h);});setR(function(rs){return rs.map(function(re){return re.id===res.rid?Object.assign({},re,{to:re.to+1,lo:0,streak:re.streak+1}):re;});});go("home");setRes(null);},[]);
+var pick=useCallback(function(res){var s=selRef.current;setH(function(h){return[{id:Date.now().toString(),rid:res.rid,name:res.r.name,emoji:res.r.emoji,date:new Date().toISOString(),people:s.sp,mood:s.mood,order:res.order,rating:null}].concat(h);});setR(function(rs){return rs.map(function(re){return re.id===res.rid?Object.assign({},re,{to:re.to+1,lo:0,streak:re.streak+1}):re;});});go("dashboard");setRes(null);},[]);
 var burn=useCallback(function(id){setR(function(rs){return rs.map(function(r){return r.id===id?Object.assign({},r,{bo:true}):r;});});reroll(false);},[reroll]);
 var daysSinceRefresh=Math.floor((Date.now()-new Date(dataRefresh).getTime())/(1000*60*60*24));
 var needsRefresh=daysSinceRefresh>=90;
@@ -300,7 +300,7 @@ return(
       </div>
 
       {/* CTA */}
-      <button className="jfl-cta landingPulse" style={{padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:340,borderRadius:16}} onClick={function(){go("home");}}>
+      <button className="jfl-cta landingPulse" style={{padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:340,borderRadius:16}} onClick={function(){go("dashboard");}}>
         <span>{"What should we eat? \u2192"}</span>
       </button>
     </div>
@@ -313,7 +313,7 @@ return(
   </div>;})()}
 
 {/* HOME */}
-  {vw==="home"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
+  {vw==="dashboard"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     {/* ── Branded header ── */}
     <div style={{padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
       <div>
@@ -413,11 +413,11 @@ return(
 
     </div>
 
-    <BottomNav go={go} active="home" setSel={setSel}/>
+    <BottomNav go={go} active="dashboard" setSel={setSel}/>
   </div>}
     {/* ═══ STEP 1 ═══ */}
   {vw==="step1"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
-    <TopBar title="Who's eating?" back={function(){go("home");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
+    <TopBar title="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
       <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
@@ -454,7 +454,7 @@ return(
 
   {/* ═══ QUICKPICK — who's eating → straight to results ═══ */}
   {vw==="quickpick"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
-    <TopBar title={"Quick pick: "+mctx.label} sub="Who's eating?" back={function(){go("home");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
+    <TopBar title={"Quick pick: "+mctx.label} sub="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}}/>
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
       <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
@@ -495,7 +495,7 @@ return(
             <button className="jfl-btn" style={{padding:14,fontSize:14}} onClick={function(){go("step1");}}>
               <span style={{fontWeight:600,color:"var(--tx2)"}}>Edit group first</span>
             </button>
-            <button style={{background:"none",border:"none",color:"var(--tx3)",fontSize:12,cursor:"pointer",fontFamily:"inherit",padding:"6px 0",marginTop:4}} onClick={function(){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});go("home");}}>Back to home</button>
+            <button style={{background:"none",border:"none",color:"var(--tx3)",fontSize:12,cursor:"pointer",fontFamily:"inherit",padding:"6px 0",marginTop:4}} onClick={function(){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});go("dashboard");}}>Back to dashboard</button>
           </div>
         </div>
       </div>
@@ -530,7 +530,7 @@ return(
           {(function(){var isc=isSolo1?"solo":isDuo1?"couple":"family";var iac=getAc(rest,isc);return iac?<div style={{fontSize:13,color:"var(--tx2)",marginTop:12}}>{"~$"+iac+" est. total \u00B7 incl. fees + tip"}</div>:null;})()}
           <div style={{display:"flex",flexDirection:"column",gap:12,marginTop:36,width:"100%"}}>
             {getDDLink(rest.id)&&<a href={getDDLink(rest.id)} target="_blank" rel="noopener noreferrer" className="jfl-cta" style={{padding:18,textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,fontWeight:700}}>Open in DoorDash</a>}
-            <button className="jfl-btn" style={{padding:14,fontSize:14}} onClick={function(){setSel(function(s){return Object.assign({},s,{ob:null,obAns:undefined});});go("home");}}>Back to home</button>
+            <button className="jfl-btn" style={{padding:14,fontSize:14}} onClick={function(){setSel(function(s){return Object.assign({},s,{ob:null,obAns:undefined});});go("dashboard");}}>Back to dashboard</button>
           </div>
         </div>}
         {accepted===false&&<div style={{textAlign:"center",width:"100%",maxWidth:340}} className="fade">
@@ -538,7 +538,7 @@ return(
           <div style={{fontSize:26,fontWeight:700,color:"var(--tx1)",marginTop:20}}>{rule.no}</div>
           <div style={{marginTop:40,width:"100%"}}>
             <button className="jfl-cta" style={{padding:20,fontSize:17}} onClick={function(){setSel(function(s){return Object.assign({},s,{ob:null,obAns:undefined});});go("step2");}}>Continue to mood check</button>
-            <button style={{background:"none",border:"none",color:"var(--tx3)",fontSize:12,cursor:"pointer",fontFamily:"inherit",padding:"6px 0",marginTop:10}} onClick={function(){setSel(function(s){return Object.assign({},s,{ob:null,obAns:undefined});});go("home");}}>Back to home</button>
+            <button style={{background:"none",border:"none",color:"var(--tx3)",fontSize:12,cursor:"pointer",fontFamily:"inherit",padding:"6px 0",marginTop:10}} onClick={function(){setSel(function(s){return Object.assign({},s,{ob:null,obAns:undefined});});go("dashboard");}}>Back to dashboard</button>
           </div>
         </div>}
       </div>
@@ -564,7 +564,7 @@ return(
             <div style={{fontSize:14,color:"var(--tx2)",marginTop:10,textAlign:"center"}}>{"Every restaurant in rotation is either closed or burned. There\u2019s nothing left to show."}</div>
             <div style={{width:"100%",display:"flex",flexDirection:"column",gap:10,marginTop:28}}>
               <button className="jfl-cta" style={{padding:14}} onClick={function(){setR(function(rs){return rs.map(function(r){return r.bo?Object.assign({},r,{bo:false}):r;});});setResIdx(0);reroll(false);}}>Clear all vetoes and retry</button>
-              <button className="jfl-btn" style={{padding:12,fontSize:12,color:"var(--tx2)"}} onClick={function(){go("home");}}>Back to home</button>
+              <button className="jfl-btn" style={{padding:12,fontSize:12,color:"var(--tx2)"}} onClick={function(){go("dashboard");}}>Back to dashboard</button>
             </div>
           </div>
         </div>;
@@ -575,7 +575,7 @@ return(
           <div style={{fontSize:22,fontWeight:700,color:"var(--tx1)",marginTop:16,textAlign:"center"}}>{rSolo?"You're impossible tonight.":rDuo?"You two are impossible tonight.":"You all are impossible tonight."}</div>
           <div style={{fontSize:14,color:"var(--tx2)",marginTop:10,textAlign:"center",lineHeight:"1.5"}}>{rSolo?"You rejected every single option. Impressive, honestly.":"Every single option got rejected. Impressive, honestly."}</div>
           <div style={{width:"100%",marginTop:32}}>
-            <button className="jfl-cta" style={{padding:14,width:"100%"}} onClick={function(){go("home");}}>Start over</button>
+            <button className="jfl-cta" style={{padding:14,width:"100%"}} onClick={function(){go("dashboard");}}>Start over</button>
           </div>
         </div>
       </div>;
@@ -674,11 +674,11 @@ return(
         {!whyOpen&&<div style={{display:"flex",gap:6,marginTop:8}}>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:600,background:"rgba(244,114,182,.06)",border:"1px solid rgba(244,114,182,.15)",borderRadius:10,color:"var(--ac)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setWhyOpen(true);}}>{"Why this?"}</button>
           <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{"Not feeling this one"}</button>
-          <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("home");}}>{"Start over"}</button>
+          <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>}
         {whyOpen&&<div style={{display:"flex",gap:6,marginTop:8}}>
           <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{"Not feeling this one"}</button>
-          <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("home");}}>{"Start over"}</button>
+          <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>}
       </div>}
 
@@ -740,7 +740,7 @@ return(
         <div style={{display:"flex",gap:6,marginTop:10}}>
           <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){setResIdx(resIdx-1);}}>{resIdx===1?"Let me see option 1 again":"Option 2 wasn\u2019t so bad"}</button>
           <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{resIdx===1?"No, not feeling this either":"Nope, this won\u2019t do either"}</button>
-          <button style={{flex:2,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.5,lineHeight:"1.3"}} onClick={function(){go("home");}}>{"Start over"}</button>
+          <button style={{flex:2,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.5,lineHeight:"1.3"}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>
       </div>}
     </div>;})()||null}
@@ -1708,7 +1708,7 @@ return <div className="fade">
 {/* CTA */}
 <div style={{padding:"20px 24px 70px"}}>
 <button className="jfl-cta" onClick={function(){setResolved(null);resolve();}} style={{padding:16,fontSize:16,fontWeight:700}}>{"\uD83D\uDE80 Show me the results"}</button>
-<button className="jfl-btn" style={{width:"100%",marginTop:10}} onClick={function(){go("home");}}>Start over</button>
+<button className="jfl-btn" style={{width:"100%",marginTop:10}} onClick={function(){go("dashboard");}}>Start over</button>
 </div>
 </div>
 </div>;
@@ -1754,7 +1754,7 @@ return <div key={v.id} style={{display:"flex",alignItems:"center",gap:10,padding
 {/* Buttons */}
 <div style={{padding:"20px 24px 70px"}}>
 <button className="jfl-cta" onClick={function(){setPhase("narrow");setP2count(0);setResolved(null);setH2H(null);setDisagrees(0);setRound(0);pickQuestions(usedRef.current,"narrow");}} style={{marginBottom:10,padding:16,fontSize:16,fontWeight:700}}>{"Now let\u2019s narrow it down"}</button>
-<button className="jfl-btn" style={{width:"100%"}} onClick={function(){go("home");}}>Start over</button>
+<button className="jfl-btn" style={{width:"100%"}} onClick={function(){go("dashboard");}}>Start over</button>
 </div>
 </div>
 </div>;
@@ -1844,7 +1844,7 @@ return <div className="fade">
 <div style={{fontSize:20,fontWeight:700,color:"var(--tx1)",marginTop:16}}>{isSolo?"Then\u2026 why are you on here?":"Then\u2026 why are you all on here?"}</div>
 <div style={{fontSize:14,color:"var(--tx2)",marginTop:10,lineHeight:"1.5"}}>{isSolo?"Seriously. Go order it. We\u2019ll be here when you inevitably can\u2019t decide next time.":"Seriously. Go order it. We\u2019ll be here when you inevitably can\u2019t decide next time."}</div>
 <div style={{display:"flex",flexDirection:"column",gap:10,marginTop:32}}>
-<button className="jfl-cta" style={{padding:16}} onClick={function(){go("home");}}>
+<button className="jfl-cta" style={{padding:16}} onClick={function(){go("dashboard");}}>
 <span style={{fontSize:15,fontWeight:700}}>{isSolo?"Fine, take me back":"Fine, take us back"}</span>
 </button>
 <button className="jfl-btn" style={{padding:12,fontSize:13}} onClick={function(){setDismiss(false);setDirectConfirm(true);}}>

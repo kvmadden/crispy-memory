@@ -270,7 +270,7 @@ return(
     <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"0 20px",position:"relative",zIndex:1,textAlign:"center",gap:12}}>
 
       {/* logo card */}
-      <div style={{background:"rgba(13,17,23,.45)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:20,padding:"28px 28px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.08)"}}>
+      <div style={{background:"rgba(30,38,50,.35)",backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",borderRadius:20,padding:"28px 28px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.1)"}}>
         <div style={{animation:"tada .8s ease-out both"}}>
           <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
           <div style={{fontSize:12,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:3,textTransform:"uppercase"}}>Food Logic</div>
@@ -281,7 +281,7 @@ return(
       </div>
 
       {/* how-it-works card */}
-      <div style={{background:"rgba(13,17,23,.45)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:20,padding:"20px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.08)"}}>
+      <div style={{background:"rgba(30,38,50,.35)",backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",borderRadius:20,padding:"20px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.1)"}}>
         <div style={{fontSize:14,color:"var(--tx2)",lineHeight:"1.7"}}>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
       </div>
 

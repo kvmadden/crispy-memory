@@ -244,8 +244,8 @@ return(
   {vw==="landing"&&(function(){
     var ROWS=LANDING_ROWS;
 var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);
-    var cardStyle=isDk?{background:"rgba(255,255,255,.02)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,.08)"}:{background:"rgba(255,255,255,.15)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,.3)",boxShadow:"0 2px 16px rgba(0,0,0,.04)"};
-    var emojiOp=isDk?0.45:0.4;
+    var cardStyle=isDk?{background:"rgba(255,255,255,.02)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,.08)"}:{background:"rgba(255,255,255,.55)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,.6)",boxShadow:"0 4px 24px rgba(120,40,60,.08)"};
+    var emojiOp=isDk?0.45:0.55;
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
     {/* ── emoji rows ── */}
@@ -278,7 +278,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
           <div style={{fontSize:16,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:4,textTransform:"uppercase"}}>Food Logic</div>
         </div>
-        <div style={{marginTop:20,padding:"10px 16px",borderRadius:12,background:isDk?"rgba(255,255,255,.04)":"rgba(0,0,0,.03)"}}>
+        <div style={{marginTop:20,padding:"10px 16px",borderRadius:12,background:isDk?"rgba(255,255,255,.04)":"rgba(0,0,0,.05)"}}>
           <div style={{height:20,position:"relative",overflow:"hidden",width:"100%"}}>
             <div key={flavIdx} className="slot-roll" style={{fontSize:14,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.85}}>{["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."][flavIdx%6]}</div>
           </div>
@@ -292,7 +292,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
             return <React.Fragment key={si}>
               {si>0&&<div style={{flex:1,height:3,margin:"0 -2px",marginBottom:16,borderRadius:2,background:"linear-gradient(90deg,var(--ac),var(--ac)) no-repeat left/0% 100%,transparent",animation:"lineFill"+si+" 7s ease-in-out infinite"}}></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>
-                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.04)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 7s ease-in-out infinite"}}>{step.e}</div>
+                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 7s ease-in-out infinite"}}>{step.e}</div>
                 <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",animation:"labelOn"+si+" 7s ease-in-out infinite"}}>{step.l}</span>
               </div>
             </React.Fragment>;
@@ -2845,13 +2845,13 @@ var CSS = [
 ".stagger-1{animation:fade .3s ease-out .05s both}.stagger-2{animation:fade .3s ease-out .12s both}.stagger-3{animation:fade .3s ease-out .19s both}",
 "@keyframes tada{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.96)}100%{transform:scale(1)}}",
 "@keyframes stepOn0{0%,4%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}8%,72%{box-shadow:0 0 0 2px rgba(196,149,106,.55),0 0 14px rgba(196,149,106,.2)}82%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
-"@keyframes stepOn1{0%,28%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}34%,72%{box-shadow:0 0 0 2px rgba(255,255,255,.4),0 0 12px rgba(255,255,255,.12)}82%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
+"@keyframes stepOn1{0%,28%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}34%,72%{box-shadow:0 0 0 2px rgba(168,120,192,.5),0 0 12px rgba(168,120,192,.2)}82%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
 "@keyframes stepOn2{0%,54%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}60%,72%{box-shadow:0 0 0 2px rgba(244,114,182,.5),0 0 14px rgba(244,114,182,.2)}82%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
 "@keyframes lineFill1{0%{background-size:0% 100%;opacity:0}6%,12%{background-size:0% 100%;opacity:1}28%,72%{background-size:100% 100%;opacity:1}82%,100%{background-size:100% 100%;opacity:0}}",
 "@keyframes lineFill2{0%{background-size:0% 100%;opacity:0}32%,38%{background-size:0% 100%;opacity:1}54%,72%{background-size:100% 100%;opacity:1}82%,100%{background-size:100% 100%;opacity:0}}",
-"@keyframes labelOn0{0%,4%{color:var(--tx3);text-shadow:none}8%,72%{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.3)}82%,100%{color:var(--tx3);text-shadow:none}}",
-"@keyframes labelOn1{0%,28%{color:var(--tx3);text-shadow:none}34%,72%{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.3)}82%,100%{color:var(--tx3);text-shadow:none}}",
-"@keyframes labelOn2{0%,54%{color:var(--tx3);text-shadow:none}60%,72%{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.3)}82%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn0{0%,4%{color:var(--tx3);text-shadow:none}8%,72%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}82%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn1{0%,28%{color:var(--tx3);text-shadow:none}34%,72%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}82%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn2{0%,54%{color:var(--tx3);text-shadow:none}60%,72%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}82%,100%{color:var(--tx3);text-shadow:none}}",
 ".landingPulse{animation:ctaPulse 3s ease-in-out 2s infinite}",
 "@keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(244,114,182,.2)}50%{box-shadow:0 4px 30px rgba(244,114,182,.45)}}",
 ".slide-in{animation:slideIn .3s ease-out both}",

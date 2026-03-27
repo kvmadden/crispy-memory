@@ -241,14 +241,14 @@ return(
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
     var EMOJIS=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-    var ROWS=useMemo(function(){for(var rows=[],s=7919,r=0;r<6;r++){var items=[];for(var j=0;j<10;j++){s=(s*16807+r*10+j)%2147483647;items.push(EMOJIS[s%EMOJIS.length]);}s=(s*16807)%2147483647;var sz=(s%14)+22;s=(s*16807)%2147483647;var dur=(s%8)+14;s=(s*16807)%2147483647;var op=(s%10)+10;var top=(r*16)+4;rows.push({items:items,sz:sz,dur:dur,op:op,top:top,rev:r%2===1});}return rows;},[]);
+    var ROWS=useMemo(function(){for(var rows=[],s=7919,r=0;r<4;r++){var items=[];for(var j=0;j<6;j++){s=(s*16807+r*6+j)%2147483647;items.push({e:EMOJIS[s%EMOJIS.length],sinDelay:((s=(s*16807)%2147483647)%30)/10,sinDur:((s=(s*16807)%2147483647)%3)+3});}s=(s*16807)%2147483647;var sz=(s%12)+24;s=(s*16807)%2147483647;var dur=(s%6)+16;s=(s*16807)%2147483647;var op=(s%6)+10;var top=(r*22)+8;rows.push({items:items,sz:sz,dur:dur,op:op,top:top,rev:r%2===1});}return rows;},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
     {/* ── scrolling emoji rows ── */}
     <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
       {ROWS.map(function(row,ri){
-        var content=row.items.map(function(e,ei){return <span key={ei} style={{display:"inline-block",fontSize:row.sz,padding:"0 18px",animation:"emojiSine"+ri%3+" "+(3+ri%4)+"s ease-in-out infinite"}}>{e}</span>;});
+        var content=row.items.map(function(item,ei){return <span key={ei} style={{display:"inline-block",fontSize:row.sz,padding:"0 28px",animation:"emojiSine"+ri%3+" "+item.sinDur+"s ease-in-out "+item.sinDelay+"s infinite"}}>{item.e}</span>;});
         return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:row.op/100}}>
           <div style={{display:"inline-block",animation:"emojiScroll "+row.dur+"s linear infinite",animationDirection:row.rev?"reverse":"normal"}}>
             {content}{content}

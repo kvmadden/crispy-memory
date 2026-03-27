@@ -241,7 +241,7 @@ return(
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
     var POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[12,28,28,false],[34,24,24,true],[80,30,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
+    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[12,28,26,false],[34,24,28,true],[80,30,30,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);
     var cardStyle=isDk?{background:"rgba(255,255,255,.02)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,.08)"}:{background:"rgba(255,255,255,.15)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,.3)",boxShadow:"0 2px 16px rgba(0,0,0,.04)"};

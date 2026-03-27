@@ -287,7 +287,6 @@ return(
       <button className="jfl-cta" style={{marginTop:36,padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:320,borderRadius:16}} onClick={function(){go("home");}}>
         <span>{"What should we eat? \u2192"}</span>
       </button>
-      <div style={{fontSize:11,color:"var(--tx3)",marginTop:10,opacity:.5}}>{"All data stays on your device"}</div>
     </div>
 
     {/* ── footer ── */}

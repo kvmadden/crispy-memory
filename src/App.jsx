@@ -289,7 +289,7 @@ return(
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
           {[{e:"🫶",l:"Squad"},{e:"🌀",l:"Vibes"},{e:"😋",l:"Yum"}].map(function(step,si){
             return <React.Fragment key={si}>
-              {si>0&&<div style={{flex:1,height:3,margin:"0 -2px",marginBottom:16,borderRadius:2,background:"linear-gradient(90deg,var(--ac),var(--ac)) no-repeat left/0% 100%,"+( isDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.08)"),animation:"lineFill"+si+" 7s ease-in-out infinite"}}></div>}
+              {si>0&&<div style={{flex:1,height:3,margin:"0 -2px",marginBottom:16,borderRadius:2,background:"linear-gradient(90deg,var(--ac),var(--ac)) no-repeat left/0% 100%,transparent",animation:"lineFill"+si+" 7s ease-in-out infinite"}}></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>
                 <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.04)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 7s ease-in-out infinite"}}>{step.e}</div>
                 <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase"}}>{step.l}</span>

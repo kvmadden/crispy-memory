@@ -243,13 +243,17 @@ return(
     var POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
     var ROWS=useMemo(function(){var s=7919;var ri=0;return[[12,28,28,false],[40,24,24,true],[80,30,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
+    var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);
+    var cardBg=isDk?"rgba(255,255,255,.03)":"rgba(0,0,0,.04)";
+    var cardBdr=isDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.08)";
+    var emojiOp=isDk?.35:.2;
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
     {/* ── emoji rows ── */}
     <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",animation:"emojiFadeIn 1.5s ease-out both"}}>
       {ROWS.map(function(row,ri){
         var content=row.items.map(function(item,ei){return <span key={ei} style={{display:"inline-block",fontSize:row.sz,padding:"0 40px",animation:"emojiSine"+ri%3+" "+item.sinDur+"s ease-in-out "+item.sinDelay+"s infinite"}}>{item.e}</span>;});
-        return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:.35}}>
+        return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:emojiOp}}>
           <div style={{display:"inline-block",animation:"emojiScroll "+row.dur+"s linear infinite",animationDirection:row.rev?"reverse":"normal"}}>
             {content}{content}
           </div>
@@ -270,7 +274,7 @@ return(
     <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"0 20px",position:"relative",zIndex:1,textAlign:"center",gap:12}}>
 
       {/* logo card */}
-      <div style={{background:"rgba(255,255,255,.03)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderRadius:20,padding:"28px 28px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.08)"}}>
+      <div style={{background:cardBg,backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderRadius:20,padding:"28px 28px 24px",width:"100%",maxWidth:340,border:"1px solid "+cardBdr}}>
         <div style={{animation:"tada .8s ease-out both"}}>
           <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
           <div style={{fontSize:12,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:3,textTransform:"uppercase"}}>Food Logic</div>
@@ -281,12 +285,16 @@ return(
       </div>
 
       {/* how-it-works card */}
-      <div style={{background:"rgba(255,255,255,.03)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderRadius:20,padding:"20px 24px",width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,.08)"}}>
-        <div style={{fontSize:14,color:"var(--tx2)",lineHeight:"1.7"}}>{"Pick who\u2019s eating. Answer a few vibes."}<br/>{"Get one clear answer."}</div>
+      <div style={{background:cardBg,backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderRadius:20,padding:"18px 24px",width:"100%",maxWidth:340,border:"1px solid "+cardBdr}}>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:18}}>{"👥"}</span><span style={{fontSize:13,color:"var(--tx2)",fontWeight:500}}>{"Pick who\u2019s eating"}</span></div>
+          <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:18}}>{"🎯"}</span><span style={{fontSize:13,color:"var(--tx2)",fontWeight:500}}>{"Answer a few vibes"}</span></div>
+          <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:18}}>{"✅"}</span><span style={{fontSize:13,color:"var(--tx2)",fontWeight:500}}>{"Get one clear answer"}</span></div>
+        </div>
       </div>
 
       {/* CTA */}
-      <button className="jfl-cta" style={{padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:340,borderRadius:16}} onClick={function(){go("home");}}>
+      <button className="jfl-cta landingPulse" style={{padding:"18px 40px",fontSize:18,fontWeight:700,width:"100%",maxWidth:340,borderRadius:16}} onClick={function(){go("home");}}>
         <span>{"What should we eat? \u2192"}</span>
       </button>
     </div>
@@ -2827,6 +2835,8 @@ var CSS = [
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",
 ".stagger-1{animation:fade .3s ease-out .05s both}.stagger-2{animation:fade .3s ease-out .12s both}.stagger-3{animation:fade .3s ease-out .19s both}",
 "@keyframes tada{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.96)}100%{transform:scale(1)}}",
+".landingPulse{animation:ctaPulse 3s ease-in-out 2s infinite}",
+"@keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(244,114,182,.2)}50%{box-shadow:0 4px 30px rgba(244,114,182,.45)}}",
 ".slide-in{animation:slideIn .3s ease-out both}",
 ".tada{animation:tada .5s ease-out both}",
 "button:active{transform:scale(.97)}","div::-webkit-scrollbar{display:none}",

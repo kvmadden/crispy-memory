@@ -176,7 +176,7 @@ var cycleTheme=useCallback(function(){setGs2(function(prev){var cur=prev.theme||
 var setGrp=useCallback(function(pp){var hk=pp.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:pp,kf:hk,go:pp.length>4,xa:0,xk:0});});},[kidIds]);
 var togP=useCallback(function(id){setSel(function(s){var has=s.sp.indexOf(id)>=0;var np=has?s.sp.filter(function(i){return i!==id;}):s.sp.concat([id]);var hk=np.some(function(pid){return kidIds.indexOf(pid)>=0;});return Object.assign({},s,{sp:np,kf:hk,go:np.length>4});});},[kidIds]);
 var resolve=useCallback(function(){setBusy(true);setTimeout(function(){var s=selRef.current;setRes(top3(scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);},[rests,ppl,hist]);
-var reroll=useCallback(function(ch){var s=selRef.current;var sc=scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?.2:.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
+var reroll=useCallback(function(ch){var s=selRef.current;var sc=scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?0.2:0.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
 var deadlock=useCallback(function(){var s=selRef.current;var ds=Object.assign({},s,{sp:["kevin","jenna"],fam:"safe",mood:"safe-default"});var sc=scoreAll(rests,ds,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2);var vwt={low:0,moderate:1,high:2};sc.sort(function(a,b){if(vwt[a.vetoRisk]!==vwt[b.vetoRisk])return vwt[a.vetoRisk]-vwt[b.vetoRisk];return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
 var pick=useCallback(function(res){var s=selRef.current;setH(function(h){return[{id:Date.now().toString(),rid:res.rid,name:res.r.name,emoji:res.r.emoji,date:new Date().toISOString(),people:s.sp,mood:s.mood,order:res.order,rating:null}].concat(h);});setR(function(rs){return rs.map(function(re){return re.id===res.rid?Object.assign({},re,{to:re.to+1,lo:0,streak:re.streak+1}):re;});});go("home");setRes(null);},[]);
 var burn=useCallback(function(id){setR(function(rs){return rs.map(function(r){return r.id===id?Object.assign({},r,{bo:true}):r;});});reroll(false);},[reroll]);
@@ -424,7 +424,7 @@ return(
       </div>
       <div className="jfl-label" style={{marginTop:16,marginBottom:8}}>Or pick individually</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?0.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
       </div>
       {sel.sp.length>0&&<div style={{marginTop:12,fontSize:12,color:"var(--tx3)",fontWeight:500}}>{sel.sp.length+(sel.xa||sel.xk?("+"+(sel.xa+sel.xk)):"")+" people"+(sel.kf||sel.xk>0?" \u00B7 Kid-safe active":"")}</div>}
       <div style={{marginTop:12}}>
@@ -446,7 +446,7 @@ return(
           </div>
         </div>
       </div>
-      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});var ob=getObvious(sel,rests,mctx,activeObvRules);if(ob){setSel(function(s){return Object.assign({},s,{ob:ob});});go("intercept");}else{go("step2");}}}} style={{opacity:sel.sp.length===0?.4:1,flexDirection:"row",gap:0,justifyContent:"center"}}><span style={{opacity:.55}}>{"Next:"}</span><span style={{padding:"0 6px"}}>{"Choose Mood"}</span><span style={{opacity:.55}}>{"→"}</span></button></div>
+      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});var ob=getObvious(sel,rests,mctx,activeObvRules);if(ob){setSel(function(s){return Object.assign({},s,{ob:ob});});go("intercept");}else{go("step2");}}}} style={{opacity:sel.sp.length===0?0.4:1,flexDirection:"row",gap:0,justifyContent:"center"}}><span style={{opacity:.55}}>{"Next:"}</span><span style={{padding:"0 6px"}}>{"Choose Mood"}</span><span style={{opacity:.55}}>{"→"}</span></button></div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>
   </div>}
@@ -461,10 +461,10 @@ return(
       </div>
       <div className="jfl-label" style={{marginTop:16,marginBottom:8}}>Or pick individually</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?0.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
       </div>
       {sel.sp.length>0&&<div style={{marginTop:12,fontSize:12,color:"var(--tx3)",fontWeight:500}}>{sel.sp.length+(sel.xa||sel.xk?("+"+(sel.xa+sel.xk)):"")+" people"+(sel.kf||sel.xk>0?" \u00B7 Kid-safe active":"")}</div>}
-      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setBusy(true);setTimeout(function(){setRes(top3(scoreAll(rests,sel,ppl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);}}} style={{opacity:sel.sp.length===0?.4:1}}>{"Get "+mctx.label+" Recommendation"}</button></div>
+      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setBusy(true);setTimeout(function(){setRes(top3(scoreAll(rests,sel,ppl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);}}} style={{opacity:sel.sp.length===0?0.4:1}}>{"Get "+mctx.label+" Recommendation"}</button></div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>
   </div>}
@@ -2000,7 +2000,7 @@ return <div className="fade">
         var voteKey=v.id+"_"+h2h.qi;
         var vote=h2h.votes[voteKey];
         var voted=vote!==undefined;
-        return <div key={v.id} className="jfl-card" style={{padding:14,opacity:voted?.6:1,transition:"opacity .3s"}}>
+        return <div key={v.id} className="jfl-card" style={{padding:14,opacity:voted?0.6:1,transition:"opacity .3s"}}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <span style={{fontSize:22}}>{v.emoji}</span>
             <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",flex:1}}>{v.name}</span>
@@ -2548,7 +2548,7 @@ return(
       {restSort==="cuisine"?(function(){var sorted=rests.slice().sort(function(a,b){return(a.cat||"zzz").localeCompare(b.cat||"zzz")||a.name.localeCompare(b.name);});var groups={};sorted.forEach(function(r){var c=r.cat||"other";if(!groups[c])groups[c]=[];groups[c].push(r);});var CAT_LABELS={"fast-food":"Fast Food","fast-casual":"Fast Casual","casual-dining":"Casual Dining","coffee-snack":"Coffee & Snacks",burgers:"Burgers",pizza:"Pizza",subs:"Subs & Sandwiches",asian:"Asian",mexican:"Mexican",italian:"Italian",indian:"Indian",healthy:"Healthy",bbq:"BBQ",wings:"Wings",breakfast:"Breakfast",dessert:"Dessert",other:"Other"};return Object.keys(groups).sort().map(function(cat){return <div key={cat} style={{marginBottom:14}}>
         <div style={{fontSize:11,fontWeight:700,color:"var(--ac)",textTransform:"uppercase",letterSpacing:.5,marginBottom:6,paddingLeft:2}}>{CAT_LABELS[cat]||cat}</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-        {groups[cat].map(function(r){return <button key={r.id} onClick={function(){setSelId(r.id);setInStep(0);}} className="jfl-card" style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",width:"100%",opacity:r.bo?.4:1}}>
+        {groups[cat].map(function(r){return <button key={r.id} onClick={function(){setSelId(r.id);setInStep(0);}} className="jfl-card" style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",width:"100%",opacity:r.bo?0.4:1}}>
           <span style={{fontSize:20}}>{r.emoji}</span>
           <div style={{flex:1,minWidth:0}}>
             <div style={{display:"flex",alignItems:"center",gap:4}}><span style={{fontWeight:700,fontSize:13,color:"var(--tx1)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.sn||r.name}</span>{r.fav&&<span style={{fontSize:8,fontWeight:700,color:"var(--ac)",background:"rgba(244,114,182,.15)",padding:"1px 4px",borderRadius:3,letterSpacing:.5,flexShrink:0}}>FAV</span>}</div>
@@ -2558,7 +2558,7 @@ return(
         </div>
       </div>;});})()
       :<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-      {rests.slice().sort(function(a,b){if(restSort==="orders")return b.to-a.to;if(restSort==="recent"){var da=a.ld?new Date(a.ld).getTime():0;var db=b.ld?new Date(b.ld).getTime():0;return db-da;}return a.name.localeCompare(b.name);}).map(function(r){return <button key={r.id} onClick={function(){setSelId(r.id);setInStep(0);}} className="jfl-card" style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",width:"100%",opacity:r.bo?.4:1}}>
+      {rests.slice().sort(function(a,b){if(restSort==="orders")return b.to-a.to;if(restSort==="recent"){var da=a.ld?new Date(a.ld).getTime():0;var db=b.ld?new Date(b.ld).getTime():0;return db-da;}return a.name.localeCompare(b.name);}).map(function(r){return <button key={r.id} onClick={function(){setSelId(r.id);setInStep(0);}} className="jfl-card" style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",width:"100%",opacity:r.bo?0.4:1}}>
         <span style={{fontSize:20}}>{r.emoji}</span>
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",gap:4}}><span style={{fontWeight:700,fontSize:13,color:"var(--tx1)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.sn||r.name}</span>{r.fav&&<span style={{fontSize:8,fontWeight:700,color:"var(--ac)",background:"rgba(244,114,182,.15)",padding:"1px 4px",borderRadius:3,letterSpacing:.5,flexShrink:0}}>FAV</span>}</div>

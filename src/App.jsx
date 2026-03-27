@@ -240,15 +240,19 @@ return(
 
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
-    var FLOATS=useMemo(function(){var pool=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];var used=[];var a=[];var s=7919;for(var i=0;i<10;i++){s=(s*16807+i)%2147483647;var idx=s%pool.length;while(used.indexOf(idx)>=0){idx=(idx+1)%pool.length;}used.push(idx);var e=pool[idx];s=(s*16807)%2147483647;var top=(s%75)+5;s=(s*16807)%2147483647;var sz=(s%16)+22;s=(s*16807)%2147483647;var dur=(s%12)+18;s=(s*16807)%2147483647;var sinDur=(s%4)+4;s=(s*16807)%2147483647;var sinDelay=((s%40))/10;s=(s*16807)%2147483647;var phase=-(s%Math.floor(dur));s=(s*16807)%2147483647;var op=(s%8)+8;s=(s*16807)%2147483647;var rev=s%2===0;a.push({e:e,top:top,sz:sz,dur:dur,sinDur:sinDur,sinDelay:sinDelay,phase:phase,op:op,rev:rev});}return a;},[]);
+    var POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
+    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[10,28,20,false],[42,24,17,true],[78,30,23,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:(j*1.3)+(s%10)/10,sinDur:(s=(s*16807)%2147483647)%3+4});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
-    {/* ── floating emojis ── */}
+    {/* ── emoji rows ── */}
     <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
-      {FLOATS.map(function(f,i){
-        return <div key={i} style={{position:"absolute",top:f.top+"%",left:0,animation:"emojiDrift "+f.dur+"s linear "+f.phase+"s infinite",animationDirection:f.rev?"reverse":"normal"}}>
-          <span style={{display:"inline-block",fontSize:f.sz,opacity:f.op/100,animation:"emojiSine"+i%3+" "+f.sinDur+"s ease-in-out "+f.sinDelay+"s infinite"}}>{f.e}</span>
+      {ROWS.map(function(row,ri){
+        var content=row.items.map(function(item,ei){return <span key={ei} style={{display:"inline-block",fontSize:row.sz,padding:"0 40px",animation:"emojiSine"+ri%3+" "+item.sinDur+"s ease-in-out "+item.sinDelay+"s infinite"}}>{item.e}</span>;});
+        return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:.15}}>
+          <div style={{display:"inline-block",animation:"emojiScroll "+row.dur+"s linear infinite",animationDirection:row.rev?"reverse":"normal"}}>
+            {content}{content}
+          </div>
         </div>;
       })}
     </div>
@@ -2831,7 +2835,7 @@ var CSS = [
 ".jfl-cta-hero{padding:18px 14px;border-radius:14px;box-shadow:0 2px 12px rgba(244,114,182,.2);animation:ctaGlow 3s ease-in-out infinite}",
 "@keyframes ctaGlow{0%,100%{box-shadow:0 2px 12px rgba(244,114,182,.2)}50%{box-shadow:0 4px 22px rgba(244,114,182,.4),0 0 40px rgba(196,149,106,.12)}}",
 "@keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}",
-"@keyframes emojiDrift{0%{transform:translateX(-40px)}100%{transform:translateX(calc(100vw + 40px))}}",
+"@keyframes emojiScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}",
 "@keyframes emojiSine0{0%,100%{transform:translateY(15px)}50%{transform:translateY(-35px)}}",
 "@keyframes emojiSine1{0%,100%{transform:translateY(20px)}50%{transform:translateY(-40px)}}",
 "@keyframes emojiSine2{0%,100%{transform:translateY(10px)}50%{transform:translateY(-25px)}}",

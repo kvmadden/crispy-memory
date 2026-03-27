@@ -277,7 +277,7 @@ return(
       <div style={Object.assign({},cardStyle,{borderRadius:20,padding:"28px 28px 24px",width:"100%",maxWidth:340})}>
         <div style={{animation:"tada .8s ease-out both"}}>
           <div style={{fontSize:56,fontWeight:800,letterSpacing:-2.5,lineHeight:1,textShadow:"0 0 40px rgba(244,114,182,.3)"}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
-          <div style={{fontSize:12,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:3,textTransform:"uppercase"}}>Food Logic</div>
+          <div style={{fontSize:16,fontWeight:900,color:"var(--tx2)",marginTop:8,letterSpacing:4,textTransform:"uppercase"}}>Food Logic</div>
         </div>
         <div style={{marginTop:20,height:22,position:"relative",overflow:"hidden",width:"100%"}}>
           <div key={flavIdx} className="fade" style={{fontSize:15,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.8}}>{LAND_LINES[flavIdx%LAND_LINES.length]}</div>

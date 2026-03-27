@@ -168,7 +168,7 @@ var _15=useState("90d");var moFilter=_15[0],setMoFilter=_15[1];
 var _16=useState(false);var whyOpen=_16[0],setWhyOpen=_16[1];
 var _17=useState({});var hExp=_17[0],setHExp=_17[1];
 useEffect(function(){sv({r:rests,p:ppl,h:hist,dr:dataRefresh,g:groups,qr:qrCustom,mt:customMealTimes,ob:obvRules,gs:gs2});},[rests,ppl,hist,dataRefresh,groups,qrCustom,customMealTimes,obvRules,gs2]);
-useEffect(function(){var t=gs2.theme||"auto";var isDark=t==="dark"||(t==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);document.body.style.background=isDark?"#0D1117":"#FBF7F4";},[gs2.theme]);
+useEffect(function(){var t=gs2.theme||"auto";var isDark=t==="dark"||(t==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);document.body.style.background=isDark?"#0D1117":"#F0EBE6";},[gs2.theme]);
 var mctx=getMealContext(mealOverride,customMealTimes);
 var kidIds=useMemo(function(){return ppl.filter(function(p){return p.age!=="adult";}).map(function(p){return p.id;});},[ppl]);
 var up=useCallback(function(k,v){setSel(function(s){var n=Object.assign({},s);n[k]=v;return n;});},[]);
@@ -241,11 +241,11 @@ return(
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
     var POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[12,28,28,false],[40,24,24,true],[80,30,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
+    var ROWS=useMemo(function(){var s=7919;var ri=0;return[[12,28,28,false],[34,24,24,true],[80,30,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%POOL.length;items.push({e:POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
     var LAND_LINES=["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."];
     var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);
-    var cardBg=isDk?"rgba(255,255,255,.03)":"rgba(0,0,0,.04)";
-    var cardBdr=isDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.08)";
+    var cardBg=isDk?"rgba(255,255,255,.03)":"rgba(0,0,0,.06)";
+    var cardBdr=isDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.1)";
     var emojiOp=isDk?.35:.2;
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>
 
@@ -2814,7 +2814,7 @@ return(
 
 var CSS = [
 ":root,.theme-dark{--bg0:#0D1117;--bg1:#161B22;--bg2:#1C2129;--bdr:#30363D;--tx1:#E6EDF3;--tx2:#8B949E;--tx3:#484F58;--ac:#F472B6;--grn:#D4A574;--yel:#FBBF24;--red:#F87171}",
-".theme-light{--bg0:#FBF7F4;--bg1:#FFFFFF;--bg2:#F8F2ED;--bdr:#E5D5CA;--tx1:#1A1210;--tx2:#5C4A42;--tx3:#9A857A;--ac:#D6246B;--grn:#A07828;--yel:#B8860B;--red:#C0392B}",
+".theme-light{--bg0:#F0EBE6;--bg1:#FAF7F4;--bg2:#EDE7E1;--bdr:#E5D5CA;--tx1:#1A1210;--tx2:#5C4A42;--tx3:#9A857A;--ac:#D6246B;--grn:#A07828;--yel:#B8860B;--red:#C0392B}",
 ".theme-light .jfl-cta{background:linear-gradient(135deg,#E8458A,#D4956A);text-shadow:0 1px 3px rgba(0,0,0,.15)}",
 ".theme-light .jfl-cta-hero{box-shadow:0 3px 16px rgba(214,36,107,.25)}",
 "@keyframes ctaGlowLight{0%,100%{box-shadow:0 3px 16px rgba(214,36,107,.2)}50%{box-shadow:0 5px 28px rgba(214,36,107,.4),0 0 40px rgba(212,149,106,.15)}}",
@@ -2849,7 +2849,7 @@ var CSS = [
 "@keyframes emojiScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}",
 "@keyframes emojiFadeIn{0%{opacity:0}100%{opacity:1}}",
 "@keyframes emojiSine0{0%,100%{transform:translateY(22px)}50%{transform:translateY(-44px)}}",
-"@keyframes emojiSine1{0%,100%{transform:translateY(28px)}50%{transform:translateY(-50px)}}",
+"@keyframes emojiSine1{0%,100%{transform:translateY(14px)}50%{transform:translateY(-28px)}}",
 "@keyframes emojiSine2{0%,100%{transform:translateY(16px)}50%{transform:translateY(-36px)}}",
 "@keyframes podiumPop{0%{opacity:0;transform:scale(.5) translateY(8px)}60%{opacity:1;transform:scale(1.1) translateY(-2px)}100%{transform:scale(1) translateY(0)}}",
 ".float-in{animation:floatIn .4s ease-out both}",

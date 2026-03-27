@@ -280,7 +280,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         </div>
         <div style={{marginTop:20,padding:"10px 16px",borderRadius:12,background:isDk?"rgba(255,255,255,.04)":"rgba(0,0,0,.03)"}}>
           <div style={{height:20,position:"relative",overflow:"hidden",width:"100%"}}>
-            <div key={flavIdx} className="fade" style={{fontSize:14,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.85}}>{["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."][flavIdx%6]}</div>
+            <div key={flavIdx} className="slot-roll" style={{fontSize:14,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.85}}>{["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."][flavIdx%6]}</div>
           </div>
         </div>
       </div>
@@ -2839,6 +2839,8 @@ var CSS = [
 "@keyframes spin{to{transform:rotate(360deg)}}",
 "@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}",
 "@keyframes slideOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-40px)}}",
+"@keyframes slotRoll{0%{transform:translateY(100%);opacity:0}15%{transform:translateY(0);opacity:1}85%{transform:translateY(0);opacity:1}100%{transform:translateY(-100%);opacity:0}}",
+".slot-roll{animation:slotRoll 6s cubic-bezier(.23,1,.32,1) both}",
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",
 ".stagger-1{animation:fade .3s ease-out .05s both}.stagger-2{animation:fade .3s ease-out .12s both}.stagger-3{animation:fade .3s ease-out .19s both}",
 "@keyframes tada{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.96)}100%{transform:scale(1)}}",

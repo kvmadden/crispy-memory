@@ -306,7 +306,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
             return <React.Fragment key={si}>
               {si>0&&<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16,animation:"symFill"+si+" 6s ease-in-out infinite"}}><span style={{fontSize:28,fontWeight:800,color:"var(--ac)"}}>{si===1?"+":"="}</span></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>
-                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 6s ease-in-out infinite"}}>{step.e}</div>
+                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 6s ease-in-out infinite"+(si===2?", yumSparkle 6s ease-in-out infinite":"")}}>{step.e}</div>
                 <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",animation:"labelOn"+si+" 6s ease-in-out infinite"}}>{step.l}</span>
               </div>
             </React.Fragment>;
@@ -2862,14 +2862,15 @@ var CSS = [
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",
 ".stagger-1{animation:fade .3s ease-out .05s both}.stagger-2{animation:fade .3s ease-out .12s both}.stagger-3{animation:fade .3s ease-out .19s both}",
 "@keyframes tada{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.96)}100%{transform:scale(1)}}",
-"@keyframes stepOn0{0%,5%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}10%,68%{box-shadow:0 0 0 2px rgba(196,149,106,.55),0 0 14px rgba(196,149,106,.2)}80%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
-"@keyframes stepOn1{0%,28%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}34%,68%{box-shadow:0 0 0 2px rgba(201,26,94,.45),0 0 12px rgba(201,26,94,.15)}80%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
-"@keyframes stepOn2{0%,52%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}58%,68%{box-shadow:0 0 0 2px rgba(90,60,40,.5),0 0 14px rgba(90,60,40,.15)}80%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
-"@keyframes symFill1{0%,10%{opacity:0;transform:scale(.5)}16%{opacity:1;transform:scale(1.15)}20%,68%{opacity:1;transform:scale(1)}80%,100%{opacity:0;transform:scale(1)}}",
-"@keyframes symFill2{0%,34%{opacity:0;transform:scale(.5)}40%{opacity:1;transform:scale(1.15)}44%,68%{opacity:1;transform:scale(1)}80%,100%{opacity:0;transform:scale(1)}}",
-"@keyframes labelOn0{0%,5%{color:var(--tx3);text-shadow:none}10%,68%{color:var(--tx1);text-shadow:0 0 8px rgba(196,149,106,.25)}80%,100%{color:var(--tx3);text-shadow:none}}",
-"@keyframes labelOn1{0%,28%{color:var(--tx3);text-shadow:none}34%,68%{color:var(--tx1);text-shadow:0 0 8px rgba(201,26,94,.2)}80%,100%{color:var(--tx3);text-shadow:none}}",
-"@keyframes labelOn2{0%,52%{color:var(--tx3);text-shadow:none}58%,68%{color:var(--tx1);text-shadow:0 0 8px rgba(90,60,40,.2)}80%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes stepOn0{0%,5%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}10%,70%{box-shadow:0 0 0 2px rgba(196,149,106,.55),0 0 14px rgba(196,149,106,.2)}90%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
+"@keyframes stepOn1{0%,28%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}34%,70%{box-shadow:0 0 0 2px rgba(201,26,94,.45),0 0 12px rgba(201,26,94,.15)}90%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
+"@keyframes stepOn2{0%,52%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}58%,62%{box-shadow:0 0 0 2px rgba(90,60,40,.5),0 0 14px rgba(90,60,40,.15)}65%{box-shadow:0 0 0 3px rgba(90,60,40,.6),0 0 22px rgba(90,60,40,.25)}70%{box-shadow:0 0 0 2px rgba(90,60,40,.5),0 0 14px rgba(90,60,40,.15)}90%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
+"@keyframes symFill1{0%,16%{opacity:0;transform:scale(.5)}22%{opacity:1;transform:scale(1.15)}26%,70%{opacity:1;transform:scale(1)}90%,100%{opacity:0;transform:scale(1)}}",
+"@keyframes symFill2{0%,40%{opacity:0;transform:scale(.5)}46%{opacity:1;transform:scale(1.15)}50%,70%{opacity:1;transform:scale(1)}90%,100%{opacity:0;transform:scale(1)}}",
+"@keyframes labelOn0{0%,5%{color:var(--tx3);text-shadow:none}10%,70%{color:var(--tx1);text-shadow:0 0 8px rgba(196,149,106,.25)}90%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn1{0%,28%{color:var(--tx3);text-shadow:none}34%,70%{color:var(--tx1);text-shadow:0 0 8px rgba(201,26,94,.2)}90%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn2{0%,52%{color:var(--tx3);text-shadow:none}58%,70%{color:var(--tx1);text-shadow:0 0 8px rgba(90,60,40,.2)}90%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes yumSparkle{0%,52%{transform:scale(1)}58%{transform:scale(1.12)}62%{transform:scale(.95)}66%{transform:scale(1.05)}70%,90%{transform:scale(1)}91%,100%{transform:scale(1);opacity:1}}",
 ".landingPulse{animation:ctaPulse 3s ease-in-out 2s infinite}",
 "@keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(244,114,182,.2)}50%{box-shadow:0 4px 30px rgba(244,114,182,.45)}}",
 ".slide-in{animation:slideIn .3s ease-out both}",

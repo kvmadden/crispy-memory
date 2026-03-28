@@ -128,9 +128,9 @@ function TopBar(p){var isDark=p.theme==="dark"||(p.theme==="auto"&&typeof window
 function BottomNav(p){var go=p.go,active=p.active,setSel=p.setSel;
 var tabs=[{id:"dashboard",l:"Dashboard",e:"💎"},{id:"decide",l:"Decide",e:"🎯"},{id:"history",l:"History",e:"📋"},{id:"settings",l:"Settings",e:"⚙️"}];
 return <div className="btm-nav" style={{display:"flex",alignItems:"center",background:"var(--bg2)",borderTop:"1px solid var(--bdr)",padding:"10px 0 14px",flexShrink:0}}>
-{tabs.map(function(t,i){var on=t.id==="decide"?false:active===t.id;return <div key={t.id} style={{display:"contents"}}>{i>0&&<div style={{width:1,height:24,background:"var(--bdr)",opacity:.4,flexShrink:0}}></div>}<button onClick={function(){if(t.id==="decide"){go("step1");}else{go(t.id);}}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
+{tabs.map(function(t,i){var on=t.id==="decide"?false:active===t.id;return <div key={t.id} style={{display:"contents"}}>{i>0&&<div style={{width:1,height:24,background:"var(--bdr)",opacity:.4,flexShrink:0}}></div>}<button onClick={function(){if(t.id==="decide"){go("step1");}else{go(t.id);}}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"6px 0",transition:"color .2s, font-weight .2s"}}>
 <span style={{fontSize:22}}>{t.e}</span>
-<span style={{fontSize:12,fontWeight:on?700:500,color:on?"var(--ac)":"var(--tx3)"}}>{t.l}</span>
+<span style={{fontSize:12,fontWeight:on?700:500,color:on?"var(--ac)":"var(--tx3)",transition:"color .2s"}}>{t.l}</span>
 </button></div>;})}
 
   </div>;
@@ -396,7 +396,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           {top[0]?<div style={{display:"flex",alignItems:"flex-end",justifyContent:"center",gap:8}}>
             {top[1]&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"rest",hfPrev:"all",hrid:top[1].id});});go("history");}} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0}}>
               <span style={{fontSize:12,fontWeight:700,color:"#A8B4C0"}}>2nd</span>
-              <div style={{background:"var(--bg2)",borderRadius:8,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #A8B4C0",marginTop:3,boxShadow:"0 1px 6px rgba(168,180,192,.1)"}}>
+              <div style={{background:"var(--bg2)",borderRadius:10,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #A8B4C0",marginTop:3,boxShadow:"0 1px 6px rgba(168,180,192,.1)"}}>
                 <span className="podium-pop" style={{fontSize:22,display:"inline-block",animationDelay:".3s"}}>{top[1].emoji}</span>
                 <div style={{fontSize:11,fontWeight:600,color:"var(--tx2)",marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[1].sn||top[1].name}</div>
                 <div style={{fontSize:12,fontWeight:700,color:"#A8B4C0"}}>{gCt(top[1])}</div>
@@ -412,7 +412,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
             </button>
             {top[2]&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"rest",hfPrev:"all",hrid:top[2].id});});go("history");}} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0}}>
               <span style={{fontSize:12,fontWeight:700,color:"#B8976A"}}>3rd</span>
-              <div style={{background:"var(--bg2)",borderRadius:8,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #B8976A",marginTop:3,boxShadow:"0 1px 6px rgba(184,151,106,.06)"}}>
+              <div style={{background:"var(--bg2)",borderRadius:10,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #B8976A",marginTop:3,boxShadow:"0 1px 6px rgba(184,151,106,.06)"}}>
                 <span className="podium-pop" style={{fontSize:20,display:"inline-block",animationDelay:".45s"}}>{top[2].emoji}</span>
                 <div style={{fontSize:11,fontWeight:600,color:"#B8976A",marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[2].sn||top[2].name}</div>
                 <div style={{fontSize:12,fontWeight:700,color:"#B8976A"}}>{gCt(top[2])}</div>
@@ -688,11 +688,11 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         {/* Bottom buttons */}
         {!whyOpen&&<div style={{display:"flex",gap:6,marginTop:8}}>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:600,background:"rgba(244,114,182,.06)",border:"1px solid rgba(244,114,182,.15)",borderRadius:10,color:"var(--ac)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setWhyOpen(true);}}>{"Why this?"}</button>
-          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{"Not feeling this one"}</button>
+          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{"Not feeling this one"}</button>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>}
         {whyOpen&&<div style={{display:"flex",gap:6,marginTop:8}}>
-          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{"Not feeling this one"}</button>
+          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{"Not feeling this one"}</button>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>}
       </div>}
@@ -753,8 +753,8 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
         {/* Three action buttons - proportional */}
         <div style={{display:"flex",gap:6,marginTop:10}}>
-          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){setResIdx(resIdx-1);}}>{resIdx===1?"Let me see option 1 again":"Option 2 wasn\u2019t so bad"}</button>
-          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{resIdx===1?"No, not feeling this either":"Nope, this won\u2019t do either"}</button>
+          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){if(resIdx>0)setResIdx(resIdx-1);}}>{resIdx===1?"Let me see option 1 again":"Option 2 wasn\u2019t so bad"}</button>
+          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{resIdx===1?"No, not feeling this either":"Nope, this won\u2019t do either"}</button>
           <button style={{flex:2,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.5,lineHeight:"1.3"}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>
       </div>}
@@ -2859,7 +2859,6 @@ var CSS = [
 ".theme-light .insightsShimmer{animation-name:insightsShimmerLight}",
 "@keyframes insightsShimmerLight{0%,100%{box-shadow:0 0 4px rgba(160,120,40,.15)}50%{box-shadow:0 0 14px rgba(180,140,40,.4),0 0 28px rgba(180,140,40,.15)}}",
 "@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}",
-"@keyframes slideOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-40px)}}",
 "@keyframes slotRoll{0%{transform:translateY(100%);opacity:0}15%{transform:translateY(0);opacity:1}85%{transform:translateY(0);opacity:1}100%{transform:translateY(-100%);opacity:0}}",
 ".slot-roll{animation:slotRoll 6s cubic-bezier(.23,1,.32,1) both}",
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",

@@ -199,6 +199,7 @@ var LANDING_ROWS=useMemo(function(){var s=7919;var ri=0;return[[13,22,38,false],
 var isSoloResult=(sel.sp||[]).length<=1&&!(sel.xa||0)&&!(sel.xk||0);
 var vcfg=isSoloResult?{low:{c:"var(--grn)",l:"Strong Match"},moderate:{c:"var(--yel)",l:"Decent Match"},high:{c:"var(--red)",l:"Weak Match"}}:{low:{c:"var(--grn)",l:"Low Veto Risk"},moderate:{c:"var(--yel)",l:"Moderate Risk"},high:{c:"var(--red)",l:"High Risk"}};
 var ccfg={high:{l:"High Confidence",c:"var(--grn)"},medium:{l:"Moderate",c:"var(--yel)"},low:{l:"Low",c:"var(--tx3)"}};
+var fpData=useMemo(function(){var fpSel={sp:["jenna"],mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",ar:false,kf:false,go:false,lo:false,_alreadyHad:alreadyHad};var sc=scoreAll(_filterSkips(rests),fpSel,ppl,hist,mctx,gs2);if(!sc||sc.length<1)return null;var fp=sc[0];if(fp.score<55)return null;var gap=sc.length>1?(fp.score-sc[1].score):20;var prob=gap>15?"High likelihood":gap>8?"Probable choice":"Possible choice";return{fp:fp,prob:prob};},[rests,ppl,hist,mctx,gs2,alreadyHad,_filterSkips]);
 
 /* Top bar shared across all views */
 
@@ -371,14 +372,13 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
       {needsRefresh&&<div style={{background:"rgba(251,191,36,.1)",border:"1px solid rgba(251,191,36,.3)",borderRadius:8,padding:"6px 12px",display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:12}}>⚠</span><div style={{fontSize:11,color:"var(--yel)",fontWeight:600}}>{"Data refresh recommended · Last import: "+dataRefresh}</div></div>}
 
       {/* ── Fast Path card ── */}
-      {(function(){var fpSel={sp:["jenna"],mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",ar:false,kf:false,go:false,lo:false,_alreadyHad:alreadyHad};var sc=scoreAll(_filterSkips(rests),fpSel,ppl,hist,mctx,gs2);if(!sc||sc.length<1)return null;var fp=sc[0];if(fp.score<55)return null;var gap=sc.length>1?(fp.score-sc[1].score):20;var prob=gap>15?"High likelihood":gap>8?"Probable choice":"Possible choice";
-        return <button onClick={function(){setSel(function(s){return Object.assign({},s,{mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",kf:true});});go("quickpick");}} className="jfl-card float-in" style={{cursor:"pointer",padding:"10px 14px",border:"1px solid rgba(244,114,182,.25)",background:"rgba(244,114,182,.04)",textAlign:"left",width:"100%",fontFamily:"inherit",display:"flex",alignItems:"center",gap:8,animationDelay:".15s"}}>
+      {fpData&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",kf:true});});go("quickpick");}} className="jfl-card float-in" style={{cursor:"pointer",padding:"10px 14px",border:"1px solid rgba(244,114,182,.25)",background:"rgba(244,114,182,.04)",textAlign:"left",width:"100%",fontFamily:"inherit",display:"flex",alignItems:"center",gap:8,animationDelay:".15s"}}>
           <span style={{fontSize:11,color:"var(--ac)"}}>●</span>
-          <span style={{fontSize:12,fontWeight:700,color:"var(--ac)",textTransform:"uppercase",letterSpacing:.5}}>{prob}</span>
-          <span style={{fontSize:20}}>{fp.r.emoji}</span>
-          <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",flex:1}}>{fp.r.sn||fp.r.name}</span>
+          <span style={{fontSize:12,fontWeight:700,color:"var(--ac)",textTransform:"uppercase",letterSpacing:.5}}>{fpData.prob}</span>
+          <span style={{fontSize:20}}>{fpData.fp.r.emoji}</span>
+          <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",flex:1}}>{fpData.fp.r.sn||fpData.fp.r.name}</span>
           <span style={{fontSize:12,color:"var(--tx3)",fontWeight:500}}>Tap to go →</span>
-        </button>;})()}
+        </button>}
 
       {/* ── Hero CTA ── */}
       <div style={{display:"flex",gap:8}}>

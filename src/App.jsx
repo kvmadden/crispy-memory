@@ -276,7 +276,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
     {/* ── top bar ── */}
     <div style={{padding:"12px 20px 0",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,position:"relative",zIndex:1}}>
-      <div style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>Madden Frameworks</div>
+      <div style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>A Madden Frameworks Solution</div>
       <div style={{display:"flex",alignItems:"center",gap:10}}>
         <button onClick={cycleTheme} style={{background:isDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.06)",border:isDk?"1px solid rgba(255,255,255,.1)":"1px solid rgba(0,0,0,.08)",borderRadius:10,padding:6,cursor:"pointer",fontSize:18,opacity:.8,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",width:34,height:34}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"\uD83C\uDF19":"\u2600\uFE0F";})()}</button>
         <button onClick={function(){setAboutOpen(true);}} style={{background:isDk?"rgba(255,255,255,.08)":"rgba(0,0,0,.06)",border:isDk?"1px solid rgba(255,255,255,.1)":"1px solid rgba(0,0,0,.08)",borderRadius:10,padding:6,cursor:"pointer",fontSize:18,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",width:34,height:34}}>{"ℹ️"}</button>

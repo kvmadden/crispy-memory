@@ -1916,16 +1916,6 @@ function h2hVote(voterId,yes){
     }
     var wasAllVoted=voters.every(function(v){return prev.votes[v.id+"_"+prev.qi]!==undefined;});
     var nowAllVoted=voters.every(function(v){return nv[v.id+"_"+prev.qi]!==undefined;});
-    if(nowAllVoted&&!wasAllVoted){
-      if(prev.qi+1>=prev.qs.length){
-        setTimeout(function(){resolveH2H(np);},800);
-        return Object.assign({},prev,{votes:nv,perPerson:np});
-      }else{
-        var nextQi=prev.qi+1;
-        setTimeout(function(){setH2H(function(p2){return Object.assign({},p2,{qi:nextQi});});},800);
-        return Object.assign({},prev,{votes:nv,perPerson:np});
-      }
-    }
     return Object.assign({},prev,{votes:nv,perPerson:np});
   });
 }
@@ -2037,7 +2027,9 @@ return <div className="fade">
         </div>;
       })}
     </div>
-    {allVoted&&<div style={{textAlign:"center",marginTop:16}}><span style={{fontSize:12,color:"var(--tx2)",fontWeight:500}}>Moving to next question...</span></div>}
+    <div style={{marginTop:20}}>
+      <button className="jfl-cta" style={{padding:14,fontSize:15,fontWeight:700,width:"100%",opacity:allVoted?1:.3,pointerEvents:allVoted?"auto":"none",transition:"opacity .3s"}} onClick={function(){if(h2h.qi+1>=h2h.qs.length){resolveH2H(h2h.perPerson);}else{setH2H(function(p){return Object.assign({},p,{qi:p.qi+1});});}}}>{h2h.qi+1>=h2h.qs.length?"See results \u2192":"Next question \u2192"}</button>
+    </div>
   </div>
 </div>;
 

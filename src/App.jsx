@@ -277,9 +277,9 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     {/* ── top bar ── */}
     <div style={{padding:"12px 20px 0",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,position:"relative",zIndex:1}}>
       <div style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>Madden Frameworks</div>
-      <div style={{display:"flex",alignItems:"center",gap:8}}>
-        <button onClick={cycleTheme} style={{background:"none",border:"none",padding:8,cursor:"pointer",fontSize:22,opacity:.6,lineHeight:1}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"\uD83C\uDF19":"\u2600\uFE0F";})()}</button>
-        <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:8,cursor:"pointer",fontSize:22,opacity:.6,lineHeight:1}}>{"\u2139\uFE0F"}</button>
+      <div style={{display:"flex",alignItems:"center",gap:14}}>
+        <button onClick={cycleTheme} style={{background:"none",border:"none",padding:6,cursor:"pointer",fontSize:20,opacity:.7,lineHeight:1}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"\uD83C\uDF19":"\u2600\uFE0F";})()}</button>
+        <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:6,cursor:"pointer",fontSize:20,lineHeight:1,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))"}}>{"ℹ️"}</button>
       </div>
     </div>
 
@@ -335,9 +335,9 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         <div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
         <div style={{fontSize:7,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div>
       </div>
-      <div style={{display:"flex",alignItems:"center",gap:4}}>
-        <button onClick={cycleTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.7}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"🌙":"☀️";})()}</button>
-        <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))",zIndex:1}}>{"ℹ️"}</button>
+      <div style={{display:"flex",alignItems:"center",gap:14}}>
+        <button onClick={cycleTheme} style={{background:"none",border:"none",padding:6,cursor:"pointer",fontSize:20,opacity:.7,lineHeight:1}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"🌙":"☀️";})()}</button>
+        <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:6,cursor:"pointer",fontSize:20,lineHeight:1,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))",zIndex:1}}>{"ℹ️"}</button>
       </div>
     </div>
 
@@ -607,9 +607,9 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           <span style={{width:1,height:12,background:"var(--bdr)",display:"inline-block"}}></span>
           <span style={{fontSize:12,fontWeight:400,color:"var(--tx3)"}}>{"Option "+(resIdx+1)+" of "+results.length}</span>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:8,zIndex:1}}>
-          <button onClick={cycleTheme} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,opacity:.7}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"🌙":"☀️";})()}</button>
-          <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:2,cursor:"pointer",fontSize:14,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))"}}>{"ℹ️"}</button>
+        <div style={{display:"flex",alignItems:"center",gap:14,zIndex:1}}>
+          <button onClick={cycleTheme} style={{background:"none",border:"none",padding:6,cursor:"pointer",fontSize:20,opacity:.7,lineHeight:1}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"🌙":"☀️";})()}</button>
+          <button onClick={function(){setAboutOpen(true);}} style={{background:"none",border:"none",padding:6,cursor:"pointer",fontSize:20,lineHeight:1,filter:"drop-shadow(0 0 4px rgba(255,255,255,.15))"}}>{"ℹ️"}</button>
         </div>
       </div>
       {/* ═══ OPTION 1: FULL DRAMATIC REVEAL ═══ */}

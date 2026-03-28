@@ -463,7 +463,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           </div>
         </div>
       </div>
-      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});var ob=getObvious(sel,rests,mctx,activeObvRules);if(ob){setSel(function(s){return Object.assign({},s,{ob:ob});});go("intercept");}else{go("step2");}}}} style={{opacity:sel.sp.length===0?0.4:1,flexDirection:"row",gap:0,justifyContent:"center"}}><span style={{opacity:.55}}>{"Next:"}</span><span style={{padding:"0 6px"}}>{"Choose Mood"}</span><span style={{opacity:.55}}>{"→"}</span></button></div>
+      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});var ob=getObvious(sel,rests,mctx,activeObvRules);if(ob){setSel(function(s){return Object.assign({},s,{ob:ob});});go("intercept");}else{go("step2");}}}} style={{opacity:sel.sp.length===0?.3:1,pointerEvents:sel.sp.length===0?"none":"auto",transition:"opacity .3s",flexDirection:"row",gap:0,justifyContent:"center"}}><span style={{opacity:.55}}>{"Next:"}</span><span style={{padding:"0 6px"}}>{"Choose Mood"}</span><span style={{opacity:.55}}>{"→"}</span></button></div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>
   </div>}
@@ -481,7 +481,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?0.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
       </div>
       {sel.sp.length>0&&<div style={{marginTop:12,fontSize:12,color:"var(--tx3)",fontWeight:500}}>{sel.sp.length+(sel.xa||sel.xk?("+"+(sel.xa+sel.xk)):"")+" people"+(sel.kf||sel.xk>0?" \u00B7 Kid-safe active":"")}</div>}
-      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setBusy(true);setTimeout(function(){setRes(top3(scoreAll(rests,sel,ppl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);}}} style={{opacity:sel.sp.length===0?0.4:1}}>{"Get "+mctx.label+" Recommendation"}</button></div>
+      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setBusy(true);setTimeout(function(){setRes(top3(scoreAll(rests,sel,ppl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);}}} style={{opacity:sel.sp.length===0?.3:1,pointerEvents:sel.sp.length===0?"none":"auto",transition:"opacity .3s"}}>{"Get "+mctx.label+" Recommendation"}</button></div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>
   </div>}
@@ -1881,7 +1881,7 @@ return <div className="fade">
 <span style={{fontSize:11,color:on?"var(--tx1)":"var(--tx2)",textAlign:"center",lineHeight:"1.35",fontWeight:400}}>{fmtDesc(m.desc)}</span>
 </button>;})}
 </div>
-<div style={{marginTop:"auto",paddingTop:20,paddingBottom:70}}><button className="jfl-cta" onClick={function(){setDirectConfirm(true);}} style={{opacity:sel.mood?1:.4}}>{"Lock it in"}</button></div>
+<div style={{marginTop:"auto",paddingTop:20,paddingBottom:70}}><button className="jfl-cta" onClick={function(){setDirectConfirm(true);}} style={{opacity:sel.mood?1:.3,pointerEvents:sel.mood?"auto":"none",transition:"opacity .3s"}}>{"Lock it in"}</button></div>
 </div>
 </div>;
 }
@@ -2071,9 +2071,9 @@ return <div key={key} className={"jfl-card stagger-"+(i+1)} style={{padding:16,t
 </div>;
 })}
 </div>
-{/* Submit button - only when all 3 pending */}
-{(function(){var allPending=pend[0]&&pend[1]&&pend[2];var anyUnanswered=qs.some(function(q,i){var key="*"+(phase==="narrow"?"n":"r")+round+"q"+i;return!ans[key];});if(!allPending||!anyUnanswered)return null;return <div style={{marginTop:16}}>
-<button className="jfl-cta" style={{padding:14,fontSize:16,fontWeight:700,width:"100%"}} onClick={function(){
+{/* Submit button - always visible, lights up when ready */}
+{(function(){var allPending=pend[0]&&pend[1]&&pend[2];var anyUnanswered=qs.some(function(q,i){var key="*"+(phase==="narrow"?"n":"r")+round+"q"+i;return!ans[key];});var ready=allPending&&anyUnanswered;return <div style={{marginTop:16}}>
+<button className="jfl-cta" style={{padding:14,fontSize:16,fontWeight:700,width:"100%",opacity:ready?1:.3,pointerEvents:ready?"auto":"none",transition:"opacity .3s"}} onClick={function(){
 var newAns=Object.assign({},ans);
 var newDisagrees=disagrees;
 for(var i=0;i<3;i++){

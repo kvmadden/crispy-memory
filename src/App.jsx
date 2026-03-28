@@ -336,7 +336,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     {/* ── footer ── */}
     <div style={{padding:"8px 28px 16px",textAlign:"center",flexShrink:0,position:"relative",zIndex:1}}>
       <div style={{fontSize:9,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase",opacity:.5}}>{"\u00A9 2026 Madden Frameworks"}</div>
-      <div style={{fontSize:11,color:"var(--tx3)",marginTop:3,fontStyle:"italic",opacity:.4}}>{"Built different. Eats better."}</div>
+      <div style={{fontSize:11,color:"var(--tx3)",marginTop:3,fontStyle:"italic",opacity:.4}}>{"Smart systems. Full stomachs."}</div>
     </div>
   </div>;})()}
 

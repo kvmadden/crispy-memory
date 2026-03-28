@@ -304,10 +304,10 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
           {[{e:"👥",l:"Squad"},{e:"✨",l:"Vibes"},{e:"🍽️",l:"Yum"}].map(function(step,si){
             return <React.Fragment key={si}>
-              {si>0&&<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16,animation:"symFill"+si+" 7s ease-in-out infinite"}}><span style={{fontSize:18,fontWeight:800,color:"var(--ac)"}}>{si===1?"+":"="}</span></div>}
+              {si>0&&<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16,animation:"symFill"+si+" 4.5s ease-in-out infinite"}}><span style={{fontSize:18,fontWeight:800,color:"var(--ac)"}}>{si===1?"+":"="}</span></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>
-                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 7s ease-in-out infinite"}}>{step.e}</div>
-                <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",animation:"labelOn"+si+" 7s ease-in-out infinite"}}>{step.l}</span>
+                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 4.5s ease-in-out infinite"}}>{step.e}</div>
+                <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",animation:"labelOn"+si+" 4.5s ease-in-out infinite"}}>{step.l}</span>
               </div>
             </React.Fragment>;
           })}
@@ -2862,14 +2862,14 @@ var CSS = [
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",
 ".stagger-1{animation:fade .3s ease-out .05s both}.stagger-2{animation:fade .3s ease-out .12s both}.stagger-3{animation:fade .3s ease-out .19s both}",
 "@keyframes tada{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.96)}100%{transform:scale(1)}}",
-"@keyframes stepOn0{0%,4%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}8%,72%{box-shadow:0 0 0 2px rgba(196,149,106,.55),0 0 14px rgba(196,149,106,.2)}82%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
-"@keyframes stepOn1{0%,28%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}34%,72%{box-shadow:0 0 0 2px rgba(168,120,192,.5),0 0 12px rgba(168,120,192,.2)}82%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
-"@keyframes stepOn2{0%,54%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}60%,72%{box-shadow:0 0 0 2px rgba(244,114,182,.5),0 0 14px rgba(244,114,182,.2)}82%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
-"@keyframes symFill1{0%,8%{opacity:0;transform:scale(.5)}14%{opacity:1;transform:scale(1.15)}18%,72%{opacity:1;transform:scale(1)}82%,100%{opacity:0;transform:scale(1)}}",
-"@keyframes symFill2{0%,34%{opacity:0;transform:scale(.5)}40%{opacity:1;transform:scale(1.15)}44%,72%{opacity:1;transform:scale(1)}82%,100%{opacity:0;transform:scale(1)}}",
-"@keyframes labelOn0{0%,4%{color:var(--tx3);text-shadow:none}8%,72%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}82%,100%{color:var(--tx3);text-shadow:none}}",
-"@keyframes labelOn1{0%,28%{color:var(--tx3);text-shadow:none}34%,72%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}82%,100%{color:var(--tx3);text-shadow:none}}",
-"@keyframes labelOn2{0%,54%{color:var(--tx3);text-shadow:none}60%,72%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}82%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes stepOn0{0%,5%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}10%,68%{box-shadow:0 0 0 2px rgba(196,149,106,.55),0 0 14px rgba(196,149,106,.2)}80%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
+"@keyframes stepOn1{0%,28%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}34%,68%{box-shadow:0 0 0 2px rgba(244,114,182,.45),0 0 12px rgba(244,114,182,.2)}80%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
+"@keyframes stepOn2{0%,52%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}58%,68%{box-shadow:0 0 0 2px rgba(244,114,182,.5),0 0 14px rgba(244,114,182,.2)}80%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
+"@keyframes symFill1{0%,10%{opacity:0;transform:scale(.5)}16%{opacity:1;transform:scale(1.15)}20%,68%{opacity:1;transform:scale(1)}80%,100%{opacity:0;transform:scale(1)}}",
+"@keyframes symFill2{0%,34%{opacity:0;transform:scale(.5)}40%{opacity:1;transform:scale(1.15)}44%,68%{opacity:1;transform:scale(1)}80%,100%{opacity:0;transform:scale(1)}}",
+"@keyframes labelOn0{0%,5%{color:var(--tx3);text-shadow:none}10%,68%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}80%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn1{0%,28%{color:var(--tx3);text-shadow:none}34%,68%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}80%,100%{color:var(--tx3);text-shadow:none}}",
+"@keyframes labelOn2{0%,52%{color:var(--tx3);text-shadow:none}58%,68%{color:var(--tx1);text-shadow:0 0 8px rgba(244,114,182,.25)}80%,100%{color:var(--tx3);text-shadow:none}}",
 ".landingPulse{animation:ctaPulse 3s ease-in-out 2s infinite}",
 "@keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(244,114,182,.2)}50%{box-shadow:0 4px 30px rgba(244,114,182,.45)}}",
 ".slide-in{animation:slideIn .3s ease-out both}",

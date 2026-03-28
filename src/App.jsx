@@ -1897,17 +1897,26 @@ var allVoted=hq&&voters.every(function(v){return h2h.votes[v.id+"_"+h2h.qi]!==un
 
 function h2hVote(voterId,yes){
   setH2H(function(prev){
+    var voteKey=voterId+"_"+prev.qi;
+    var oldVote=prev.votes[voteKey];
     var nv=Object.assign({},prev.votes);
-    nv[voterId+"_"+prev.qi]=yes;
+    nv[voteKey]=yes;
     var np=Object.assign({},prev.perPerson);
+    var curQ=prev.qs[prev.qi];
+    if(!np[voterId])np[voterId]={};
+    /* undo old vote weights if changing answer */
+    if(oldVote!==undefined&&oldVote!==null){
+      var ow=oldVote?curQ.y:curQ.n;
+      Object.keys(ow).forEach(function(k){np[voterId][k]=(np[voterId][k]||0)-ow[k];});
+    }
+    /* apply new vote weights */
     if(yes!==null){
-      var curQ=prev.qs[prev.qi];
-      if(!np[voterId])np[voterId]={};
       var w=yes?curQ.y:curQ.n;
       Object.keys(w).forEach(function(k){np[voterId][k]=(np[voterId][k]||0)+w[k];});
     }
+    var wasAllVoted=voters.every(function(v){return prev.votes[v.id+"_"+prev.qi]!==undefined;});
     var nowAllVoted=voters.every(function(v){return nv[v.id+"_"+prev.qi]!==undefined;});
-    if(nowAllVoted){
+    if(nowAllVoted&&!wasAllVoted){
       if(prev.qi+1>=prev.qs.length){
         setTimeout(function(){resolveH2H(np);},800);
         return Object.assign({},prev,{votes:nv,perPerson:np});
@@ -2015,17 +2024,16 @@ return <div className="fade">
         var voteKey=v.id+"_"+h2h.qi;
         var vote=h2h.votes[voteKey];
         var voted=vote!==undefined;
-        return <div key={v.id} className="jfl-card" style={{padding:14,opacity:voted?0.6:1,transition:"opacity .3s"}}>
+        return <div key={v.id} className="jfl-card" style={{padding:14}}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <span style={{fontSize:22}}>{v.emoji}</span>
             <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",flex:1}}>{v.name}</span>
-            {voted&&<span style={{fontSize:12,fontWeight:600,color:vote===true?"var(--ac)":vote===false?"var(--tx2)":"var(--tx3)"}}>{vote===true?"Yes \u2713":vote===false?"No \u2713":"idk"}</span>}
           </div>
-          {!voted&&<div style={{display:"flex",gap:8,marginTop:10}}>
-            <button className="jfl-btn" style={{flex:1,padding:10,fontSize:13,fontWeight:700}} onClick={function(){h2hVote(v.id,true);}}>Yes</button>
-            <button className="jfl-btn" style={{flex:1,padding:10,fontSize:13,fontWeight:700}} onClick={function(){h2hVote(v.id,false);}}>No</button>
-            <button className="jfl-btn" style={{flex:1,padding:10,fontSize:13,fontWeight:700}} onClick={function(){h2hVote(v.id,null);}}>idk</button>
-          </div>}
+          <div style={{display:"flex",gap:8,marginTop:10}}>
+            <button className="jfl-btn" style={{flex:1,padding:10,fontSize:13,fontWeight:700,background:vote===true?"var(--ac)":"",color:vote===true?"#fff":"",borderColor:vote===true?"var(--ac)":""}} onClick={function(){h2hVote(v.id,true);}}>Yes</button>
+            <button className="jfl-btn" style={{flex:1,padding:10,fontSize:13,fontWeight:700,background:vote===false?"var(--tx2)":"",color:vote===false?"#fff":"",borderColor:vote===false?"var(--tx2)":""}} onClick={function(){h2hVote(v.id,false);}}>No</button>
+            <button className="jfl-btn" style={{flex:1,padding:10,fontSize:13,fontWeight:700,background:vote===null&&voted?"var(--tx3)":"",color:vote===null&&voted?"#fff":"",borderColor:vote===null&&voted?"var(--tx3)":""}} onClick={function(){h2hVote(v.id,null);}}>idk</button>
+          </div>
         </div>;
       })}
     </div>

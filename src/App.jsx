@@ -127,7 +127,7 @@ function TopBar(p){var isDark=p.theme==="dark"||(p.theme==="auto"&&typeof window
 
 function BottomNav(p){var go=p.go,active=p.active,setSel=p.setSel;
 var tabs=[{id:"dashboard",l:"Dashboard",e:"💎"},{id:"decide",l:"Decide",e:"🎯"},{id:"history",l:"History",e:"📋"},{id:"settings",l:"Settings",e:"⚙️"}];
-return <div style={{display:"flex",alignItems:"center",background:"var(--bg2)",borderTop:"1px solid var(--bdr)",padding:"10px 0 14px",flexShrink:0}}>
+return <div className="btm-nav" style={{display:"flex",alignItems:"center",background:"var(--bg2)",borderTop:"1px solid var(--bdr)",padding:"10px 0 14px",flexShrink:0}}>
 {tabs.map(function(t,i){var on=t.id==="decide"?false:active===t.id;return <div key={t.id} style={{display:"contents"}}>{i>0&&<div style={{width:1,height:24,background:"var(--bdr)",opacity:.4,flexShrink:0}}></div>}<button onClick={function(){if(t.id==="decide"){go("step1");}else{go(t.id);}}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
 <span style={{fontSize:22}}>{t.e}</span>
 <span style={{fontSize:12,fontWeight:on?700:500,color:on?"var(--ac)":"var(--tx3)"}}>{t.l}</span>
@@ -184,7 +184,7 @@ var burn=useCallback(function(id){setR(function(rs){return rs.map(function(r){re
 var daysSinceRefresh=Math.floor((Date.now()-new Date(dataRefresh).getTime())/(1000*60*60*24));
 var needsRefresh=daysSinceRefresh>=90;
 var LANDING_POOL=["🍕","🌮","🍔","🍣","🥗","🍜","🥡","🍗","🌯","🥞","🧇","🍩","🥤","🍦","🥪","🍱","🧆","🥘","🍝","🍳","🥙","🍟","🥓","🧁","🍰"];
-var LANDING_ROWS=useMemo(function(){var s=7919;var ri=0;return[[13,28,26,false],[40,24,28,true],[80,30,30,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%LANDING_POOL.length;items.push({e:LANDING_POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
+var LANDING_ROWS=useMemo(function(){var s=7919;var ri=0;return[[13,22,38,false],[40,28,24,true],[80,18,32,false]].map(function(cfg){var top=cfg[0],sz=cfg[1],dur=cfg[2],rev=cfg[3];var items=[];for(var j=0;j<5;j++){s=(s*16807+ri*5+j)%2147483647;var idx=s%LANDING_POOL.length;items.push({e:LANDING_POOL[idx],sinDelay:-((j*1.3)+(s%10)/10),sinDur:(s=(s*16807)%2147483647)%3+5});}ri++;return{items:items,top:top,sz:sz,dur:dur,rev:rev};});},[]);
 var isSoloResult=(sel.sp||[]).length<=1&&!(sel.xa||0)&&!(sel.xk||0);
 var vcfg=isSoloResult?{low:{c:"var(--grn)",l:"Strong Match"},moderate:{c:"var(--yel)",l:"Decent Match"},high:{c:"var(--red)",l:"Weak Match"}}:{low:{c:"var(--grn)",l:"Low Veto Risk"},moderate:{c:"var(--yel)",l:"Moderate Risk"},high:{c:"var(--red)",l:"High Risk"}};
 var ccfg={high:{l:"High Confidence",c:"var(--grn)"},medium:{l:"Moderate",c:"var(--yel)"},low:{l:"Low",c:"var(--tx3)"}};
@@ -266,7 +266,8 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",animation:"emojiFadeIn 1.5s ease-out both"}}>
       {ROWS.map(function(row,ri){
         var content=row.items.map(function(item,ei){return <span key={ei} style={{display:"inline-block",fontSize:row.sz,padding:"0 40px",animation:"emojiSine"+ri%3+" "+item.sinDur+"s ease-in-out "+item.sinDelay+"s infinite"}}>{item.e}</span>;});
-        return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:emojiOp}}>
+        var rowOp=[emojiOp*0.7,emojiOp,emojiOp*0.55][ri]||emojiOp;
+        return <div key={ri} style={{position:"absolute",top:row.top+"%",left:0,whiteSpace:"nowrap",opacity:rowOp}}>
           <div style={{display:"inline-block",animation:"emojiScroll "+row.dur+"s linear infinite",animationDirection:row.rev?"reverse":"normal"}}>
             {content}{content}
           </div>
@@ -294,7 +295,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         </div>
         <div style={{marginTop:20,padding:"10px 16px",borderRadius:12,background:isDk?"rgba(255,255,255,.04)":"rgba(0,0,0,.05)"}}>
           <div style={{height:20,position:"relative",overflow:"hidden",width:"100%"}}>
-            <div key={flavIdx} className="slot-roll" style={{fontSize:14,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.85}}>{["End the debate.","Mood-matched dining.","No more scrolling DoorDash.","Your taste profile has opinions.","The algorithm eats first.","Vibes in. Answer out."][flavIdx%6]}</div>
+            <div key={flavIdx} className="slot-roll" style={{fontSize:14,fontWeight:500,color:"var(--ac)",fontStyle:"italic",opacity:.85}}>{["End the debate.","No more scrolling DoorDash.","Your taste profile has opinions.","Vibes in. Answer out."][flavIdx%4]}</div>
           </div>
         </div>
       </div>
@@ -323,7 +324,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     {/* ── footer ── */}
     <div style={{padding:"8px 28px 16px",textAlign:"center",flexShrink:0,position:"relative",zIndex:1}}>
       <div style={{fontSize:9,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase",opacity:.5}}>{"\u00A9 2026 Madden Frameworks"}</div>
-      <div style={{fontSize:11,color:"var(--tx3)",marginTop:3,fontStyle:"italic",opacity:.4}}>{"Smart systems. Better judgment."}</div>
+      <div style={{fontSize:11,color:"var(--tx3)",marginTop:3,fontStyle:"italic",opacity:.4}}>{"Built different. Eats better."}</div>
     </div>
   </div>;})()}
 
@@ -375,7 +376,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
       <div className="jfl-card" style={{padding:"8px 10px"}}>
         <div className="jfl-label" style={{marginBottom:6,display:"flex",alignItems:"center",gap:6}}><div style={{width:14,height:1,background:"var(--ac)",opacity:.5}}></div>Quick Resolves</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-        {(function(){var mc=mctx;var src=qrCustom||QR_DEFAULTS;var visible=src.filter(function(q){return !q.meals||q.meals.length===0||q.meals.indexOf(mc.meal)>=0;});return visible.slice(0,4);})().map(function(q,i){return <button key={i} style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"7px 8px",borderRadius:8,border:"1px solid var(--bdr)",background:"var(--bg1)",cursor:"pointer",fontFamily:"inherit",textAlign:"center"}} onClick={function(){var hk=q.g.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:q.g,mood:q.m,kf:hk,go:q.g.length>4,xa:0,xk:0,qrLabel:q.l,qrEmoji:q.e});});go("qrConfirm");}}><span style={{fontSize:14}}>{q.e}</span><span style={{fontSize:12,fontWeight:600,color:"var(--tx2)"}}>{q.l}</span></button>;})}
+        {(function(){var mc=mctx;var src=qrCustom||QR_DEFAULTS;var visible=src.filter(function(q){return !q.meals||q.meals.length===0||q.meals.indexOf(mc.meal)>=0;});return visible.slice(0,4);})().map(function(q,i){var names=q.g.map(function(id){var p=ppl.find(function(pp){return pp.id===id;});return p?p.name.split(" ")[0]:id;});var sub=names.length>3?names.slice(0,2).join(", ")+" +"+String(names.length-2):names.join(", ");return <button key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 10px",borderRadius:8,border:"1px solid var(--bdr)",background:"var(--bg1)",cursor:"pointer",fontFamily:"inherit",textAlign:"left"}} onClick={function(){var hk=q.g.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:q.g,mood:q.m,kf:hk,go:q.g.length>4,xa:0,xk:0,qrLabel:q.l,qrEmoji:q.e});});go("qrConfirm");}}><span style={{fontSize:16}}>{q.e}</span><div><div style={{fontSize:12,fontWeight:600,color:"var(--tx2)"}}>{q.l}</div><div style={{fontSize:10,color:"var(--tx3)",marginTop:1}}>{sub}</div></div></button>;})}
         </div>
       </div>
 
@@ -402,7 +403,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
               </div>
             </button>}
             <button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"rest",hfPrev:"all",hrid:top[0].id});});go("history");}} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1.15,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0}}>
-              <span style={{fontSize:14,fontWeight:700,color:"var(--yel)"}}>{"\uD83C\uDFC6"}</span>
+              <span className="crown-glow" style={{fontSize:14,fontWeight:700,color:"var(--yel)"}}>{"\uD83C\uDFC6"}</span>
               <div style={{background:"var(--bg2)",borderRadius:10,padding:"10px 4px",width:"100%",textAlign:"center",border:"2px solid var(--ac)",marginTop:3,boxShadow:"0 2px 10px rgba(244,114,182,.12)"}}>
                 <span className="podium-pop" style={{fontSize:30,display:"inline-block",animationDelay:".15s"}}>{top[0].emoji}</span>
                 <div style={{fontSize:13,fontWeight:700,color:"var(--tx1)",marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[0].sn||top[0].name}</div>
@@ -422,9 +423,9 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
       {/* ── Stats row ── */}
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
-        <button className="jfl-stat" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"favs"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid var(--ac)"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#E8458A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return r.fav;}).length}</div><div className="jfl-stat-l">Favorites</div></button>
-        <button className="jfl-stat" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"active"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid #D4A574"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#D4A574,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return!r.bo;}).length}</div><div className="jfl-stat-l">In Rotation</div></button>
-        <button className="jfl-stat" onClick={function(){go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid",borderImage:"linear-gradient(135deg,#F472B6,#C4956A) 1"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.reduce(function(s,r){return s+r.to;},0)}</div><div className="jfl-stat-l">Total Orders</div></button>
+        <button className="jfl-stat float-in" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"favs"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid var(--ac)",animationDelay:".2s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#E8458A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return r.fav;}).length}</div><div className="jfl-stat-l">Favorites</div></button>
+        <button className="jfl-stat float-in" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"active"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid #D4A574",animationDelay:".3s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#D4A574,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return!r.bo;}).length}</div><div className="jfl-stat-l">In Rotation</div></button>
+        <button className="jfl-stat float-in" onClick={function(){go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid",borderImage:"linear-gradient(135deg,#F472B6,#C4956A) 1",animationDelay:".4s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.reduce(function(s,r){return s+r.to;},0)}</div><div className="jfl-stat-l">Total Orders</div></button>
       </div>
 
     </div>
@@ -1874,7 +1875,7 @@ return <div className="fade">
 <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
 <div style={{fontSize:13,color:"var(--tx2)",marginBottom:14}}>Pick what feels right. This shapes which restaurants surface.</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
-{MOODS.map(function(m){var on=sel.mood===m.id;return <button key={m.id} onClick={function(){up("mood",m.id);}} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"16px 8px 14px",borderRadius:12,border:on?"2px solid "+m.c:"1px solid var(--bdr)",background:on?"var(--bg2)":"var(--bg1)",cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+{MOODS.map(function(m){var on=sel.mood===m.id;var hex=m.c;var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return <button key={m.id} onClick={function(){up("mood",m.id);}} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"16px 8px 14px",borderRadius:12,border:on?"2px solid "+m.c:"1px solid var(--bdr)",background:on?"rgba("+r+","+g+","+b+",.08)":"var(--bg1)",cursor:"pointer",fontFamily:"inherit",transition:"all .15s",boxShadow:on?"0 0 12px rgba("+r+","+g+","+b+",.15)":"none"}}>
 <span style={{fontSize:24}}>{m.emoji}</span>
 <span style={{fontSize:12,fontWeight:700,color:on?m.c:"var(--tx1)",textAlign:"center",lineHeight:"1.2",marginTop:8}}>{m.label}</span>
 <div style={{width:20,height:1,background:on?m.c:"var(--bdr)",marginTop:6,marginBottom:6,borderRadius:1,opacity:.5}}></div>
@@ -2840,8 +2841,10 @@ var CSS = [
 ".theme-light .jfl-cta-hero{box-shadow:0 3px 16px rgba(214,36,107,.25)}",
 "@keyframes ctaGlowLight{0%,100%{box-shadow:0 3px 16px rgba(214,36,107,.2)}50%{box-shadow:0 5px 28px rgba(214,36,107,.4),0 0 40px rgba(212,149,106,.15)}}",
 ".theme-light .jfl-cta-hero{animation:ctaGlowLight 3s ease-in-out infinite}",
-".theme-light .jfl-card{border-color:#E0D0C5}",
+".theme-light .jfl-card{border-color:#E0D0C5;box-shadow:0 2px 8px rgba(120,60,40,.06)}",
 ".theme-light .jfl-chip.on{border-color:#D6246B;background:rgba(214,36,107,.08);color:#D6246B}",
+".theme-light .jfl-stat{box-shadow:0 2px 8px rgba(120,60,40,.06)}",
+".theme-light .btm-nav{box-shadow:0 -4px 12px rgba(120,60,40,.08)}",
 ".theme-light .jfl-pill.on{background:linear-gradient(135deg,#E8458A,#D4956A)}",
 "@media(prefers-color-scheme:light){.theme-auto{--bg0:#FBF7F4;--bg1:#FFFFFF;--bg2:#F8F2ED;--bdr:#E5D5CA;--tx1:#1A1210;--tx2:#5C4A42;--tx3:#9A857A;--ac:#D6246B;--grn:#A07828;--yel:#B8860B;--red:#C0392B}.theme-auto .jfl-cta{background:linear-gradient(135deg,#E8458A,#D4956A);text-shadow:0 1px 3px rgba(0,0,0,.15)}.theme-auto .jfl-cta-hero{box-shadow:0 3px 16px rgba(214,36,107,.25);animation:ctaGlowLight 3s ease-in-out infinite}.theme-auto .jfl-card{border-color:#E0D0C5}.theme-auto .jfl-chip.on{border-color:#D6246B;background:rgba(214,36,107,.08);color:#D6246B}.theme-auto .jfl-pill.on{background:linear-gradient(135deg,#E8458A,#D4956A)}}",
 "*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}",
@@ -2861,7 +2864,10 @@ var CSS = [
 ".slot-roll{animation:slotRoll 6s cubic-bezier(.23,1,.32,1) both}",
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",
 ".stagger-1{animation:fade .3s ease-out .05s both}.stagger-2{animation:fade .3s ease-out .12s both}.stagger-3{animation:fade .3s ease-out .19s both}",
-"@keyframes tada{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.96)}100%{transform:scale(1)}}",
+"@keyframes tada{0%{opacity:0;transform:scale(.3) rotate(-8deg)}40%{opacity:1;transform:scale(1.12) rotate(3deg)}65%{transform:scale(.95) rotate(-1deg)}85%{transform:scale(1.02) rotate(0deg)}100%{transform:scale(1) rotate(0deg)}}",
+"@keyframes crownGlow{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 8px rgba(251,191,36,.5))}}",
+".crown-glow{animation:crownGlow 2s ease-in-out infinite}",
+"@keyframes chipBounce{0%{transform:scale(1)}50%{transform:scale(.94)}100%{transform:scale(1)}}",
 "@keyframes stepOn0{0%,5%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}10%,70%{box-shadow:0 0 0 2px rgba(196,149,106,.55),0 0 14px rgba(196,149,106,.2)}90%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
 "@keyframes stepOn1{0%,28%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}34%,70%{box-shadow:0 0 0 2px rgba(201,26,94,.45),0 0 12px rgba(201,26,94,.15)}90%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
 "@keyframes stepOn2{0%,52%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}58%,62%{box-shadow:0 0 0 2px rgba(90,60,40,.5),0 0 14px rgba(90,60,40,.15)}65%{box-shadow:0 0 0 3px rgba(90,60,40,.6),0 0 22px rgba(90,60,40,.25)}70%{box-shadow:0 0 0 2px rgba(90,60,40,.5),0 0 14px rgba(90,60,40,.15)}90%,100%{box-shadow:0 0 0 0 transparent,0 0 0 transparent}}",
@@ -2900,6 +2906,7 @@ var CSS = [
 ".jfl-nav{padding:14px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg1);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx2)}",
 ".jfl-qr{display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg2);cursor:pointer;font-family:inherit;text-align:left}",
 ".jfl-chip{display:flex;align-items:center;gap:8px;padding:11px 14px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg1);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx2);transition:all .12s}",
+".jfl-chip:active{animation:chipBounce .15s ease-out}",
 ".jfl-chip.on{border-color:var(--ac);background:var(--bg2);color:var(--ac)}",
 ".jfl-pill{padding:7px 12px;border-radius:20px;border:1px solid var(--bdr);background:var(--bg1);color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s}",
 ".jfl-pill.on{border-color:var(--ac);background:var(--ac);color:white;text-shadow:0 1px 2px rgba(0,0,0,.25)}",

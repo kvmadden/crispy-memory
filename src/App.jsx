@@ -74,8 +74,8 @@ function fmtDate(d){if(!d)return"—";var dt=new Date(d);var m=dt.getMonth()+1,d
 function getAc(r,sc){var m={solo:"acS",couple:"acC",family:"acF",group:"acG"};var k=m[sc];if(k&&r[k])return r[k];var fb=r.acC||r.acS||r.acF||r.acG||null;return fb;}
 
 /* SCORING ENGINE */
-function scoreAll(rr,sel,ppl,hist,mc,gs2){try{if(!gs2)gs2=GLOBAL_DEFAULTS;var kidIds=ppl.filter(function(p){return p.age!=="adult";}).map(function(p){return p.id;});var hasKids=sel.sp.some(function(id){return kidIds.indexOf(id)>=0;})||(sel.xk||0)>0;var xa=sel.xa||0,xk=sel.xk||0;var gs=sel.sp.length+xa+xk,isGrp=gs>3,isSolo=gs===1,isT=sel.mood==="sweet-treat";var rm={};(hist||[]).forEach(function(h){if(!rm[h.rid])rm[h.rid]={u:0,d:0};if(h.rating==="up")rm[h.rid].u++;if(h.rating==="down")rm[h.rid].d++;});var mwm={healthy:{h:3,c:-1,t:-1},balanced:{h:1.2,c:1,t:.5},comfort:{h:-.5,c:3,t:.5},"trash-goblin":{h:-2,c:2.5,t:1},"sweet-treat":{h:-1,c:.5,t:4},"kid-peace":{h:0,c:1,t:.5},"crowd-survival":{h:0,c:1,t:0},"safe-default":{h:.5,c:.5,t:0},roulette:{h:0,c:0,t:0}};var bm={cheap:1,normal:2,flexible:3,feast:4},sm={fast:1,normal:2};var FEMALE_IDS_S=ppl.filter(function(p){return p.g==="f";}).map(function(p){return p.id;});var gtp={adv:.5,hc:.5,sp:.5,meat:.5,sweet:.5};(function(){var members=sel.sp.map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(Boolean);if(members.length>0){var sums={adv:0,hc:0,sp:0,meat:0,sweet:0},tw=0;members.forEach(function(p){var w=(gs2.femaleWeight&&FEMALE_IDS_S.indexOf(p.id)>=0)?1.3:1;["adv","hc","sp","meat","sweet"].forEach(function(k){sums[k]+=(p[k]||.5)*w;});tw+=w;});if(tw>0)["adv","hc","sp","meat","sweet"].forEach(function(k){gtp[k]=sums[k]/tw;});}})();var sc=rr.filter(function(r){return!r.bo&&isOpenNow(r.id);}).map(function(r){r=Object.assign({hs:.5,cs:.5,ts:.3,ks:.5,gs:.5,ls:.3,rs:.5,ss:.5,bl:2,sl:2,to:0,orders:[],tags:[],ctx:[]},r);var s=50,re=[],co=[];var mw=mwm[sel.mood]||{};var ms=(mw.h||0)*r.hs*10+(mw.c||0)*r.cs*10+(mw.t||0)*r.ts*10;s+=ms;if(ms>8)re.push("Strong mood fit");var tps=0;tps+=(gtp.hc-.5)*r.hs*12;tps+=((1-gtp.hc)-.5)*r.cs*8;tps+=(gtp.sweet-.5)*r.ts*10;tps+=(gtp.adv-.5)*(1-r.rs)*8;tps+=((1-gtp.adv)-.5)*r.rs*6;if(r.cat==="burgers"||r.cat==="fast-food")tps+=(gtp.meat-.5)*8;if(r.cat==="healthy")tps+=(gtp.hc-.5)*10;s+=tps;if(tps>5)re.push("Good taste fit");if(tps<-5)co.push("Taste mismatch");if(r.spicy===true||r.spicy===2){var avgSp=gtp.sp||.5;if(avgSp<.3){s-=8;co.push("Too spicy for this group");}else if(avgSp>=.6)s+=3;}if(r.spicy==="optional"){var avgSp2=gtp.sp||.5;if(avgSp2>=.6)s+=2;}if(sel.mood==="roulette")s+=(Math.random()-.3)*22;var bt=bm[sel.budget]||2,bd=Math.abs(r.bl-bt);if(bd===0){s+=8;re.push("Budget aligned");}else if(bd===1)s+=2;else{s-=bd*6;co.push("Budget mismatch");}var st=sm[sel.speed]||2;if(r.sl<=st){s+=5;if(sel.speed==="fast"&&r.sl===1)re.push("Fast path");}else{s-=8;co.push("Speed concern");}if(sel.kf||hasKids){s+=r.ks*15-5;if(r.ks>=.7)re.push("Kid-safe");if(r.ks<.4){s-=12;co.push("Low kid compat");}}if(isGrp||sel.go){s+=r.gs*12-3;if(r.gs>=.7)re.push("Group-compatible");if(r.gs<.4)co.push("Complex group order");}if(isSolo){if(r.ss<.4)s+=3;if(r.bl<=2)s+=3;}if(gs===2&&!hasKids)s+=r.rs*5;if(sel.lo){s+=r.ls*10;if(r.ls>=.6)re.push("High leftover yield");}if(isGrp)s+=r.ss*8;if(r.fav){s+=8;re.push("Household favorite");}if(sel.fam==="safe"){s+=r.rs*12;if(r.rs>=.8)re.push("Proven reliable");}else if(sel.fam==="surprise"){s+=(1-r.rs)*8;if(r.to<4)re.push("Low frequency");}else s+=r.rs*5;/* Staleness: penalize restaurants with zero recent orders */if((r.to365||0)===0&&r.to>0){s-=8;co.push("Haven\u2019t ordered in a while");}if(r.to>10&&(r.to90||0)>0)s+=3;if(isT&&r.ts<.5)s-=15;if(gs2.dessertPenalty&&!isT&&r.cat==="dessert")s-=12;if(gs2.dessertPenalty&&!isT&&r.cat==="coffee-snack")s-=8;if(gs2.dessertPenalty&&!isT&&r.ts>=0.8&&r.cat!=="dessert")s-=8;if(sel.mood==="kid-peace"){s+=r.ks*18-5;s+=r.rs*8;}if(sel.mood==="safe-default"){s+=r.rs*15;if(r.fav)s+=10;}var rb=rm[r.id];if(rb){s+=rb.u*3;s-=rb.d*4;}if(!mc)mc=getMealContext();var mf=MEAL_FIT[r.id];if(mf){var fit=mf[mc.meal]||0.5;if(fit>=0.8){s+=10;re.push("Good for "+mc.label.toLowerCase());}else if(fit>=0.4){s+=(fit-0.5)*15;}else if(fit>=0.15){s-=15;co.push("Unusual for "+mc.label.toLowerCase());}else{s-=30;co.push("Wrong time of day");}}if(mc.treatOk&&r.ts>=0.7)s+=5;if(mc.lightBias&&r.hs>=0.6)s+=4;if(mc.lightBias&&r.cs>=0.8)s-=3;var df=DOW_FIT[r.id];if(df){var today=new Date().getDay();var todayIdx=today===0?6:today-1;var dowPct=df[todayIdx]||0;var avg=1/7;var dowSample=Math.min(r.to,30);var dowWeight=dowSample/30;var dowRaw=(dowPct-avg)*35*dowWeight;var dowCapped=Math.max(-10,Math.min(10,dowRaw));s+=dowCapped;if(dowPct>avg*1.5&&dowSample>=5)re.push("Popular on "+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][todayIdx]+"s");if(dowPct===0&&dowSample>=10){s-=5;co.push("Never ordered on "+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][todayIdx]+"s");}}/* ── Data-driven modifiers ── */var hasJ=sel.sp.indexOf("jenna")>=0,hasK=sel.sp.indexOf("kevin")>=0,kSolo=isSolo&&hasK,jInvolved=hasJ||sel.sp.some(function(id){return FEMALE_IDS_S.indexOf(id)>=0;});/* Person mods: apply each selected person's restaurant/category modifiers */sel.sp.forEach(function(pid){var person=ppl.find(function(p){return p.id===pid;});if(!person||!person.mods)return;person.mods.forEach(function(mod){if(mod.rid&&mod.rid===r.id){if(mod.solo&&!kSolo)return;s+=mod.w;if(mod.w>0)re.push(mod.label);if(mod.w<0)co.push(mod.label);}if(mod.cat&&mod.cat===r.cat){if(mod.solo&&!kSolo)return;s+=mod.w;if(mod.w>0)re.push(mod.label);if(mod.w<0)co.push(mod.label);}});});/* Restaurant ctx rules */if(r.ctx){r.ctx.forEach(function(cx){var applies=false;if(cx.when==="always")applies=true;if(cx.when==="kids"&&hasKids)applies=true;if(cx.when==="couple"&&!hasKids&&gs<=2)applies=true;if(cx.when==="solo"&&isSolo)applies=true;if(cx.when==="group"&&isGrp)applies=true;if(cx.when==="female"&&jInvolved&&!kSolo)applies=true;if(cx.when==="latenight"&&mc.meal==="latenight")applies=true;if(cx.when==="breakfast"&&mc.meal==="breakfast")applies=true;if(cx.when==="brunch"&&mc.meal==="brunch")applies=true;if(cx.when==="mood-comfort"&&sel.mood==="comfort")applies=true;if(cx.when==="mood-trash-goblin"&&sel.mood==="trash-goblin")applies=true;if(cx.when==="mood-healthy"&&sel.mood==="healthy")applies=true;if(cx.when==="mood-other"&&sel.mood!=="healthy")applies=true;if(applies){s+=cx.w;if(cx.w>0)re.push(cx.label);if(cx.w<0)co.push(cx.label);}});}/* Global: kids restaurant boosts */if(hasKids){if(r.id==="culvers"||r.id==="mcdonalds"||r.id==="wendys")s+=4;if(r.id==="cantina")s+=3;if(r.id==="taco-bell")s+=2;if(r.id==="ho-king"||r.id==="new-china"||r.id==="thai-ruby")s+=3;if(r.id==="panera"||r.id==="jersey-mikes")s+=3;}/* ── Cuisine tag boost from quiz ── */var ct=sel.ct||"";if(ct){var catMap={"burgers":["burgers","fast-food"],"asian":["asian"],"indian":["indian"],"subs":["subs"],"pizza":["pizza"],"wings":["wings"],"bbq":["bbq"],"italian":["italian"],"mexican":["mexican","fast-food"],"smoothie":["healthy"],"breakfast":["breakfast"],"donuts":["breakfast","coffee-snack"],"froyo":["dessert"],"healthy":["healthy"],"premium":[],"budget":[],"solo_late":[]};var matchCats=catMap[ct]||[];if(matchCats.indexOf(r.cat)>=0){s+=12;re.push("Matches your craving");}if(ct==="premium"&&r.bl>=3)s+=8;if(ct==="budget"&&r.bl<=1)s+=8;if(ct==="solo_late"&&mc.meal==="latenight")s+=5;}var vs=0;if(hasKids&&r.ks<.5)vs+=2;if(isGrp&&r.gs<.5)vs+=2;if(sel.mood==="healthy"&&r.hs<.4)vs++;if(bd>1)vs++;if(r.rs<.6)vs++;var vr=vs<=1?"low":vs<=3?"moderate":"high";var vtx=isSolo?{low:["Solid choice.","This one\u2019s a lock.","No-brainer.","You know you want this.","Strong pick."],moderate:["Decent option.","Could go either way.","Not your usual, but viable.","Worth considering.","On the radar."],high:["Risky pick.","Outside your comfort zone.","Bold move.","Might regret this one.","Adventurous."]}:{low:["Consensus likely.","Low household resistance.","Stable output.","Low friction.","Safe to proceed."],moderate:["Minor resistance possible.","Defensible, not unanimous.","Someone may want alternatives.","Moderate veto risk.","Proceed with awareness."],high:["Consensus unlikely.","Bold input for this group.","May trigger renegotiation.","Prepare a fallback.","High variance."]};var vfa=vtx[vr];var rHash=0;for(var ci=0;ci<r.id.length;ci++)rHash=(rHash*31+r.id.charCodeAt(ci))%vfa.length;var vf=vfa[Math.abs(rHash)%vfa.length];/* Easter eggs */if(r.id==="fresh-kitchen"&&jInvolved&&isSolo)vf="You already knew, didn\u2019t you?";if(r.id==="fresh-kitchen"&&jInvolved&&!isSolo)vf="Jenna\u2019s calling the shots here.";if(r.id==="taco-bell"&&kSolo&&mc.meal==="latenight")vf="Between you and God.";if(r.id==="crumbl")vf="You deserve this and you know it.";if(r.id==="sweetfrog")vf="It\u2019s froyo. It\u2019s basically health food.";if(r.id==="cold-stone")vf="Go big. No one\u2019s judging.";if(r.id==="ice-sssscreamin")vf="Calories don\u2019t count after 9pm.";if(r.id==="twistee-treat")vf="Sometimes you just need soft serve. No explanation needed.";if(r.id==="peach-cobbler")vf="Life is short. Eat the cobbler.";if(r.id==="krispy-kreme")vf="A dozen is a serving size if you believe in yourself.";if(r.id==="insomnia-cookies")vf="It\u2019s not insomnia if you planned it.";if(r.id==="dairy-queen")vf="Blizzards count as dinner if you\u2019re brave enough.";if(r.id==="shake-bar")vf="Milkshakes are just cold soup. Embrace it.";if(r.id==="chick-fil-a"&&vr==="low")vf="Is anyone surprised?";var scn=isT?"treat":isSolo?"solo":hasKids?(isGrp?"group":"family"):(gs>3?"group":"couple");var curMeal=mc?mc.meal:"dinner";var mealMatch=function(ml){return ml===curMeal||(curMeal==="brunch"&&ml==="breakfast");};var bo=r.orders.find(function(o){return o.sc===scn&&o.ml&&mealMatch(o.ml);})||r.orders.find(function(o){return o.ml&&mealMatch(o.ml);})||r.orders.find(function(o){return o.sc===scn&&!o.ml;})||r.orders.find(function(o){return o.sc===scn;})||r.orders.find(function(o){return o.sc==="couple"&&!o.ml;})||r.orders[0]||null;var conf=s>75?"high":s>55?"medium":"low";return{rid:r.id,r:r,score:Math.round(s*10)/10,reasons:re.slice(0,4),concerns:co.slice(0,3),vetoRisk:vr,vetoFlavor:vf,confidence:conf,order:bo,tags:r.tags,eta:getETA(r.id),ddLink:getDDLink(r.id)};});sc.sort(function(a,b){return b.score-a.score;});return sc;}catch(e){console.error("scoreAll error:",e);return[];}}
-function top3(sc){if(sc.length<3)return sc.slice(0,3);var w=sc[0],wc=w.r.cat;var b1=sc.slice(1).find(function(s){return s.r.cat!==wc;})||sc[1];var b2=sc.slice(1).find(function(s){return s.rid!==b1.rid&&s.r.cat!==wc&&s.r.cat!==b1.r.cat;})||sc.find(function(s){return s.rid!==w.rid&&s.rid!==b1.rid;})||sc[2];return[w,b1,b2].filter(Boolean);}
+function scoreAll(rr,sel,ppl,hist,mc,gs2){try{if(!gs2)gs2=GLOBAL_DEFAULTS;var kidIds=ppl.filter(function(p){return p.age!=="adult";}).map(function(p){return p.id;});var hasKids=sel.sp.some(function(id){return kidIds.indexOf(id)>=0;})||(sel.xk||0)>0;var xa=sel.xa||0,xk=sel.xk||0;var gs=sel.sp.length+xa+xk,isGrp=gs>3,isSolo=gs===1,isT=sel.mood==="sweet-treat";var rm={};(hist||[]).forEach(function(h){if(!rm[h.rid])rm[h.rid]={u:0,d:0};if(h.rating==="up")rm[h.rid].u++;if(h.rating==="down")rm[h.rid].d++;});var mwm={healthy:{h:3,c:-1,t:-1},balanced:{h:1.2,c:1,t:.5},comfort:{h:-.5,c:3,t:.5},"trash-goblin":{h:-2,c:2.5,t:1},"sweet-treat":{h:-1,c:.5,t:4},"kid-peace":{h:0,c:1,t:.5},"crowd-survival":{h:0,c:1,t:0},"safe-default":{h:.5,c:.5,t:0},roulette:{h:0,c:0,t:0}};var bm={cheap:1,normal:2,flexible:3,feast:4},sm={fast:1,normal:2};var FEMALE_IDS_S=ppl.filter(function(p){return p.g==="f";}).map(function(p){return p.id;});var gtp={adv:.5,hc:.5,sp:.5,meat:.5,sweet:.5};(function(){var members=sel.sp.map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(Boolean);if(members.length>0){var sums={adv:0,hc:0,sp:0,meat:0,sweet:0},tw=0;members.forEach(function(p){var w=(gs2.femaleWeight&&FEMALE_IDS_S.indexOf(p.id)>=0)?1.3:1;["adv","hc","sp","meat","sweet"].forEach(function(k){sums[k]+=(p[k]||.5)*w;});tw+=w;});if(tw>0)["adv","hc","sp","meat","sweet"].forEach(function(k){gtp[k]=sums[k]/tw;});}})();var sc=rr.filter(function(r){return!r.bo&&isOpenNow(r.id);}).map(function(r){r=Object.assign({hs:.5,cs:.5,ts:.3,ks:.5,gs:.5,ls:.3,rs:.5,ss:.5,bl:2,sl:2,to:0,orders:[],tags:[],ctx:[]},r);var s=50,re=[],co=[];var mw=mwm[sel.mood]||{};var ms=(mw.h||0)*r.hs*10+(mw.c||0)*r.cs*10+(mw.t||0)*r.ts*10;s+=ms;if(ms>8)re.push("Strong mood fit");var tps=0;tps+=(gtp.hc-.5)*r.hs*12;tps+=((1-gtp.hc)-.5)*r.cs*8;tps+=(gtp.sweet-.5)*r.ts*10;tps+=(gtp.adv-.5)*(1-r.rs)*8;tps+=((1-gtp.adv)-.5)*r.rs*6;if(r.cat==="burgers"||r.cat==="fast-food")tps+=(gtp.meat-.5)*8;if(r.cat==="healthy")tps+=(gtp.hc-.5)*10;s+=tps;if(tps>5)re.push("Good taste fit");if(tps<-5)co.push("Taste mismatch");if(r.spicy===true||r.spicy===2){var avgSp=gtp.sp||.5;if(avgSp<.3){s-=8;co.push("Too spicy for this group");}else if(avgSp>=.6)s+=3;}if(r.spicy==="optional"){var avgSp2=gtp.sp||.5;if(avgSp2>=.6)s+=2;}if(sel.mood==="roulette")s+=(Math.random()-.3)*22;var bt=bm[sel.budget]||2,bd=Math.abs(r.bl-bt);if(bd===0){s+=8;re.push("Budget aligned");}else if(bd===1)s+=2;else{s-=bd*6;co.push("Budget mismatch");}var st=sm[sel.speed]||2;if(r.sl<=st){s+=5;if(sel.speed==="fast"&&r.sl===1)re.push("Fast path");}else{s-=8;co.push("Speed concern");}if(sel.kf||hasKids){s+=r.ks*15-5;if(r.ks>=.7)re.push("Kid-safe");if(r.ks<.4){s-=12;co.push("Low kid compat");}}if(isGrp||sel.go){s+=r.gs*12-3;if(r.gs>=.7)re.push("Group-compatible");if(r.gs<.4)co.push("Complex group order");}if(isSolo){if(r.ss<.4)s+=3;if(r.bl<=2)s+=3;}if(gs===2&&!hasKids)s+=r.rs*5;if(sel.lo){s+=r.ls*10;if(r.ls>=.6)re.push("High leftover yield");}if(isGrp)s+=r.ss*8;if(r.fav){s+=8;re.push("Household favorite");}if(sel.fam==="safe"){s+=r.rs*12;if(r.rs>=.8)re.push("Proven reliable");}else if(sel.fam==="surprise"){s+=(1-r.rs)*8;if(r.to<4)re.push("Low frequency");}else s+=r.rs*5;/* Staleness: penalize restaurants with zero recent orders */if(r.to365!=null&&r.to365===0&&r.to>0){s-=8;co.push("Haven\u2019t ordered in a while");}if(r.to>10&&(r.to90||0)>0)s+=3;if(isT&&r.ts<.5)s-=15;if(gs2.dessertPenalty&&!isT&&r.cat==="dessert")s-=12;if(gs2.dessertPenalty&&!isT&&r.cat==="coffee-snack")s-=8;if(gs2.dessertPenalty&&!isT&&r.ts>=0.8&&r.cat!=="dessert")s-=8;if(sel.mood==="kid-peace"){s+=r.ks*18-5;s+=r.rs*8;}if(sel.mood==="safe-default"){s+=r.rs*15;if(r.fav)s+=10;}var rb=rm[r.id];if(rb){s+=rb.u*3;s-=rb.d*4;}if(!mc)mc=getMealContext();var mf=MEAL_FIT[r.id];if(mf){var fit=mf[mc.meal]!=null?mf[mc.meal]:0.5;if(fit>=0.8){s+=10;re.push("Good for "+mc.label.toLowerCase());}else if(fit>=0.4){s+=(fit-0.5)*15;}else if(fit>=0.15){s-=15;co.push("Unusual for "+mc.label.toLowerCase());}else{s-=30;co.push("Wrong time of day");}}if(mc.treatOk&&r.ts>=0.7)s+=5;if(mc.lightBias&&r.hs>=0.6)s+=4;if(mc.lightBias&&r.cs>=0.8)s-=3;var df=DOW_FIT[r.id];if(df){var today=new Date().getDay();var todayIdx=today===0?6:today-1;var dowPct=df[todayIdx]||0;var avg=1/7;var dowSample=Math.min(r.to,30);var dowWeight=dowSample/30;var dowRaw=(dowPct-avg)*35*dowWeight;var dowCapped=Math.max(-10,Math.min(10,dowRaw));s+=dowCapped;if(dowPct>avg*1.5&&dowSample>=5)re.push("Popular on "+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][todayIdx]+"s");if(dowPct===0&&dowSample>=10){s-=5;co.push("Never ordered on "+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][todayIdx]+"s");}}/* ── Data-driven modifiers ── */var hasJ=sel.sp.indexOf("jenna")>=0,hasK=sel.sp.indexOf("kevin")>=0,kSolo=isSolo&&hasK,jInvolved=hasJ||sel.sp.some(function(id){return FEMALE_IDS_S.indexOf(id)>=0;});/* Person mods: apply each selected person's restaurant/category modifiers */sel.sp.forEach(function(pid){var person=ppl.find(function(p){return p.id===pid;});if(!person||!person.mods)return;person.mods.forEach(function(mod){if(mod.rid&&mod.rid===r.id){if(mod.solo&&!kSolo)return;s+=mod.w;if(mod.w>0)re.push(mod.label);if(mod.w<0)co.push(mod.label);}else if(mod.cat&&mod.cat===r.cat){if(mod.solo&&!kSolo)return;s+=mod.w;if(mod.w>0)re.push(mod.label);if(mod.w<0)co.push(mod.label);}});});/* Restaurant ctx rules */if(r.ctx){r.ctx.forEach(function(cx){var applies=false;if(cx.when==="always")applies=true;if(cx.when==="kids"&&hasKids)applies=true;if(cx.when==="couple"&&!hasKids&&gs===2)applies=true;if(cx.when==="solo"&&isSolo)applies=true;if(cx.when==="group"&&isGrp)applies=true;if(cx.when==="female"&&jInvolved&&!kSolo)applies=true;if(cx.when==="latenight"&&mc.meal==="latenight")applies=true;if(cx.when==="breakfast"&&mc.meal==="breakfast")applies=true;if(cx.when==="brunch"&&mc.meal==="brunch")applies=true;if(cx.when==="mood-comfort"&&sel.mood==="comfort")applies=true;if(cx.when==="mood-trash-goblin"&&sel.mood==="trash-goblin")applies=true;if(cx.when==="mood-healthy"&&sel.mood==="healthy")applies=true;if(cx.when==="mood-other"&&sel.mood!=="healthy")applies=true;if(applies){s+=cx.w;if(cx.w>0)re.push(cx.label);if(cx.w<0)co.push(cx.label);}});}/* Global: kids restaurant boosts */if(hasKids){if(r.id==="culvers"||r.id==="mcdonalds"||r.id==="wendys")s+=4;if(r.id==="cantina")s+=3;if(r.id==="taco-bell")s+=2;if(r.id==="ho-king"||r.id==="new-china"||r.id==="thai-ruby")s+=3;if(r.id==="panera"||r.id==="jersey-mikes")s+=3;}/* ── Cuisine tag boost from quiz ── */var ct=sel.ct||"";if(ct){var catMap={"burgers":["burgers","fast-food"],"asian":["asian"],"indian":["indian"],"subs":["subs"],"pizza":["pizza"],"wings":["wings"],"bbq":["bbq"],"italian":["italian"],"mexican":["mexican","fast-food"],"smoothie":["healthy"],"breakfast":["breakfast"],"donuts":["breakfast","coffee-snack"],"froyo":["dessert"],"healthy":["healthy"],"premium":[],"budget":[],"solo_late":[]};var matchCats=catMap[ct]||[];if(matchCats.indexOf(r.cat)>=0){s+=12;re.push("Matches your craving");}if(ct==="premium"&&r.bl>=3)s+=8;if(ct==="budget"&&r.bl<=1)s+=8;if(ct==="solo_late"&&mc.meal==="latenight")s+=5;}var vs=0;if(hasKids&&r.ks<.5)vs+=2;if(isGrp&&r.gs<.5)vs+=2;if(sel.mood==="healthy"&&r.hs<.4)vs++;if(bd>1)vs++;if(r.rs<.6)vs++;var vr=vs<=1?"low":vs<=3?"moderate":"high";var vtx=isSolo?{low:["Solid choice.","This one\u2019s a lock.","No-brainer.","You know you want this.","Strong pick."],moderate:["Decent option.","Could go either way.","Not your usual, but viable.","Worth considering.","On the radar."],high:["Risky pick.","Outside your comfort zone.","Bold move.","Might regret this one.","Adventurous."]}:{low:["Consensus likely.","Low household resistance.","Stable output.","Low friction.","Safe to proceed."],moderate:["Minor resistance possible.","Defensible, not unanimous.","Someone may want alternatives.","Moderate veto risk.","Proceed with awareness."],high:["Consensus unlikely.","Bold input for this group.","May trigger renegotiation.","Prepare a fallback.","High variance."]};var vfa=vtx[vr];var rHash=0;for(var ci=0;ci<r.id.length;ci++)rHash=(rHash*31+r.id.charCodeAt(ci))%vfa.length;var vf=vfa[Math.abs(rHash)%vfa.length];/* Easter eggs */if(r.id==="fresh-kitchen"&&jInvolved&&isSolo)vf="You already knew, didn\u2019t you?";if(r.id==="fresh-kitchen"&&jInvolved&&!isSolo)vf="Jenna\u2019s calling the shots here.";if(r.id==="taco-bell"&&kSolo&&mc.meal==="latenight")vf="Between you and God.";if(r.id==="crumbl")vf="You deserve this and you know it.";if(r.id==="sweetfrog")vf="It\u2019s froyo. It\u2019s basically health food.";if(r.id==="cold-stone")vf="Go big. No one\u2019s judging.";if(r.id==="ice-sssscreamin")vf="Calories don\u2019t count after 9pm.";if(r.id==="twistee-treat")vf="Sometimes you just need soft serve. No explanation needed.";if(r.id==="peach-cobbler")vf="Life is short. Eat the cobbler.";if(r.id==="krispy-kreme")vf="A dozen is a serving size if you believe in yourself.";if(r.id==="insomnia-cookies")vf="It\u2019s not insomnia if you planned it.";if(r.id==="dairy-queen")vf="Blizzards count as dinner if you\u2019re brave enough.";if(r.id==="shake-bar")vf="Milkshakes are just cold soup. Embrace it.";if(r.id==="chick-fil-a"&&vr==="low")vf="Is anyone surprised?";var scn=isT?"treat":isSolo?"solo":hasKids?(isGrp?"group":"family"):(gs>3?"group":"couple");var curMeal=mc?mc.meal:"dinner";var mealMatch=function(ml){return ml===curMeal||(curMeal==="brunch"&&ml==="breakfast");};var bo=r.orders.find(function(o){return o.sc===scn&&o.ml&&mealMatch(o.ml);})||r.orders.find(function(o){return o.ml&&mealMatch(o.ml);})||r.orders.find(function(o){return o.sc===scn&&!o.ml;})||r.orders.find(function(o){return o.sc===scn;})||r.orders.find(function(o){return o.sc==="couple"&&!o.ml;})||r.orders[0]||null;var conf=s>75?"high":s>55?"medium":"low";return{rid:r.id,r:r,score:Math.round(s*10)/10,reasons:re.slice(0,4),concerns:co.slice(0,3),vetoRisk:vr,vetoFlavor:vf,confidence:conf,order:bo,tags:r.tags,eta:getETA(r.id),ddLink:getDDLink(r.id)};});sc.sort(function(a,b){return b.score-a.score;});return sc;}catch(e){console.error("scoreAll error:",e);return[];}}
+function top3(sc){if(sc.length<3)return sc.slice(0,3);var w=sc[0],wc=w.r.cat;var b1=sc.slice(1).find(function(s){return s.r.cat!==wc;})||sc[1]||null;if(!b1)return[w];var b2=sc.slice(1).find(function(s){return s.rid!==b1.rid&&s.r.cat!==wc&&s.r.cat!==b1.r.cat;})||sc.find(function(s){return s.rid!==w.rid&&s.rid!==b1.rid;})||sc[2]||null;return[w,b1,b2].filter(Boolean);}
 
 var SK="jfl-v3";function ld(){try{var d=JSON.parse(localStorage.getItem(SK));if(d&&d.p){d.p=d.p.map(function(p){if(p.role&&!p.freq){var rm={primary:"core",kids:"core",extended:"extended",occasional:"occasional"};p.freq=rm[p.role]||"occasional";p.age=p.role==="kids"?"child":"adult";delete p.role;}if(!p.freq)p.freq="occasional";if(!p.age)p.age="adult";if(!p.g){var femIds=["jenna","madi","emmy","jenna-mom","kevin-mom","zoe","leah","tara","amanda","zara"];p.g=femIds.indexOf(p.id)>=0?"f":"m";}return p;});}return d;}catch(e){return null;}}function sv(d){try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){}}
 
@@ -128,9 +128,9 @@ function TopBar(p){var isDark=p.theme==="dark"||(p.theme==="auto"&&typeof window
 function BottomNav(p){var go=p.go,active=p.active,setSel=p.setSel;
 var tabs=[{id:"dashboard",l:"Dashboard",e:"💎"},{id:"decide",l:"Decide",e:"🎯"},{id:"history",l:"History",e:"📋"},{id:"settings",l:"Settings",e:"⚙️"}];
 return <div className="btm-nav" style={{display:"flex",alignItems:"center",background:"var(--bg2)",borderTop:"1px solid var(--bdr)",padding:"10px 0 14px",flexShrink:0}}>
-{tabs.map(function(t,i){var on=t.id==="decide"?false:active===t.id;return <div key={t.id} style={{display:"contents"}}>{i>0&&<div style={{width:1,height:24,background:"var(--bdr)",opacity:.4,flexShrink:0}}></div>}<button onClick={function(){if(t.id==="decide"){go("step1");}else{go(t.id);}}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
+{tabs.map(function(t,i){var on=t.id==="decide"?false:active===t.id;return <div key={t.id} style={{display:"contents"}}>{i>0&&<div style={{width:1,height:24,background:"var(--bdr)",opacity:.4,flexShrink:0}}></div>}<button onClick={function(){if(t.id==="decide"){go("step1");}else{go(t.id);}}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"6px 0",transition:"color .2s, font-weight .2s"}}>
 <span style={{fontSize:22}}>{t.e}</span>
-<span style={{fontSize:12,fontWeight:on?700:500,color:on?"var(--ac)":"var(--tx3)"}}>{t.l}</span>
+<span style={{fontSize:12,fontWeight:on?700:500,color:on?"var(--ac)":"var(--tx3)",transition:"color .2s"}}>{t.l}</span>
 </button></div>;})}
 
   </div>;
@@ -176,9 +176,9 @@ var up=useCallback(function(k,v){setSel(function(s){var n=Object.assign({},s);n[
 var cycleTheme=useCallback(function(){setGs2(function(prev){var cur=prev.theme||"auto";var isDark=cur==="dark"||(cur==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return Object.assign({},prev,{theme:isDark?"light":"dark"});});},[]);
 var setGrp=useCallback(function(pp){var hk=pp.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:pp,kf:hk,go:pp.length>4,xa:0,xk:0});});},[kidIds]);
 var togP=useCallback(function(id){setSel(function(s){var has=s.sp.indexOf(id)>=0;var np=has?s.sp.filter(function(i){return i!==id;}):s.sp.concat([id]);var hk=np.some(function(pid){return kidIds.indexOf(pid)>=0;});return Object.assign({},s,{sp:np,kf:hk,go:np.length>4});});},[kidIds]);
-var resolve=useCallback(function(){setBusy(true);setTimeout(function(){var s=selRef.current;setRes(top3(scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);},[rests,ppl,hist]);
-var reroll=useCallback(function(ch){var s=selRef.current;var sc=scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?0.2:0.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
-var deadlock=useCallback(function(){var s=selRef.current;var ds=Object.assign({},s,{sp:["kevin","jenna"],fam:"safe",mood:"safe-default"});var sc=scoreAll(rests,ds,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2);var vwt={low:0,moderate:1,high:2};sc.sort(function(a,b){if(vwt[a.vetoRisk]!==vwt[b.vetoRisk])return vwt[a.vetoRisk]-vwt[b.vetoRisk];return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
+var resolve=useCallback(function(){setBusy(true);setTimeout(function(){var s=selRef.current;setRes(top3(scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);},[rests,ppl,hist,mealOverride,customMealTimes,gs2]);
+var reroll=useCallback(function(ch){var s=selRef.current;var sc=scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?0.2:0.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist,mealOverride,customMealTimes,gs2]);
+var deadlock=useCallback(function(){var s=selRef.current;var ds=Object.assign({},s,{sp:["kevin","jenna"],fam:"safe",mood:"safe-default"});var sc=scoreAll(rests,ds,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2);var vwt={low:0,moderate:1,high:2};sc.sort(function(a,b){if(vwt[a.vetoRisk]!==vwt[b.vetoRisk])return vwt[a.vetoRisk]-vwt[b.vetoRisk];return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist,mealOverride,customMealTimes,gs2]);
 var pick=useCallback(function(res){var s=selRef.current;setH(function(h){return[{id:Date.now().toString(),rid:res.rid,name:res.r.name,emoji:res.r.emoji,date:new Date().toISOString(),people:s.sp,mood:s.mood,order:res.order,rating:null}].concat(h);});setR(function(rs){return rs.map(function(re){return re.id===res.rid?Object.assign({},re,{to:re.to+1,lo:0,streak:re.streak+1}):re;});});go("dashboard");setRes(null);},[]);
 var burn=useCallback(function(id){setR(function(rs){return rs.map(function(r){return r.id===id?Object.assign({},r,{bo:true}):r;});});reroll(false);},[reroll]);
 var daysSinceRefresh=Math.floor((Date.now()-new Date(dataRefresh).getTime())/(1000*60*60*24));
@@ -201,9 +201,9 @@ return(
 
   {/* ── About panel overlay (renders on all screens) ── */}
   {aboutOpen&&(function(){var _abt=gs2.theme||"auto";var _abDk=_abt==="dark"||(_abt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:999,display:"flex",justifyContent:"flex-end"}}>
-    <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:_abDk?"rgba(0,0,0,.7)":"rgba(0,0,0,.3)",backdropFilter:"blur(4px)"}} onClick={function(){setAboutOpen(false);}}></div>
+    <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:_abDk?"rgba(0,0,0,.7)":"rgba(0,0,0,.3)",backdropFilter:"blur(4px)",cursor:"pointer"}} onClick={function(){setAboutOpen(false);}}></div>
     <div className="slide-in" style={{position:"relative",width:"85%",maxWidth:340,background:_abDk?"linear-gradient(180deg,#0D1117 0%,#131920 40%,#161B22 100%)":"linear-gradient(180deg,#FAF0EC 0%,#F5E6E0 40%,#F0DDD6 100%)",height:"100%",overflow:"auto",boxShadow:_abDk?"-8px 0 40px rgba(0,0,0,.5)":"-8px 0 40px rgba(0,0,0,.12)",borderLeft:_abDk?"1px solid rgba(244,114,182,.08)":"1px solid rgba(200,150,130,.2)"}}>
-      <button onClick={function(){setAboutOpen(false);}} style={{position:"absolute",top:16,right:16,background:_abDk?"rgba(255,255,255,.05)":"rgba(0,0,0,.05)",border:_abDk?"1px solid rgba(255,255,255,.08)":"1px solid rgba(0,0,0,.08)",borderRadius:20,width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"var(--tx3)",cursor:"pointer",zIndex:1}}>{"\u2715"}</button>
+      <button onClick={function(){setAboutOpen(false);}} style={{position:"absolute",top:16,right:16,background:_abDk?"rgba(255,255,255,.05)":"rgba(0,0,0,.05)",border:_abDk?"1px solid rgba(255,255,255,.08)":"1px solid rgba(0,0,0,.08)",borderRadius:20,width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",zIndex:1}} aria-label="Close">{"\u2715"}</button>
       <div style={{padding:"40px 20px 24px",textAlign:"center",background:_abDk?"radial-gradient(ellipse at 50% 0%,rgba(244,114,182,.08) 0%,transparent 70%)":"radial-gradient(ellipse at 50% 0%,rgba(201,26,94,.06) 0%,transparent 70%)"}}>
         <div style={{fontSize:32,fontWeight:800,letterSpacing:-1,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
         <div style={{fontSize:11,fontWeight:700,color:"var(--tx2)",marginTop:3,letterSpacing:2,textTransform:"uppercase"}}>Food Logic</div>
@@ -242,7 +242,7 @@ return(
   </div>;})()}
 
   {logoConfirm&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
-    <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.5)",backdropFilter:"blur(4px)"}} onClick={function(){setLogoConfirm(false);}}></div>
+    <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.5)",backdropFilter:"blur(4px)",cursor:"pointer"}} onClick={function(){setLogoConfirm(false);}}></div>
     <div className="pop" style={{position:"relative",background:"var(--bg1)",border:"1px solid var(--bdr)",borderRadius:16,padding:"24px 20px",width:"85%",maxWidth:300,textAlign:"center"}}>
       <div style={{fontSize:32,marginBottom:12}}>🏠</div>
       <div style={{fontSize:16,fontWeight:700,color:"var(--tx1)",marginBottom:6}}>Back to start?</div>
@@ -396,7 +396,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           {top[0]?<div style={{display:"flex",alignItems:"flex-end",justifyContent:"center",gap:8}}>
             {top[1]&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"rest",hfPrev:"all",hrid:top[1].id});});go("history");}} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0}}>
               <span style={{fontSize:12,fontWeight:700,color:"#A8B4C0"}}>2nd</span>
-              <div style={{background:"var(--bg2)",borderRadius:8,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #A8B4C0",marginTop:3,boxShadow:"0 1px 6px rgba(168,180,192,.1)"}}>
+              <div style={{background:"var(--bg2)",borderRadius:10,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #A8B4C0",marginTop:3,boxShadow:"0 1px 6px rgba(168,180,192,.1)"}}>
                 <span className="podium-pop" style={{fontSize:22,display:"inline-block",animationDelay:".3s"}}>{top[1].emoji}</span>
                 <div style={{fontSize:11,fontWeight:600,color:"var(--tx2)",marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[1].sn||top[1].name}</div>
                 <div style={{fontSize:12,fontWeight:700,color:"#A8B4C0"}}>{gCt(top[1])}</div>
@@ -412,7 +412,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
             </button>
             {top[2]&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"rest",hfPrev:"all",hrid:top[2].id});});go("history");}} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0}}>
               <span style={{fontSize:12,fontWeight:700,color:"#B8976A"}}>3rd</span>
-              <div style={{background:"var(--bg2)",borderRadius:8,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #B8976A",marginTop:3,boxShadow:"0 1px 6px rgba(184,151,106,.06)"}}>
+              <div style={{background:"var(--bg2)",borderRadius:10,padding:"10px 4px",width:"100%",textAlign:"center",border:"1px solid #B8976A",marginTop:3,boxShadow:"0 1px 6px rgba(184,151,106,.06)"}}>
                 <span className="podium-pop" style={{fontSize:20,display:"inline-block",animationDelay:".45s"}}>{top[2].emoji}</span>
                 <div style={{fontSize:11,fontWeight:600,color:"#B8976A",marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{top[2].sn||top[2].name}</div>
                 <div style={{fontSize:12,fontWeight:700,color:"#B8976A"}}>{gCt(top[2])}</div>
@@ -563,16 +563,16 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     </div>;})()||null}
 
   {/* ═══ STEP 2 ═══ */}
-  {vw==="step2"&&<MoodQuiz sel={sel} up={up} mctx={mctx} resolve={resolve} go={go} ppl={ppl}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>}
+  {vw==="step2"&&<MoodQuiz sel={sel} up={up} mctx={mctx} resolve={resolve} go={go} ppl={ppl} h2hFemale={gs2.h2hFemale!==false} onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>}
 
   {/* ═══ RESULTS ═══ */}
   {vw==="results"&&results&&(function(){
-    var exhausted=resIdx>=results.length;
+    var exhausted=!results||resIdx>=results.length;
     var rSpCount=(sel.sp||[]).length+(sel.xa||0)+(sel.xk||0);
     var rSolo=rSpCount<=1;var rDuo=rSpCount===2;
 
     if(exhausted){
-      var poolEmpty=results.length===0;
+      var poolEmpty=!results||results.length===0;
       if(poolEmpty){
         return <div className="fade">
           <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
@@ -688,11 +688,11 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         {/* Bottom buttons */}
         {!whyOpen&&<div style={{display:"flex",gap:6,marginTop:8}}>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:600,background:"rgba(244,114,182,.06)",border:"1px solid rgba(244,114,182,.15)",borderRadius:10,color:"var(--ac)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setWhyOpen(true);}}>{"Why this?"}</button>
-          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{"Not feeling this one"}</button>
+          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{"Not feeling this one"}</button>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>}
         {whyOpen&&<div style={{display:"flex",gap:6,marginTop:8}}>
-          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{"Not feeling this one"}</button>
+          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{"Not feeling this one"}</button>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>}
       </div>}
@@ -753,8 +753,8 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
         {/* Three action buttons - proportional */}
         <div style={{display:"flex",gap:6,marginTop:10}}>
-          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){setResIdx(resIdx-1);}}>{resIdx===1?"Let me see option 1 again":"Option 2 wasn\u2019t so bad"}</button>
-          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{resIdx===1?"No, not feeling this either":"Nope, this won\u2019t do either"}</button>
+          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){if(resIdx>0)setResIdx(resIdx-1);}}>{resIdx===1?"Let me see option 1 again":"Option 2 wasn\u2019t so bad"}</button>
+          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{resIdx===1?"No, not feeling this either":"Nope, this won\u2019t do either"}</button>
           <button style={{flex:2,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.5,lineHeight:"1.3"}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>
       </div>}
@@ -1025,7 +1025,7 @@ var QUIZ_QS=[
 {q:"Does {time} feel like a treat-{yourself} moment?",e:"🎉",y:{st:2,tg:2},n:{h:2,sd:1},w:["any"],m:"all"},
 {q:"Are {you} craving comfort food right now?",e:"🧀",y:{c:3},n:{h:2},w:["any"],m:"all"},
 {q:"Would {you} feel better about a healthier choice?",e:"🌿",y:{h:3},n:{c:1,tg:1},w:["any"],m:"all"},
-{q:"Are {you} too tired to care what you eat?",e:"😴",y:{sd:2,tg:1},n:{b:2},w:["any"],m:"all"},
+{q:"Are {you} too tired to care what {you} eat?",e:"😴",y:{sd:2,tg:1},n:{b:2},w:["any"],m:"all"},
 {q:"Would a sweet treat make {time} better?",e:"🧁",y:{st:3},n:{b:1,h:1},w:["any"],m:"all"},
 {q:"Are {you} craving something with bold flavors?",e:"🌮",y:{c:1,tg:2},n:{sd:1,b:1},w:["any"],m:"all"},
 {q:"Do {you} just want something simple and reliable?",e:"😌",y:{sd:3},n:{r:2},w:["any"],m:"all"},
@@ -1036,7 +1036,7 @@ var QUIZ_QS=[
 {q:"Have {you} been eating too much junk lately?",e:"🫣",y:{h:3},n:{tg:1,c:1},w:["any"],m:"all"},
 {q:"Do {you} genuinely not care what shows up?",e:"🤷‍♀️",y:{r:2,sd:1},n:{b:1},w:["any"],m:"all"},
 {q:"Are {you} feeling active and energized right now?",e:"🏃‍♀️",y:{h:3},n:{c:1},w:["any"],m:"all"},
-{q:"Would {you} describe your hunger right now as 'hangry'?",e:"😤",y:{tg:2,c:1},n:{b:1},w:["any"],m:"all"},
+{q:"Would {you} describe {your} hunger right now as 'hangry'?",e:"😤",y:{tg:2,c:1},n:{b:1},w:["any"],m:"all"},
 {q:"Is tonight a sweatpants-on-the-couch kind of night?",e:"🛋️",y:{c:3,tg:1},n:{b:1},w:["any"],m:"dinner,latenight"},
 {q:"Is this a movie night kind of dinner?",e:"🎬",y:{c:2,st:1},n:{b:1},w:["any"],m:"dinner"},
 {q:"Does takeout in bed sound perfect right now?",e:"🥡",y:{c:2,tg:1},n:{b:1},w:["any"],m:"dinner,latenight"},
@@ -1044,8 +1044,8 @@ var QUIZ_QS=[
 {q:"Could a good glass of wine make tonight perfect?",e:"🍷",y:{c:1,tg:1,b:1},n:{h:2},w:["any"],m:"dinner"},
 {q:"Are {you} a coffee-first kind of person today?",e:"☕",y:{b:2,sd:1},n:{st:1},w:["any"],m:"breakfast,brunch"},
 {q:"Would pancakes make this morning perfect?",e:"🥞",y:{c:2,st:1},n:{h:2},w:["any"],m:"breakfast,brunch",ct:"breakfast"},
-{q:"Are {you} in a 'just give {you} coffee and a pastry' mood?",e:"🥐",y:{sd:2,st:1},n:{h:1},w:["any"],m:"breakfast,brunch"},
-{q:"Do {you} want something that will actually fuel your morning?",e:"💪",y:{h:3},n:{c:1},w:["any"],m:"breakfast,brunch"},
+{q:"Are {you} in a 'just coffee and a pastry' mood?",e:"🥐",y:{sd:2,st:1},n:{h:1},w:["any"],m:"breakfast,brunch"},
+{q:"Do {you} want something that will actually fuel {your} morning?",e:"💪",y:{h:3},n:{c:1},w:["any"],m:"breakfast,brunch"},
 {q:"Would a big hearty breakfast set the tone for a good day?",e:"🍳",y:{c:2,b:1},n:{h:2},w:["any"],m:"breakfast,brunch"},
 {q:"Is this a donuts-and-no-regrets kind of morning?",e:"🍩",y:{st:3,tg:1},n:{h:2},w:["any"],m:"breakfast,brunch",ct:"donuts"},
 {q:"Are {you} trying to be good about breakfast today?",e:"🫐",y:{h:3},n:{c:1,st:1},w:["any"],m:"breakfast,brunch"},
@@ -1055,8 +1055,8 @@ var QUIZ_QS=[
 {q:"Is this a rushed lunch where speed matters?",e:"💼",y:{sd:2},n:{b:2,c:1},w:["any"],m:"lunch"},
 {q:"Would a big lunch make the afternoon better?",e:"🍱",y:{c:2,tg:1},n:{h:2},w:["any"],m:"lunch"},
 {q:"Are {you} going to regret a heavy lunch later?",e:"😬",y:{h:3},n:{tg:1,c:1},w:["any"],m:"lunch"},
-{q:"Is this more of a sandwich-at-your-desk situation?",e:"🥪",y:{sd:2,b:1},n:{c:1},w:["any"],m:"lunch"},
-{q:"Would a light lunch leave you starving by 3pm?",e:"😟",y:{c:2,tg:1},n:{h:2,b:1},w:["any"],m:"lunch"},
+{q:"Is this more of a sandwich-at-the-desk situation?",e:"🥪",y:{sd:2,b:1},n:{c:1},w:["any"],m:"lunch"},
+{q:"Would a light lunch leave {you} starving by 3pm?",e:"😟",y:{c:2,tg:1},n:{h:2,b:1},w:["any"],m:"lunch"},
 {q:"Are {you} eating lunch late enough that it's basically early dinner?",e:"🕐",y:{c:2},n:{b:1,h:1},w:["any"],m:"lunch"},
 {q:"Could a really good salad actually hit the spot right now?",e:"🥗",y:{h:3},n:{c:1},w:["any"],m:"lunch"},
 {q:"Would something sweet hit the spot right now?",e:"🍬",y:{st:3},n:{h:1},w:["any"],m:"lunch"},
@@ -1064,8 +1064,8 @@ var QUIZ_QS=[
 {q:"Is the afternoon slump hitting hard right now?",e:"😩",y:{st:1,c:1},n:{h:2},w:["any"],m:"lunch"},
 {q:"Is this a midnight snack that got out of hand?",e:"🌙",y:{tg:2,st:1},n:{sd:1},w:["any"],m:"latenight"},
 {q:"Are {you} going to pretend this didn't happen tomorrow?",e:"🤫",y:{tg:3},n:{h:1},w:["any"],m:"latenight"},
-{q:"Would something warm and comforting help you sleep?",e:"🫕",y:{c:3},n:{h:1},w:["any"],m:"latenight"},
-{q:"Is this a 'treat {yourself} because you're still awake' moment?",e:"🦉",y:{st:2,tg:1},n:{sd:1},w:["any"],m:"latenight"},
+{q:"Would something warm and comforting help {you} sleep?",e:"🫕",y:{c:3},n:{h:1},w:["any"],m:"latenight"},
+{q:"Is this a 'treat {yourself} because {youre} still awake' moment?",e:"🦉",y:{st:2,tg:1},n:{sd:1},w:["any"],m:"latenight"},
 {q:"Could {you} actually go to bed without eating?",e:"🛏️",y:{h:1,b:1},n:{tg:2,c:1},w:["any"],m:"latenight"},
 {q:"Is this a lazy brunch vibe?",e:"🌴",y:{c:2,b:1},n:{sd:1},w:["any"],m:"brunch"},
 {q:"Would bottomless mimosas complete this brunch?",e:"🍊",y:{st:1,tg:1,b:1},n:{h:2},w:["any"],m:"brunch"},
@@ -1143,37 +1143,37 @@ var QUIZ_QS=[
 {q:"Is {time} a chill hangout with Leah?",e:"🎨",y:{c:2,b:1},n:{tg:1},w:["jenna-leah"],m:"all"},
 {q:"Would {you} be happy with something cozy and easy?",e:"🫕",y:{c:2,sd:1},n:{r:1},w:["jenna-leah"],m:"all"},
 {q:"Is this a 'catch up over comfort food' mood?",e:"💭",y:{c:2,b:1},n:{h:1},w:["jenna-leah"],m:"all"},
-{q:"Is {time} more low-key or are {you} going all out?",e:"🪴",y:{sd:2,c:1},n:{tg:2,st:1},w:["jenna-leah"],m:"all"},
+{q:"Is {time} more of a low-key hangout vibe?",e:"🪴",y:{sd:2,c:1},n:{tg:2,st:1},w:["jenna-leah"],m:"all"},
 {q:"Would {you} enjoy something light and fresh?",e:"🌸",y:{h:2,b:1},n:{c:1},w:["jenna-leah"],m:"all"},
 {q:"Is this a 'keep it simple and just talk' kind of {meal}?",e:"💬",y:{sd:2,b:1},n:{tg:1},w:["jenna-leah"],m:"all"},
 {q:"Is Kevin's mom in the mood for something classic?",e:"👩‍🦳",y:{sd:2,c:1},n:{r:1},w:["kevin-mom-visit"],m:"all"},
-{q:"Would we say Kevin's mom wants a sit-down-feeling meal {time}?",e:"🍽️",y:{b:2,c:1},n:{tg:1},w:["kevin-mom-visit"],m:"all"},
+{q:"Would {you} say Kevin's mom wants a sit-down-feeling meal {time}?",e:"🍽️",y:{b:2,c:1},n:{tg:1},w:["kevin-mom-visit"],m:"all"},
 {q:"Is {time} about keeping it familiar and easy?",e:"🏡",y:{sd:3},n:{r:2},w:["kevin-mom-visit"],m:"all"},
 {q:"Is Kevin's mom leaning toward something hearty and warm?",e:"🥘",y:{c:3},n:{h:1},w:["kevin-mom-visit"],m:"all"},
 {q:"Is Kevin's mom going to want her own full plate?",e:"🤔",y:{cs:2,b:1},n:{sd:1},w:["kevin-mom-visit"],m:"all"},
 {q:"Should {meal} feel a little special since Mom's here?",e:"💐",y:{b:2,c:1},n:{sd:1},w:["kevin-mom-visit"],m:"all"},
-{q:"Would Kevin's mom be fine with whatever we pick?",e:"😊",y:{sd:2},n:{cs:1,b:1},w:["kevin-mom-visit"],m:"all"},
+{q:"Would Kevin's mom be fine with whatever {you} pick?",e:"😊",y:{sd:2},n:{cs:1,b:1},w:["kevin-mom-visit"],m:"all"},
 {q:"Are Jenna's parents going to want something they recognize?",e:"👴",y:{sd:3},n:{r:2},w:["jenna-parents-visit"],m:"all"},
 {q:"Should {meal} feel a little nicer since the parents are here?",e:"🌷",y:{b:2,c:1},n:{sd:1},w:["jenna-parents-visit"],m:"all"},
 {q:"Would Jenna's mom be happy with something comfortable?",e:"👵",y:{c:2,sd:1},n:{tg:1},w:["jenna-mom-visit"],m:"all"},
 {q:"Is {time} a 'keep it crowd-friendly' situation?",e:"🎪",y:{cs:3,sd:1},n:{r:1},w:["jenna-parents-visit"],m:"all"},
 {q:"Are Jenna's parents particular about what they eat?",e:"🧐",y:{cs:2,sd:1},n:{r:1},w:["jenna-parents-visit"],m:"all"},
 {q:"Would something everyone at the table knows work best?",e:"📋",y:{sd:3,cs:1},n:{r:2},w:["jenna-parents-visit"],m:"all"},
-{q:"Should you play it safe {time}?",e:"🎭",y:{b:2},n:{sd:2},w:["jenna-parents-visit"],m:"all"},
+{q:"Should {you} play it safe {time}?",e:"🎭",y:{b:2},n:{sd:2},w:["jenna-parents-visit"],m:"all"},
 {q:"Is {time} more about survival than enjoyment?",e:"⚔️",y:{kp:1,sd:1},n:{b:2},w:["fam5"],m:"all"},
 {q:"Are {you} hoping for leftovers tomorrow?",e:"🍱",y:{c:2,cs:1},n:{st:1},w:["fam5"],m:"all"},
 {q:"Would the path of least resistance be the smart move?",e:"🧘",y:{sd:3,kp:1},n:{r:1},w:["fam5"],m:"all"},
 {q:"Are the kids going to eat something different from the adults anyway?",e:"🔀",y:{kp:1,tg:1},n:{sd:2},w:["fam5"],m:"all"},
-{q:"Could everyone agree on one restaurant if you tried?",e:"🤞",y:{cs:2,sd:1},n:{r:1},w:["fam5"],m:"all"},
+{q:"Could everyone agree on one restaurant if {you} tried?",e:"🤞",y:{cs:2,sd:1},n:{r:1},w:["fam5"],m:"all"},
 {q:"Is bath time going to depend on how messy {meal} is?",e:"🛁",y:{kp:2,sd:1},n:{tg:1},w:["fam5"],m:"dinner"},
-{q:"Would the kids notice if you ordered something different for {yourself}?",e:"🤫",y:{b:1,tg:1},n:{kp:2},w:["fam5"],m:"all"},
+{q:"Would the kids notice if {you} ordered something different for {yourself}?",e:"🤫",y:{b:1,tg:1},n:{kp:2},w:["fam5"],m:"all"},
 {q:"Is {time} a 'keep it easy for the whole family' kind of {meal}?",e:"🏠",y:{sd:3,kp:1},n:{r:1},w:["fam5"],m:"all"},
 {q:"Is {time} a bit of a production with everyone here?",e:"🎬",y:{cs:3,sd:1},n:{r:1},w:["fam-plus-parents"],m:"all"},
 {q:"Would something big and shareable feed everyone?",e:"🫂",y:{cs:2,c:1},n:{h:1},w:["fam-plus-parents"],m:"all"},
 {q:"Are the grandparents going to spoil the kids with dessert anyway?",e:"🍦",y:{st:2,kp:1},n:{h:1},w:["fam-plus-parents"],m:"all"},
 {q:"Is {time} a 'play it safe for the whole table' situation?",e:"🛡️",y:{sd:3,cs:1},n:{r:2},w:["fam-plus-parents"],m:"all"},
 {q:"Would a family-style order that covers everyone be ideal?",e:"👨‍👩‍👧‍👦",y:{cs:2,c:1},n:{tg:1},w:["fam-plus-parents"],m:"all"},
-{q:"Is everyone tired enough that easy wins?",e:"😪",y:{sd:3},n:{b:1},w:["fam-plus-parents"],m:"all"},
+{q:"Is everyone tired enough that easy wins out?",e:"😪",y:{sd:3},n:{b:1},w:["fam-plus-parents"],m:"all"},
 {q:"Is Kevin's mom joining the chaos tonight?",e:"👩‍🦳",y:{cs:2,kp:1},n:{b:1},w:["fam-plus-kmom"],m:"dinner"},
 {q:"Is Kevin's mom good with whatever the kids are having?",e:"🤷",y:{sd:2,kp:1},n:{b:1},w:["fam-plus-kmom"],m:"all"},
 {q:"Should {meal} be extra good since Grandma's here?",e:"💕",y:{b:2,c:1},n:{sd:1},w:["fam-plus-kmom"],m:"all"},
@@ -1181,7 +1181,7 @@ var QUIZ_QS=[
 {q:"Would something everyone recognizes keep the peace?",e:"✌️",y:{sd:2,cs:1},n:{r:1},w:["fam-plus-kmom"],m:"all"},
 {q:"Is this a full house situation?",e:"🏠",y:{cs:3,sd:1},n:{r:1},w:["big-family"],m:"all"},
 {q:"Would one massive order feed the whole crew?",e:"📦",y:{cs:2,c:1},n:{h:1},w:["big-family"],m:"all"},
-{q:"Are we going all out {time}?",e:"🎢",y:{sd:2},n:{tg:2,st:1},w:["big-family"],m:"all"},
+{q:"Are {you} going all out {time}?",e:"🎢",y:{sd:2},n:{tg:2,st:1},w:["big-family"],m:"all"},
 {q:"Would something from a place with a big menu work best?",e:"📖",y:{cs:2,b:1},n:{sd:1},w:["big-family"],m:"all"},
 {q:"Is someone going to end up ordering for everyone?",e:"👆",y:{sd:2,cs:1},n:{r:1},w:["big-family"],m:"all"},
 {q:"Is {time} more about the company than the food?",e:"❤️",y:{sd:2,c:1},n:{b:2},w:["big-family"],m:"all"},
@@ -1189,7 +1189,7 @@ var QUIZ_QS=[
 {q:"Could a really good sandwich fix {your} whole day?",e:"🤌",y:{c:2,sd:1},n:{st:1},w:["any"],m:"all"},
 {q:"Would {you} rather just pick the first thing that sounds good?",e:"📱",y:{b:1,r:1},n:{sd:3},w:["any"],m:"all"},
 {q:"Would fries make everything better right now?",e:"🧂",y:{tg:2,c:1},n:{h:2},w:["any"],m:"all"},
-{q:"Is tonight a 'we earned this' kind of night?",e:"🏅",y:{tg:2,st:1},n:{h:1,sd:1},w:["any"],m:"dinner"},
+{q:"Is tonight a '{we} earned this' kind of night?",e:"🏅",y:{tg:2,st:1},n:{h:1,sd:1},w:["any"],m:"dinner"},
 {q:"Is tonight the kind of night where calories don't count?",e:"🎭",y:{tg:3,st:1},n:{h:2},w:["any"],m:"dinner,latenight"},
 {q:"Are {you} in the mood to order way too much food?",e:"🤑",y:{tg:2,c:1},n:{h:1,b:1},w:["any"],m:"dinner"},
 {q:"Would a perfect plate of pasta fix {your} entire week?",e:"🇮🇹",y:{c:3},n:{h:2},w:["any"],m:"dinner",ct:"italian"},
@@ -1237,7 +1237,7 @@ var QUIZ_QS=[
 {q:"Is this a low-effort, high-reward kind of {meal}?",e:"🏹",y:{sd:2,c:1},n:{r:1},w:["jenna-leah"],m:"all"},
 {q:"Would Kevin's mom judge the usual order?",e:"👀",y:{b:2,h:1},n:{tg:2,sd:1},w:["kevin-mom-visit"],m:"all"},
 {q:"Is Kevin's mom going to say 'oh, anything is fine' and then not mean it?",e:"🙄",y:{cs:2,sd:1},n:{b:1},w:["kevin-mom-visit"],m:"all"},
-{q:"Would Jenna's dad eat literally anything you put in front of him?",e:"👴",y:{sd:2,tg:1},n:{cs:1},w:["jenna-dad-visit"],m:"all"},
+{q:"Would Jenna's dad eat literally anything {you} put in front of him?",e:"👴",y:{sd:2,tg:1},n:{cs:1},w:["jenna-dad-visit"],m:"all"},
 {q:"Is Jenna's mom going to ask what everyone else is getting first?",e:"👵",y:{cs:2},n:{sd:1},w:["jenna-mom-visit"],m:"all"},
 {q:"Can {you} picture everyone at the table happy with what shows up?",e:"😊",y:{cs:2,sd:1},n:{r:1},w:["fam5"],m:"all"},
 {q:"Would the kids' mood right now survive a 40-minute delivery?",e:"⏰",y:{sd:2},n:{kp:1,b:1},w:["fam5"],m:"all"},
@@ -1251,7 +1251,7 @@ var QUIZ_QS=[
 {q:"Would fries and a burger fix everything?",e:"🛠️",y:{c:2,tg:1},n:{h:1},w:["any"],m:"dinner,latenight",ct:"burgers"},
 {q:"Are {you} in a Chinese food mood?",e:"🥡",y:{c:2},n:{b:1},w:["any"],m:"dinner",ct:"asian"},
 {q:"Would orange chicken and lo mein hit right now?",e:"🍊",y:{c:2,kp:1},n:{h:1},w:["fam5","couple"],m:"dinner",ct:"asian"},
-{q:"Craving something with rice and a good sauce?",e:"🍚",y:{c:2,b:1},n:{h:1},w:["any"],m:"dinner",ct:"asian"},
+{q:"Are {you} craving something with rice and a good sauce?",e:"🍚",y:{c:2,b:1},n:{h:1},w:["any"],m:"dinner",ct:"asian"},
 {q:"Would naan and curry make {your} night?",e:"🍛",y:{c:2},n:{sd:1},w:["couple"],m:"dinner",ct:"indian"},
 {q:"Are {you} craving something with bold spices and warm bread?",e:"🫓",y:{c:2},n:{sd:1},w:["any"],m:"dinner",ct:"indian"},
 {q:"Is this more of a sub sandwich kind of day?",e:"🥖",y:{b:2},n:{c:1},w:["any"],m:"lunch",ct:"subs"},
@@ -1276,19 +1276,19 @@ var QUIZ_QS=[
 {q:"Is this more of a cheap-and-fast situation?",e:"⚡",y:{tg:2,sd:1},n:{b:1},w:["any"],m:"all",ct:"budget"},
 {q:"Is anyone else even awake right now?",e:"🌙",y:{tg:2},n:{b:1},w:["kevin"],m:"latenight",ct:"solo_late"},
 {q:"Is this a between-you-and-God kind of order?",e:"🙏",y:{tg:3},n:{b:1},w:["kevin"],m:"latenight",ct:"solo_late"},
-{q:"Would a bowl with grains and veggies actually satisfy you?",e:"🥙",y:{h:3},n:{c:2},w:["any"],m:"lunch,dinner",ct:"healthy"},
+{q:"Would a bowl with grains and veggies actually satisfy {you}?",e:"🥙",y:{h:3},n:{c:2},w:["any"],m:"lunch,dinner",ct:"healthy"},
 {q:"Is it a protein and rice bowl kind of night?",e:"🫛",y:{h:3,sd:1},n:{c:1},w:["jenna","couple"],m:"dinner",ct:"healthy"},
-{q:"Are you just gonna order the same thing you always get?",e:"🔄",y:{sd:2},n:{r:2},w:["kevin"],m:"all"},
+{q:"Are {you} just gonna order the same thing {you} always get?",e:"🔄",y:{sd:2},n:{r:2},w:["kevin"],m:"all"},
 {q:"Is Kevin giving off 'I deserve this' energy tonight?",e:"👑",y:{tg:2,c:1},n:{h:1,b:1},w:["couple","fam5"],m:"dinner,latenight"},
 {q:"Are we betting Kevin would eat an entire rack of ribs and not share?",e:"🤤",y:{c:3,tg:1},n:{b:1},w:["couple","fam5"],m:"dinner",ct:"bbq"},
 {q:"Is this a Kevin-sneaks-Taco-Bell-at-midnight situation?",e:"🥷",y:{tg:3},n:{b:1},w:["couple","fam5"],m:"latenight",ct:"mexican"},
-{q:"Are you going to order the same thing you always get?",e:"🥩",y:{sd:2},n:{r:1,b:1},w:["kevin"],m:"lunch",ct:"subs"},
+{q:"Are {you} going to order the same thing {you} always get?",e:"🥩",y:{sd:2},n:{r:1,b:1},w:["kevin"],m:"lunch",ct:"subs"},
 {q:"Is Jenna going to pick the healthy place before we even finish this quiz?",e:"🧑‍🍳",y:{h:2,sd:2},n:{r:1,c:1},w:["couple","fam5"],m:"dinner",ct:"healthy"},
 {q:"Is Jenna in one of her healthy moods right now?",e:"🧘",y:{h:3},n:{st:2,c:1},w:["couple","fam5"],m:"all"},
 {q:"Does it seem like Jenna would veto anything without a salad option?",e:"🙅",y:{h:2},n:{c:2},w:["couple","fam5"],m:"dinner"},
 {q:"Do we think Jenna already knows what she wants?",e:"🤔",y:{sd:3},n:{r:2},w:["couple","fam5"],m:"all"},
 {q:"Do we think Jenna would actually enjoy a cheeseburger tonight?",e:"🍔",y:{c:2},n:{h:2},w:["couple","fam5"],m:"dinner",ct:"burgers"},
-{q:"Has Madi been a good girl {time}? Does she deserve a treat?",e:"⭐",y:{st:2,kp:1},n:{kp:2},w:["fam5"],m:"all"},
+{q:"Does Madi deserve a treat {time}?",e:"⭐",y:{st:2,kp:1},n:{kp:2},w:["fam5"],m:"all"},
 {q:"Will Madi eat anything besides chicken nuggets tonight?",e:"👧",y:{b:1,kp:1},n:{kp:2,sd:1},w:["fam5"],m:"dinner",ct:"burgers"},
 {q:"Is Madi going to melt down if we don\u2019t pick something she likes?",e:"😤",y:{kp:3,sd:1},n:{b:2},w:["fam5"],m:"all"},
 {q:"Are we betting Madi would actually share her dessert?",e:"🧁",y:{st:1,kp:1},n:{st:2,tg:1},w:["fam5"],m:"dinner,latenight"},
@@ -1302,7 +1302,7 @@ var QUIZ_QS=[
 {q:"Does Emmy\u2019s meal even factor into this decision?",e:"🍼",y:{kp:2},n:{b:1},w:["fam5"],m:"all"},
 {q:"Are we racing the clock before Emmy melts down?",e:"😴",y:{b:1,kp:1},n:{sd:2},w:["fam5"],m:"dinner,latenight"},
 {q:"Is Jenna\u2019s dad going to ask if they can hold the sauce?",e:"🚫",y:{sd:2},n:{b:1},w:["jenna-dad-visit"],m:"dinner"},
-{q:"Is Jenna\u2019s mum in a go-with-the-flow mood tonight?",e:"🇬🇧",y:{b:2},n:{h:1,sd:1},w:["jenna-mom-visit"],m:"dinner"},
+{q:"Is Jenna\u2019s mom in a go-with-the-flow mood tonight?",e:"🇬🇧",y:{b:2},n:{h:1,sd:1},w:["jenna-mom-visit"],m:"dinner"},
 {q:"Is Kevin\u2019s mom going to find a chicken sandwich no matter where we order from?",e:"🐔",y:{sd:3},n:{r:1},w:["kevin-mom-visit"],m:"dinner"},
 {q:"Would Kevin\u2019s mom enjoy trying somewhere new?",e:"✨",y:{r:2},n:{sd:2},w:["kevin-mom-visit"],m:"dinner"},
 {q:"Is Kevin\u2019s mom watching what she eats right now?",e:"🤗",y:{h:2},n:{c:2},w:["kevin-mom-visit"],m:"dinner"},
@@ -1336,7 +1336,7 @@ var QUIZ_QS=[
 {q:"Is Jenna going to 'not be hungry' and then eat half of Kevin's order?",e:"😏",y:{b:2},n:{sd:1},w:["couple"],m:"dinner"},
 {q:"Are {you} already feeling too full to eat a real meal?",e:"📊",y:{h:2},n:{tg:2,c:1},w:["kevin"],m:"dinner,latenight"},
 {q:"Is Kevin going to order something responsible tonight?",e:"🤠",y:{h:2},n:{tg:2},w:["couple","fam5"],m:"dinner,latenight"},
-{q:"Are the kids going to eat what we order, or are they just here for the fries?",e:"😶",y:{kp:2},n:{b:1},w:["fam5","kids"],m:"dinner",ct:"burgers"},
+{q:"Are the kids just here for the fries tonight?",e:"😶",y:{kp:2},n:{b:1},w:["fam5","kids"],m:"dinner",ct:"burgers"},
 {q:"Would the kids lose their minds if we got a box of fancy cookies?",e:"🤯",y:{st:3,kp:1},n:{kp:1},w:["fam5"],m:"dinner"},
 {q:"Would chicken nuggets from literally anywhere make the kids happy?",e:"🏳️",y:{kp:3,sd:1},n:{b:1},w:["fam5"],m:"dinner"},
 {q:"Is it one of those nights where we order the kids' food first and figure out ours after?",e:"🎯",y:{kp:3},n:{b:2},w:["fam5"],m:"dinner"},
@@ -1349,7 +1349,7 @@ var QUIZ_QS=[
 {q:"Would a good deli sandwich be more satisfying than a fast food meal right now?",e:"🥪",y:{b:2},n:{tg:1,sd:1},w:["kevin","couple"],m:"lunch",ct:"subs"},
 {q:"Is {time} a 'pasta in {your} pajamas' kind of night?",e:"🍝",y:{c:3},n:{b:1},w:["couple"],m:"dinner",ct:"italian"},
 {q:"Would donuts and a breakfast sandwich hit different right now?",e:"☕",y:{sd:2,c:1},n:{b:1},w:["any"],m:"breakfast",ct:"breakfast"},
-{q:"Would {you} add a milkshake to your order {time}?",e:"🥤",y:{st:2,c:1},n:{b:1},w:["any"],m:"dinner,latenight"},
+{q:"Would {you} add a milkshake to {your} order {time}?",e:"🥤",y:{st:2,c:1},n:{b:1},w:["any"],m:"dinner,latenight"},
 {q:"Would fresh naan straight out of a tandoor make {your} night?",e:"🫓",y:{c:2},n:{sd:1},w:["couple"],m:"dinner",ct:"indian"},
 {q:"Would {you} rather just point at a menu and eat?",e:"🎛️",y:{b:1},n:{sd:2},w:["any"],m:"lunch,dinner"},
 {q:"Are {you} going to agree {time}, or is this a negotiation?",e:"🤝",y:{b:2},n:{cs:2},w:["couple"],m:"all"},
@@ -1392,7 +1392,7 @@ var QUIZ_QS=[
 {q:"Is this a fuel stop, not a food experience?",e:"⛽",y:{sd:2,tg:1},n:{b:1,c:1},w:["any"],m:"all"},
 {q:"Would something fried and salty solve {your} problems right now?",e:"🧂",y:{tg:3,c:1},n:{h:2},w:["any"],m:"lunch,dinner,latenight"},
 {q:"Is tonight a sugar kind of night?",e:"🍬",y:{st:3,tg:1},n:{h:1,b:1},w:["any"],m:"dinner,latenight"},
-{q:"Do {you} need food to fix your mood right now?",e:"😮‍💨",y:{c:2,tg:1},n:{b:1,h:1},w:["any"],m:"all"},
+{q:"Do {you} need food to fix {your} mood right now?",e:"😮‍💨",y:{c:2,tg:1},n:{b:1,h:1},w:["any"],m:"all"},
 {q:"Would {you} trade speed for quality right now?",e:"⏱️",y:{b:2,c:1},n:{sd:2},w:["any"],m:"all"},
 {q:"Is this a zero-effort kind of night?",e:"🛋️",y:{sd:2,tg:1},n:{b:2},w:["any"],m:"dinner,latenight"},
 {q:"Could someone else pick and {youre} fine with it?",e:"🫠",y:{r:2,sd:1},n:{b:1},w:["any"],m:"all"},
@@ -1409,7 +1409,7 @@ var QUIZ_QS=[
 {q:"Does it seem like someone in this group already knows what they want?",e:"\ud83c\udfaf",y:{sd:3},n:{r:2},w:["couple","fam5"],m:"all"},
 {q:"Would {you} both actually be happy with the same place {time}?",e:"\ud83e\udd1e",y:{b:2,sd:1},n:{cs:2},w:["couple"],m:"all"},
 {q:"Is this a meet-in-the-middle kind of {meal}?",e:"\ud83e\udd1d",y:{b:2},n:{cs:2,sd:1},w:["couple"],m:"all"},
-{q:"On a scale of patient to unhinged, how hungry are {you}?",e:"\ud83d\ude35",y:{tg:2,c:1},n:{b:1},w:["any"],m:"all"},
+{q:"Would {you} say {youre} closer to unhinged than patient right now?",e:"\ud83d\ude35",y:{tg:2,c:1},n:{b:1},w:["any"],m:"all"},
 {q:"Would {you} eat literally anything that showed up in the next ten minutes?",e:"\ud83d\udea8",y:{tg:2,c:1},n:{b:1},w:["any"],m:"all"},
 {q:"Would a cookie fix everything right now?",e:"\ud83c\udf6a",y:{st:3,tg:1},n:{h:1,b:1},w:["any"],m:"all"},
 {q:"Would a really solid hot meal beat a quick grab-and-go?",e:"\ud83c\udf72",y:{c:2,sd:1},n:{sd:1},w:["any"],m:"all"},
@@ -1494,7 +1494,7 @@ var guestVoter=guestCount>0?{id:"_guest",name:guestCount===1?"Guest":guestCount+
 var voters=(sel.sp||[]).map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(function(p){return p&&p.age!=="baby"&&p.age!=="toddler";});
 if(guestVoter)voters=voters.concat([guestVoter]);
 
-useEffect(function(){if(mode==="quiz"&&!qs&&(phase==="mood"||phase==="narrow"))pickQuestions([]);},[mode,phase]);
+useEffect(function(){if(mode==="quiz"&&!qs&&(phase==="mood"||phase==="narrow"))pickQuestions([]);},[mode,phase,qs]);
 
 function getQuizTags(){
 var sp=sel.sp||[];var has=function(id){return sp.indexOf(id)>=0;};
@@ -1611,78 +1611,8 @@ var timeWord=mctx.meal==="breakfast"||mctx.meal==="brunch"||mctx.meal==="lunch"?
 return text.replace(/{time}/g,timeWord).replace(/{meal}/g,mctx.label.toLowerCase()).replace(/{you}/g,youWord).replace(/{youre}/g,youreWord).replace(/{your}/g,yourWord).replace(/{we}/g,weWord).replace(/{yourself}/g,yourselfWord);
 }
 
-function answer(qIdx,yes,trackKey){
-var newAns=Object.assign({},ans);
-newAns[trackKey]=yes===true?"y":yes===false?"n":"s";
-var newDisagrees=disagrees;
-if(yes===null&&!isSolo){
-newDisagrees=disagrees+1;
-setDisagrees(newDisagrees);
-if(newDisagrees>=2&&voters.length>=2){
-/* Trigger head-to-head mode */
-var h2hQs=[];
-var tags=getQuizTags();var meal=mctx.meal;
-var avail=QUIZ_QS.filter(function(q,i){
-if(used.indexOf(i)>=0)return false;
-if(!q.w.some(function(t){return tags.indexOf(t)>=0;}))return false;
-if(q.m!=="all"){var meals=q.m.split(",");if(meals.indexOf(meal)<0)return false;}
-return true;
-});
-var shuffled=avail.sort(function(){return Math.random()-.5;});
-h2hQs=shuffled.slice(0,5);
-setH2H({qs:h2hQs,qi:0,votes:{},perPerson:{}});
-setH2hIntro(true);
-return;
-}
-}
-if(yes!==null){
-var q=qs[qIdx];
-var weights=yes?q.y:q.n;
-Object.keys(weights).forEach(function(k){newAns[k]=(newAns[k]||0)+weights[k];});
-if(yes&&q.ct){newAns._ct=newAns._ct||{};newAns._ct[q.ct]=(newAns._ct[q.ct]||0)+1;}
-}
-setAns(newAns);
 
 
-if(phase==="narrow"){
-  var newP2=p2count+1;
-  setP2count(newP2);
-  if(yes&&q.ct){newAns._ct=newAns._ct||{};newAns._ct[q.ct]=(newAns._ct[q.ct]||0)+1;up("ct",q.ct);}
-  var allP2Done=true;for(var qi2=0;qi2<3;qi2++){var k2="_n"+round+"q"+qi2;if(!newAns[k2])allP2Done=false;}
-  if(newP2>=3&&allP2Done){
-    if(newAns._ct){var topCt3=null,topCtS3=0;Object.keys(newAns._ct).forEach(function(k){if(newAns._ct[k]>topCtS3){topCtS3=newAns._ct[k];topCt3=k;}});if(topCt3)up("ct",topCt3);}
-    resolve();
-    return;
-  }
-  if(qIdx===2||(function(){var allDone=true;for(var qi=0;qi<3;qi++){var k="_"+(phase==="narrow"?"n":"r")+round+"q"+qi;if(!newAns[k])allDone=false;}return allDone;})()){setRound(round+1);pickQuestions(usedRef.current);}
-  return;
-}
-
-var totalAnswered=0;
-Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="_")totalAnswered++;});
-
-if(totalAnswered>=3){
-  var best=null,bestScore=0,second=0;
-  Object.keys(newAns).forEach(function(k){
-    if(k.charAt(0)==="_")return;
-    if(newAns[k]>bestScore){second=bestScore;bestScore=newAns[k];best=k;}
-    else if(newAns[k]>second)second=newAns[k];
-  });
-  var gap=bestScore-second;
-  if((gap>=4&&totalAnswered>=3)||(gap>=2&&totalAnswered>=6)||(totalAnswered>=9)){
-    var moodId=QUIZ_MAP[best]||"balanced";
-    var mood=MOODS.find(function(m){return m.id===moodId;})||MOODS.find(function(m){return m.id==="balanced";});
-    up("mood",moodId);
-    if(newAns._ct){var topCt=null,topCtS=0;Object.keys(newAns._ct).forEach(function(k){if(newAns._ct[k]>topCtS){topCtS=newAns._ct[k];topCt=k;}});if(topCt)up("ct",topCt);}
-    setResolved(mood||{id:"balanced",emoji:"\u2696\uFE0F",label:"Balanced",desc:"A little of everything",c:"#4A9EFF"});
-    return;
-  }
-}
-
-if(round<2){var allDone=true;for(var qi=0;qi<3;qi++){var k="_r"+round+"q"+qi;if(!newAns[k])allDone=false;}if(allDone){setRound(round+1);pickQuestions(usedRef.current);}}
-
-
-}
 
 var REVEAL={
 healthy:isSolo?"Your body called. It said thank you.":"Everyone's body called. They said thank you.",
@@ -1942,7 +1872,7 @@ function resolveH2H(perPerson){
   /* Find winner */
   var sorted=Object.keys(moodVotes).sort(function(a,b){
     if(moodVotes[b].count!==moodVotes[a].count)return moodVotes[b].count-moodVotes[a].count;
-    if(moodVotes[b].females!==moodVotes[a].females)return moodVotes[b].females-moodVotes[a].females;
+    if(props.h2hFemale&&moodVotes[b].females!==moodVotes[a].females)return moodVotes[b].females-moodVotes[a].females;
     return Math.random()-.5;
   });
   var winner=sorted[0];
@@ -1950,7 +1880,7 @@ function resolveH2H(perPerson){
   var mood=MOODS.find(function(m){return m.id===moodId;});
   if(!mood)mood={id:"balanced",emoji:"\u2696\uFE0F",label:"Balanced",desc:"A little of everything",c:"#4A9EFF"};
   var tiedTop=sorted.filter(function(s){return moodVotes[s].count===moodVotes[sorted[0]].count;});
-  var method=tiedTop.length>1?(moodVotes[winner].females>0?(moodVotes[winner].females>1?"the women, as it should be \uD83D\uDC85":"the woman, as it should be \uD83D\uDC85"):"Coin flip"):"Majority";
+  var method=tiedTop.length>1?(props.h2hFemale&&moodVotes[winner].females>0?(moodVotes[winner].females>1?"the women, as it should be \uD83D\uDC85":"the woman, as it should be \uD83D\uDC85"):"Coin flip"):"Majority";
   up("mood",moodId);
   if(phase==="narrow"){
     setH2H(null);
@@ -2004,7 +1934,7 @@ if(h2hIntro){
 
 if(!hq)return null;
 return <div className="fade">
-  <TopBar title={"\u2694\uFE0F Head to Head"} sub={"Question "+(h2h.qi+1)+" of "+h2h.qs.length} back={function(){setH2H(null);setDisagrees(0);}}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
+  <TopBar title={"\u2694\uFE0F Head to Head"} sub={"Question "+(h2h.qi+1)+" of "+h2h.qs.length} back={function(){setH2hIntro(false);setH2H(null);setDisagrees(0);}}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
   <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
     <div style={{textAlign:"center",marginBottom:20}}>
       <span style={{fontSize:36}}>{hq.e}</span>
@@ -2098,6 +2028,7 @@ if(newDisagrees>=2&&voters.length>=2){
 var tags2=getQuizTags();var meal2=mctx.meal;
 var avail2=QUIZ_QS.filter(function(q2,idx){if(used.indexOf(idx)>=0)return false;if(!q2.w.some(function(t){return tags2.indexOf(t)>=0;}))return false;if(q2.m!=="all"){var meals2=q2.m.split(",");if(meals2.indexOf(meal2)<0)return false;}return true;});
 var h2hQs2=avail2.sort(function(){return Math.random()-.5;}).slice(0,5);
+if(h2hQs2.length===0){resolve();return;}
 setH2H({qs:h2hQs2,qi:0,votes:{},perPerson:{}});
 setH2hIntro(true);
 return;
@@ -2110,7 +2041,7 @@ return;
 }
 /* Phase 1: check if mood can be determined */
 var totalAnswered=0;
-Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="*")totalAnswered++;});
+Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="_")totalAnswered++;});
 if(totalAnswered>=3){
 var best=null,bestScore=0,second=0;
 Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="*")return;if(newAns[k]>bestScore){second=bestScore;bestScore=newAns[k];best=k;}else if(newAns[k]>second)second=newAns[k];});
@@ -2199,8 +2130,8 @@ agg[name].count++;
 if(dateCol&&row[dateCol]){
 var d=new Date(row[dateCol]);
 if(!isNaN(d.getTime())){if(!agg[name].lastDate||d>agg[name].lastDate)agg[name].lastDate=d;if(!agg[name].firstDate||d<agg[name].firstDate)agg[name].firstDate=d;agg[name].dates.push(d);}
-if(subtotalCol){
-var ts=row[dateCol].slice(0,19);
+if(subtotalCol&&row[dateCol]){
+var ts=(row[dateCol]||"").slice(0,19);
 var key=name+"|"+ts;
 if(!orderItems[key])orderItems[key]={store:name,total:0,items:[]};
 orderItems[key].total+=parseFloat(row[subtotalCol])||0;
@@ -2838,9 +2769,8 @@ var CSS = [
 ".theme-light{--bg0:#F5E6E0;--bg1:#FFFFFF;--bg2:#F0DDD6;--bdr:#D9B8AA;--tx1:#2A1215;--tx2:#6B3A3A;--tx3:#9A7070;--ac:#C91A5E;--grn:#A07828;--yel:#B8860B;--red:#C0392B}",
 ".theme-light .insightsShimmer{color:#7A5518 !important;border-color:rgba(160,120,40,.35) !important}",
 ".theme-light .jfl-cta{background:linear-gradient(135deg,#E8458A,#D4956A);text-shadow:0 1px 3px rgba(0,0,0,.15)}",
-".theme-light .jfl-cta-hero{box-shadow:0 3px 16px rgba(214,36,107,.25)}",
 "@keyframes ctaGlowLight{0%,100%{box-shadow:0 3px 16px rgba(214,36,107,.2)}50%{box-shadow:0 5px 28px rgba(214,36,107,.4),0 0 40px rgba(212,149,106,.15)}}",
-".theme-light .jfl-cta-hero{animation:ctaGlowLight 3s ease-in-out infinite}",
+".theme-light .jfl-cta-hero{box-shadow:0 3px 16px rgba(214,36,107,.25);animation:ctaGlowLight 3s ease-in-out infinite}",
 ".theme-light .jfl-card{border-color:#E0D0C5;box-shadow:0 2px 8px rgba(120,60,40,.06)}",
 ".theme-light .jfl-chip.on{border-color:#D6246B;background:rgba(214,36,107,.08);color:#D6246B}",
 ".theme-light .jfl-stat{box-shadow:0 2px 8px rgba(120,60,40,.06)}",
@@ -2859,7 +2789,6 @@ var CSS = [
 ".theme-light .insightsShimmer{animation-name:insightsShimmerLight}",
 "@keyframes insightsShimmerLight{0%,100%{box-shadow:0 0 4px rgba(160,120,40,.15)}50%{box-shadow:0 0 14px rgba(180,140,40,.4),0 0 28px rgba(180,140,40,.15)}}",
 "@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}",
-"@keyframes slideOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-40px)}}",
 "@keyframes slotRoll{0%{transform:translateY(100%);opacity:0}15%{transform:translateY(0);opacity:1}85%{transform:translateY(0);opacity:1}100%{transform:translateY(-100%);opacity:0}}",
 ".slot-roll{animation:slotRoll 6s cubic-bezier(.23,1,.32,1) both}",
 ".fade{animation:fade .3s ease-out both}.pop{animation:pop .2s ease-out both}.spin{animation:spin .7s linear infinite}",
@@ -2903,8 +2832,6 @@ var CSS = [
 ".jfl-stat:active{border-color:var(--ac)}",
 ".jfl-stat-n{font-size:20px;font-weight:700;color:var(--tx1)}",
 ".jfl-stat-l{font-size:12px;font-weight:600;color:var(--tx2);margin-top:4px}",
-".jfl-nav{padding:14px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg1);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx2)}",
-".jfl-qr{display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg2);cursor:pointer;font-family:inherit;text-align:left}",
 ".jfl-chip{display:flex;align-items:center;gap:8px;padding:11px 14px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg1);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx2);transition:all .12s}",
 ".jfl-chip:active{animation:chipBounce .15s ease-out}",
 ".jfl-chip.on{border-color:var(--ac);background:var(--bg2);color:var(--ac)}",
@@ -2912,7 +2839,7 @@ var CSS = [
 ".jfl-pill.on{border-color:var(--ac);background:var(--ac);color:white;text-shadow:0 1px 2px rgba(0,0,0,.25)}",
 ".jfl-mc{padding:6px 14px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg1);color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .1s}",
 ".jfl-mc.on{border-color:var(--ac);background:var(--ac);color:white}",
-".jfl-rate{border:none;border-radius:6px;padding:5px 7px;cursor:pointer;font-size:14px}",
 ".jfl-footer{font-size:11px;color:var(--tx3);font-weight:500}",
-"@media(min-width:600px){.jfl-root{max-width:600px}.jfl-cta{font-size:17px;padding:14px}.jfl-cta-hero{padding:22px 16px}.jfl-btn{font-size:15px;padding:12px 18px}.jfl-card{padding:16px}.jfl-chip{font-size:15px;padding:13px 16px}.jfl-pill{font-size:15px;padding:9px 16px}.jfl-stat{padding:16px 12px}.jfl-stat-n{font-size:22px}.jfl-stat-l{font-size:14px}.jfl-label{font-size:13px}.jfl-qr{padding:13px 14px}.jfl-nav{font-size:15px;padding:16px}}",
+"@media(min-width:600px){.jfl-root{max-width:600px}.jfl-cta{font-size:17px;padding:14px}.jfl-cta-hero{padding:22px 16px}.jfl-btn{font-size:15px;padding:12px 18px}.jfl-card{padding:16px}.jfl-chip{font-size:15px;padding:13px 16px}.jfl-pill{font-size:15px;padding:9px 16px}.jfl-stat{padding:16px 12px}.jfl-stat-n{font-size:22px}.jfl-stat-l{font-size:14px}.jfl-label{font-size:13px}}",
+"@media(prefers-reduced-motion:reduce){.fade,.pop,.tada,.float-in,.podium-pop,.stagger-1,.stagger-2,.stagger-3,.slot-roll,.spin,.landingPulse,.chipBounce{animation:none !important}.jfl-cta-hero,.insightsShimmer,.crown-glow{animation:none !important}[style*=\"animation\"]{animation:none !important}}",
 ].join("\n");

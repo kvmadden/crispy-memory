@@ -1803,7 +1803,7 @@ return <div className="fade">
 </div>
 {/* Greeting */}
 <div style={{fontSize:26,fontWeight:700,color:"var(--tx1)",textAlign:"center",lineHeight:"1.3"}}>{greeting}</div>
-<div style={{fontSize:18,color:"var(--tx2)",textAlign:"center",marginTop:8}}>{totalPeople===1?"what kind of "+mctx.label.toLowerCase()+" are you feeling?":totalPeople===2?"what kind of "+mctx.label.toLowerCase()+" are you two feeling?":"what kind of "+mctx.label.toLowerCase()+" is everyone feeling?"}</div>
+<div style={{fontSize:18,color:"var(--tx2)",textAlign:"center",marginTop:8}}>{totalPeople===1?"what kind of "+mctx.label.toLowerCase()+" are you feeling?":totalPeople===2?"what kind of "+mctx.label.toLowerCase()+" are you two feeling?":"what kind of "+mctx.label.toLowerCase()+" are we feeling?"}</div>
 
 
     {/* Two big option cards */}

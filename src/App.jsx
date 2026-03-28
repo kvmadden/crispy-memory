@@ -176,9 +176,9 @@ var up=useCallback(function(k,v){setSel(function(s){var n=Object.assign({},s);n[
 var cycleTheme=useCallback(function(){setGs2(function(prev){var cur=prev.theme||"auto";var isDark=cur==="dark"||(cur==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return Object.assign({},prev,{theme:isDark?"light":"dark"});});},[]);
 var setGrp=useCallback(function(pp){var hk=pp.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:pp,kf:hk,go:pp.length>4,xa:0,xk:0});});},[kidIds]);
 var togP=useCallback(function(id){setSel(function(s){var has=s.sp.indexOf(id)>=0;var np=has?s.sp.filter(function(i){return i!==id;}):s.sp.concat([id]);var hk=np.some(function(pid){return kidIds.indexOf(pid)>=0;});return Object.assign({},s,{sp:np,kf:hk,go:np.length>4});});},[kidIds]);
-var resolve=useCallback(function(){setBusy(true);setTimeout(function(){var s=selRef.current;setRes(top3(scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);},[rests,ppl,hist]);
-var reroll=useCallback(function(ch){var s=selRef.current;var sc=scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?0.2:0.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
-var deadlock=useCallback(function(){var s=selRef.current;var ds=Object.assign({},s,{sp:["kevin","jenna"],fam:"safe",mood:"safe-default"});var sc=scoreAll(rests,ds,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2);var vwt={low:0,moderate:1,high:2};sc.sort(function(a,b){if(vwt[a.vetoRisk]!==vwt[b.vetoRisk])return vwt[a.vetoRisk]-vwt[b.vetoRisk];return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist]);
+var resolve=useCallback(function(){setBusy(true);setTimeout(function(){var s=selRef.current;setRes(top3(scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},900);},[rests,ppl,hist,mealOverride,customMealTimes,gs2]);
+var reroll=useCallback(function(ch){var s=selRef.current;var sc=scoreAll(rests,s,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?0.2:0.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist,mealOverride,customMealTimes,gs2]);
+var deadlock=useCallback(function(){var s=selRef.current;var ds=Object.assign({},s,{sp:["kevin","jenna"],fam:"safe",mood:"safe-default"});var sc=scoreAll(rests,ds,ppl,hist,getMealContext(mealOverride,customMealTimes),gs2);var vwt={low:0,moderate:1,high:2};sc.sort(function(a,b){if(vwt[a.vetoRisk]!==vwt[b.vetoRisk])return vwt[a.vetoRisk]-vwt[b.vetoRisk];return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist,mealOverride,customMealTimes,gs2]);
 var pick=useCallback(function(res){var s=selRef.current;setH(function(h){return[{id:Date.now().toString(),rid:res.rid,name:res.r.name,emoji:res.r.emoji,date:new Date().toISOString(),people:s.sp,mood:s.mood,order:res.order,rating:null}].concat(h);});setR(function(rs){return rs.map(function(re){return re.id===res.rid?Object.assign({},re,{to:re.to+1,lo:0,streak:re.streak+1}):re;});});go("dashboard");setRes(null);},[]);
 var burn=useCallback(function(id){setR(function(rs){return rs.map(function(r){return r.id===id?Object.assign({},r,{bo:true}):r;});});reroll(false);},[reroll]);
 var daysSinceRefresh=Math.floor((Date.now()-new Date(dataRefresh).getTime())/(1000*60*60*24));
@@ -567,12 +567,12 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
   {/* ═══ RESULTS ═══ */}
   {vw==="results"&&results&&(function(){
-    var exhausted=resIdx>=results.length;
+    var exhausted=!results||resIdx>=results.length;
     var rSpCount=(sel.sp||[]).length+(sel.xa||0)+(sel.xk||0);
     var rSolo=rSpCount<=1;var rDuo=rSpCount===2;
 
     if(exhausted){
-      var poolEmpty=results.length===0;
+      var poolEmpty=!results||results.length===0;
       if(poolEmpty){
         return <div className="fade">
           <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
@@ -1494,7 +1494,7 @@ var guestVoter=guestCount>0?{id:"_guest",name:guestCount===1?"Guest":guestCount+
 var voters=(sel.sp||[]).map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(function(p){return p&&p.age!=="baby"&&p.age!=="toddler";});
 if(guestVoter)voters=voters.concat([guestVoter]);
 
-useEffect(function(){if(mode==="quiz"&&!qs&&(phase==="mood"||phase==="narrow"))pickQuestions([]);},[mode,phase]);
+useEffect(function(){if(mode==="quiz"&&!qs&&(phase==="mood"||phase==="narrow"))pickQuestions([]);},[mode,phase,qs]);
 
 function getQuizTags(){
 var sp=sel.sp||[];var has=function(id){return sp.indexOf(id)>=0;};
@@ -2199,8 +2199,8 @@ agg[name].count++;
 if(dateCol&&row[dateCol]){
 var d=new Date(row[dateCol]);
 if(!isNaN(d.getTime())){if(!agg[name].lastDate||d>agg[name].lastDate)agg[name].lastDate=d;if(!agg[name].firstDate||d<agg[name].firstDate)agg[name].firstDate=d;agg[name].dates.push(d);}
-if(subtotalCol){
-var ts=row[dateCol].slice(0,19);
+if(subtotalCol&&row[dateCol]){
+var ts=(row[dateCol]||"").slice(0,19);
 var key=name+"|"+ts;
 if(!orderItems[key])orderItems[key]={store:name,total:0,items:[]};
 orderItems[key].total+=parseFloat(row[subtotalCol])||0;

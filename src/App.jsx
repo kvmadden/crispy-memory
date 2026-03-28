@@ -466,16 +466,16 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           <div style={{flex:1,display:"flex",alignItems:"center",gap:8,background:"var(--bg1)",borderRadius:10,padding:"8px 12px",border:"1px solid var(--bdr)"}}>
             <span style={{fontSize:14}}>{"\uD83E\uDDD1"}</span>
             <span style={{fontSize:11,fontWeight:500,color:"var(--tx2)",flex:1}}>Adults</span>
-            <button className="jfl-btn" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:Math.max(0,(s.xa||0)-1)});});}}>−</button>
+            <button className="jfl-btn" aria-label="Decrease extra adults" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:Math.max(0,(s.xa||0)-1)});});}}>−</button>
             <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",minWidth:16,textAlign:"center"}}>{sel.xa||0}</span>
-            <button className="jfl-btn" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:(s.xa||0)+1});});}}>+</button>
+            <button className="jfl-btn" aria-label="Increase extra adults" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:(s.xa||0)+1});});}}>+</button>
           </div>
           <div style={{flex:1,display:"flex",alignItems:"center",gap:8,background:"var(--bg1)",borderRadius:10,padding:"8px 12px",border:"1px solid var(--bdr)"}}>
             <span style={{fontSize:14}}>{"\uD83E\uDDD2"}</span>
             <span style={{fontSize:11,fontWeight:500,color:"var(--tx2)",flex:1}}>Kids</span>
-            <button className="jfl-btn" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:Math.max(0,(s.xk||0)-1)});});}}>−</button>
+            <button className="jfl-btn" aria-label="Decrease extra kids" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:Math.max(0,(s.xk||0)-1)});});}}>−</button>
             <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",minWidth:16,textAlign:"center"}}>{sel.xk||0}</span>
-            <button className="jfl-btn" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:(s.xk||0)+1});});}}>+</button>
+            <button className="jfl-btn" aria-label="Increase extra kids" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:(s.xk||0)+1});});}}>+</button>
           </div>
         </div>
       </div>
@@ -485,12 +485,15 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         {guests.map(function(g){var gOn=sel.sp.indexOf(g.id)>=0;return <div key={g.id} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:8,border:"1px solid "+(gOn?"var(--ac)":"var(--bdr)"),background:gOn?"rgba(244,114,182,.06)":"var(--bg1)",marginBottom:4}}>
           <button onClick={function(){togP(g.id);}} style={{background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13,fontWeight:600,color:gOn?"var(--ac)":"var(--tx2)",flex:1,textAlign:"left",padding:0}}>{g.emoji+" "+g.name+(gOn?" \u2713":"")}</button>
           <span style={{fontSize:9,color:"var(--tx3)"}}>{g.adv>=.7?"adventurous":g.adv<=.3?"picky":"moderate"}{g.sp>=.7?" \u00B7 loves spice":g.sp<=.2?" \u00B7 no spice":""}</span>
-          <button onClick={function(){setGuests(function(gs){return gs.filter(function(x){return x.id!==g.id;});});setSel(function(s){return Object.assign({},s,{sp:s.sp.filter(function(id){return id!==g.id;})});});}} style={{background:"none",border:"none",color:"var(--tx3)",cursor:"pointer",fontSize:12,padding:"2px 4px",fontFamily:"inherit"}}>{"\u2715"}</button>
+          <button aria-label={"Remove "+g.name} onClick={function(){setGuests(function(gs){return gs.filter(function(x){return x.id!==g.id;});});setSel(function(s){return Object.assign({},s,{sp:s.sp.filter(function(id){return id!==g.id;})});});}} style={{background:"none",border:"none",color:"var(--tx3)",cursor:"pointer",fontSize:12,padding:"2px 4px",fontFamily:"inherit"}}>{"\u2715"}</button>
         </div>;})}
       </div>}
-      <button onClick={function(){var gid="guest-"+Date.now();var guestN=guests.length+1;setGuests(function(gs){return gs.concat([{id:gid,name:"Guest "+guestN,emoji:"\uD83D\uDE42",freq:"occasional",age:"adult",g:"m",adv:.5,hc:.5,sp:.5,meat:.5,sweet:.5}]);});setSel(function(s){return Object.assign({},s,{sp:s.sp.concat([gid])});});}} style={{marginTop:8,padding:"8px 12px",borderRadius:8,border:"1px dashed var(--bdr)",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:600,color:"var(--tx3)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>{"+ Add a guest"}</button>
+      <button onClick={function(){var gid="guest-"+Date.now();var guestN=guests.length+1;setGuests(function(gs){return gs.concat([{id:gid,name:"Guest "+guestN,emoji:"\uD83D\uDE42",freq:"occasional",age:"adult",g:"m",adv:.5,hc:.5,sp:.5,meat:.5,sweet:.5}]);});setSel(function(s){return Object.assign({},s,{sp:s.sp.concat([gid]),_guestEdit:gid});});}} style={{marginTop:8,padding:"8px 12px",borderRadius:8,border:"1px dashed var(--bdr)",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:600,color:"var(--tx3)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>{"+ Add a guest"}</button>
       {guests.length>0&&sel._guestEdit&&(function(){var ge=guests.find(function(g){return g.id===sel._guestEdit;});if(!ge)return null;return <div style={{marginTop:8,padding:"10px 12px",borderRadius:8,border:"1px solid var(--bdr)",background:"var(--bg1)"}}>
-        <div style={{fontSize:11,fontWeight:700,color:"var(--tx2)",marginBottom:8}}>{ge.name+" preferences"}</div>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+          <input type="text" aria-label="Guest name" value={ge.name} onChange={function(e){var v=e.target.value;setGuests(function(gs){return gs.map(function(g){return g.id===ge.id?Object.assign({},g,{name:v}):g;});});}} style={{flex:1,padding:"4px 8px",borderRadius:6,border:"1px solid var(--bdr)",background:"var(--bg2)",color:"var(--tx1)",fontSize:12,fontWeight:600,fontFamily:"inherit"}}/>
+          <span style={{fontSize:11,color:"var(--tx3)"}}>preferences</span>
+        </div>
         {[{k:"adv",l:"Adventurous",lo:"Picky",hi:"Adventurous"},{k:"sp",l:"Spice",lo:"Mild",hi:"Spicy"},{k:"hc",l:"Health",lo:"Indulgent",hi:"Health-conscious"},{k:"sweet",l:"Sweet tooth",lo:"Savory",hi:"Sweet"}].map(function(sl){return <div key={sl.k} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
           <span style={{fontSize:9,color:"var(--tx3)",width:50,textAlign:"right"}}>{sl.lo}</span>
           <input type="range" min="0" max="1" step="0.1" value={ge[sl.k]} onChange={function(e){var v=parseFloat(e.target.value);setGuests(function(gs){return gs.map(function(g){return g.id===ge.id?Object.assign({},g,function(){var o={};o[sl.k]=v;return o;}()):g;});});}} style={{flex:1}}/>
@@ -499,7 +502,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         <button onClick={function(){setSel(function(s){var n=Object.assign({},s);delete n._guestEdit;return n;});}} style={{fontSize:10,fontWeight:600,color:"var(--ac)",background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"4px 0"}}>Done</button>
       </div>;})()}
       {guests.length>0&&!sel._guestEdit&&<div style={{display:"flex",flexWrap:"wrap",gap:4,marginTop:4}}>{guests.map(function(g){return <button key={g.id} onClick={function(){setSel(function(s){return Object.assign({},s,{_guestEdit:g.id});});}} style={{padding:"3px 8px",borderRadius:6,border:"1px solid var(--bdr)",background:"var(--bg2)",cursor:"pointer",fontFamily:"inherit",fontSize:9,color:"var(--tx3)"}}>{"\u2699 "+g.name}</button>;})}</div>}
-      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});var ob=getObvious(sel,rests,mctx,activeObvRules);if(ob){setSel(function(s){return Object.assign({},s,{ob:ob});});go("intercept");}else{go("step2");}}}} style={{opacity:sel.sp.length===0?.3:1,pointerEvents:sel.sp.length===0?"none":"auto",transition:"opacity .3s",flexDirection:"row",gap:0,justifyContent:"center"}}><span style={{opacity:.55}}>{"Next:"}</span><span style={{padding:"0 6px"}}>{"Choose Mood"}</span><span style={{opacity:.55}}>{"→"}</span></button></div>
+      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});var ob=getObvious(sel,rests,mctx,activeObvRules);if(ob){setSel(function(s){return Object.assign({},s,{ob:ob});});go("intercept");}else{go("step2");}}}} disabled={sel.sp.length===0} aria-disabled={sel.sp.length===0} style={{opacity:sel.sp.length===0?.3:1,transition:"opacity .3s",flexDirection:"row",gap:0,justifyContent:"center"}}><span style={{opacity:.55}}>{"Next:"}</span><span style={{padding:"0 6px"}}>{"Choose Mood"}</span><span style={{opacity:.55}}>{"→"}</span></button></div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>
   </div>}
@@ -613,9 +616,10 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           <div style={{height:"100dvh",overflow:"auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 24px"}}>
             <span style={{fontSize:64}}>{"\uD83D\uDEAB"}</span>
             <div style={{fontSize:22,fontWeight:700,color:"var(--tx1)",marginTop:16,textAlign:"center"}}>You vetoed everything</div>
-            <div style={{fontSize:14,color:"var(--tx2)",marginTop:10,textAlign:"center"}}>{"Every restaurant in rotation is either closed or burned. There\u2019s nothing left to show."}</div>
+            <div style={{fontSize:14,color:"var(--tx2)",marginTop:10,textAlign:"center"}}>{sessionSkips.length>0?"You skipped everything tonight! Clear your session skips or start fresh.":"Every restaurant in rotation is either closed or burned. There\u2019s nothing left to show."}</div>
             <div style={{width:"100%",display:"flex",flexDirection:"column",gap:10,marginTop:28}}>
-              <button className="jfl-cta" style={{padding:14}} onClick={function(){setR(function(rs){return rs.map(function(r){return r.bo?Object.assign({},r,{bo:false}):r;});});setResIdx(0);reroll(false);}}>Clear all vetoes and retry</button>
+              {sessionSkips.length>0&&<button className="jfl-cta" style={{padding:14}} onClick={function(){setSessionSkips([]);reroll(false);}}>{"Clear tonight\u2019s skips and retry"}</button>}
+              <button className={sessionSkips.length>0?"jfl-btn":"jfl-cta"} style={{padding:14}} onClick={function(){setR(function(rs){return rs.map(function(r){return r.bo?Object.assign({},r,{bo:false}):r;});});setSessionSkips([]);setResIdx(0);reroll(false);}}>Clear all vetoes and retry</button>
               <button className="jfl-btn" style={{padding:12,fontSize:12,color:"var(--tx2)"}} onClick={function(){go("dashboard");}}>Back to dashboard</button>
             </div>
           </div>
@@ -705,7 +709,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         </div>
         {/* Share */}
         <div className="pop" style={{marginTop:6,animationDelay:".55s"}}>
-          <button style={{width:"100%",padding:10,fontSize:12,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",justifyContent:"center",gap:6}} onClick={function(){var txt=rest.emoji+" Jennarate picked: "+rest.name+"\n"+res.vetoFlavor+(res.order?"\nOrder: "+res.order.title:"")+"\n\njennarate.com";if(navigator.share){navigator.share({title:"Jennarate: "+rest.name,text:txt}).catch(function(){});}else{navigator.clipboard.writeText(txt).then(function(){});}}}><span>{"📤"}</span><span>{navigator.share?"Share this pick":"Copy to clipboard"}</span></button>
+          <button style={{width:"100%",padding:10,fontSize:12,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",justifyContent:"center",gap:6}} onClick={function(){var txt=rest.emoji+" Jennarate picked: "+rest.name+"\n"+res.vetoFlavor+(res.order?"\nOrder: "+res.order.title:"")+"\n\nhttps://"+window.location.hostname;if(navigator.share){navigator.share({title:"Jennarate: "+rest.name,text:txt}).catch(function(){});}else{navigator.clipboard.writeText(txt).then(function(){});}}}><span>{"📤"}</span><span>{navigator.share?"Share this pick":"Copy to clipboard"}</span></button>
         </div>
 
         {/* Why this expanded - tappable to collapse */}
@@ -789,6 +793,10 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         {/* DoorDash CTA */}
         <div style={{marginTop:10}}>
           {res.ddLink&&<a href={res.ddLink} target="_blank" rel="noopener noreferrer" className="jfl-cta" style={{padding:14,textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:700}}>Open in DoorDash</a>}
+        </div>
+        {/* Share */}
+        <div style={{marginTop:6}}>
+          <button style={{width:"100%",padding:10,fontSize:12,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",justifyContent:"center",gap:6}} onClick={function(){var txt=rest.emoji+" Jennarate picked: "+rest.name+"\n"+res.vetoFlavor+(res.order?"\nOrder: "+res.order.title:"")+"\n\nhttps://"+window.location.hostname;if(navigator.share){navigator.share({title:"Jennarate: "+rest.name,text:txt}).catch(function(){});}else{navigator.clipboard.writeText(txt).then(function(){});}}}><span>{"📤"}</span><span>{navigator.share?"Share this pick":"Copy to clipboard"}</span></button>
         </div>
 
         {/* Three action buttons - proportional */}
@@ -2000,7 +2008,7 @@ return <div className="fade">
       })}
     </div>
     <div style={{marginTop:20}}>
-      <button className="jfl-cta" style={{padding:14,fontSize:15,fontWeight:700,width:"100%",opacity:allVoted?1:.3,pointerEvents:allVoted?"auto":"none",transition:"opacity .3s"}} onClick={function(){if(h2h.qi+1>=h2h.qs.length){resolveH2H(h2h.perPerson);}else{setH2H(function(p){return Object.assign({},p,{qi:p.qi+1});});}}}>{h2h.qi+1>=h2h.qs.length?"See results \u2192":"Next question \u2192"}</button>
+      <button className="jfl-cta" disabled={!allVoted} aria-disabled={!allVoted} style={{padding:14,fontSize:15,fontWeight:700,width:"100%",opacity:allVoted?1:.3,transition:"opacity .3s"}} onClick={function(){if(h2h.qi+1>=h2h.qs.length){resolveH2H(h2h.perPerson);}else{setH2H(function(p){return Object.assign({},p,{qi:p.qi+1});});}}}>{h2h.qi+1>=h2h.qs.length?"See results \u2192":"Next question \u2192"}</button>
     </div>
   </div>
 </div>;

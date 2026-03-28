@@ -563,7 +563,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     </div>;})()||null}
 
   {/* ═══ STEP 2 ═══ */}
-  {vw==="step2"&&<MoodQuiz sel={sel} up={up} mctx={mctx} resolve={resolve} go={go} ppl={ppl}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>}
+  {vw==="step2"&&<MoodQuiz sel={sel} up={up} mctx={mctx} resolve={resolve} go={go} ppl={ppl} h2hFemale={gs2.h2hFemale!==false} onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>}
 
   {/* ═══ RESULTS ═══ */}
   {vw==="results"&&results&&(function(){
@@ -1611,78 +1611,8 @@ var timeWord=mctx.meal==="breakfast"||mctx.meal==="brunch"||mctx.meal==="lunch"?
 return text.replace(/{time}/g,timeWord).replace(/{meal}/g,mctx.label.toLowerCase()).replace(/{you}/g,youWord).replace(/{youre}/g,youreWord).replace(/{your}/g,yourWord).replace(/{we}/g,weWord).replace(/{yourself}/g,yourselfWord);
 }
 
-function answer(qIdx,yes,trackKey){
-var newAns=Object.assign({},ans);
-newAns[trackKey]=yes===true?"y":yes===false?"n":"s";
-var newDisagrees=disagrees;
-if(yes===null&&!isSolo){
-newDisagrees=disagrees+1;
-setDisagrees(newDisagrees);
-if(newDisagrees>=2&&voters.length>=2){
-/* Trigger head-to-head mode */
-var h2hQs=[];
-var tags=getQuizTags();var meal=mctx.meal;
-var avail=QUIZ_QS.filter(function(q,i){
-if(used.indexOf(i)>=0)return false;
-if(!q.w.some(function(t){return tags.indexOf(t)>=0;}))return false;
-if(q.m!=="all"){var meals=q.m.split(",");if(meals.indexOf(meal)<0)return false;}
-return true;
-});
-var shuffled=avail.sort(function(){return Math.random()-.5;});
-h2hQs=shuffled.slice(0,5);
-setH2H({qs:h2hQs,qi:0,votes:{},perPerson:{}});
-setH2hIntro(true);
-return;
-}
-}
-if(yes!==null){
-var q=qs[qIdx];
-var weights=yes?q.y:q.n;
-Object.keys(weights).forEach(function(k){newAns[k]=(newAns[k]||0)+weights[k];});
-if(yes&&q.ct){newAns._ct=newAns._ct||{};newAns._ct[q.ct]=(newAns._ct[q.ct]||0)+1;}
-}
-setAns(newAns);
 
 
-if(phase==="narrow"){
-  var newP2=p2count+1;
-  setP2count(newP2);
-  if(yes&&q.ct){newAns._ct=newAns._ct||{};newAns._ct[q.ct]=(newAns._ct[q.ct]||0)+1;up("ct",q.ct);}
-  var allP2Done=true;for(var qi2=0;qi2<3;qi2++){var k2="_n"+round+"q"+qi2;if(!newAns[k2])allP2Done=false;}
-  if(newP2>=3&&allP2Done){
-    if(newAns._ct){var topCt3=null,topCtS3=0;Object.keys(newAns._ct).forEach(function(k){if(newAns._ct[k]>topCtS3){topCtS3=newAns._ct[k];topCt3=k;}});if(topCt3)up("ct",topCt3);}
-    resolve();
-    return;
-  }
-  if(qIdx===2||(function(){var allDone=true;for(var qi=0;qi<3;qi++){var k="_"+(phase==="narrow"?"n":"r")+round+"q"+qi;if(!newAns[k])allDone=false;}return allDone;})()){setRound(round+1);pickQuestions(usedRef.current);}
-  return;
-}
-
-var totalAnswered=0;
-Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="_")totalAnswered++;});
-
-if(totalAnswered>=3){
-  var best=null,bestScore=0,second=0;
-  Object.keys(newAns).forEach(function(k){
-    if(k.charAt(0)==="_")return;
-    if(newAns[k]>bestScore){second=bestScore;bestScore=newAns[k];best=k;}
-    else if(newAns[k]>second)second=newAns[k];
-  });
-  var gap=bestScore-second;
-  if((gap>=4&&totalAnswered>=3)||(gap>=2&&totalAnswered>=6)||(totalAnswered>=9)){
-    var moodId=QUIZ_MAP[best]||"balanced";
-    var mood=MOODS.find(function(m){return m.id===moodId;})||MOODS.find(function(m){return m.id==="balanced";});
-    up("mood",moodId);
-    if(newAns._ct){var topCt=null,topCtS=0;Object.keys(newAns._ct).forEach(function(k){if(newAns._ct[k]>topCtS){topCtS=newAns._ct[k];topCt=k;}});if(topCt)up("ct",topCt);}
-    setResolved(mood||{id:"balanced",emoji:"\u2696\uFE0F",label:"Balanced",desc:"A little of everything",c:"#4A9EFF"});
-    return;
-  }
-}
-
-if(round<2){var allDone=true;for(var qi=0;qi<3;qi++){var k="_r"+round+"q"+qi;if(!newAns[k])allDone=false;}if(allDone){setRound(round+1);pickQuestions(usedRef.current);}}
-
-
-}
 
 var REVEAL={
 healthy:isSolo?"Your body called. It said thank you.":"Everyone's body called. They said thank you.",
@@ -1942,7 +1872,7 @@ function resolveH2H(perPerson){
   /* Find winner */
   var sorted=Object.keys(moodVotes).sort(function(a,b){
     if(moodVotes[b].count!==moodVotes[a].count)return moodVotes[b].count-moodVotes[a].count;
-    if(moodVotes[b].females!==moodVotes[a].females)return moodVotes[b].females-moodVotes[a].females;
+    if(props.h2hFemale&&moodVotes[b].females!==moodVotes[a].females)return moodVotes[b].females-moodVotes[a].females;
     return Math.random()-.5;
   });
   var winner=sorted[0];
@@ -1950,7 +1880,7 @@ function resolveH2H(perPerson){
   var mood=MOODS.find(function(m){return m.id===moodId;});
   if(!mood)mood={id:"balanced",emoji:"\u2696\uFE0F",label:"Balanced",desc:"A little of everything",c:"#4A9EFF"};
   var tiedTop=sorted.filter(function(s){return moodVotes[s].count===moodVotes[sorted[0]].count;});
-  var method=tiedTop.length>1?(moodVotes[winner].females>0?(moodVotes[winner].females>1?"the women, as it should be \uD83D\uDC85":"the woman, as it should be \uD83D\uDC85"):"Coin flip"):"Majority";
+  var method=tiedTop.length>1?(props.h2hFemale&&moodVotes[winner].females>0?(moodVotes[winner].females>1?"the women, as it should be \uD83D\uDC85":"the woman, as it should be \uD83D\uDC85"):"Coin flip"):"Majority";
   up("mood",moodId);
   if(phase==="narrow"){
     setH2H(null);
@@ -2110,7 +2040,7 @@ return;
 }
 /* Phase 1: check if mood can be determined */
 var totalAnswered=0;
-Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="*")totalAnswered++;});
+Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="_")totalAnswered++;});
 if(totalAnswered>=3){
 var best=null,bestScore=0,second=0;
 Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="*")return;if(newAns[k]>bestScore){second=bestScore;bestScore=newAns[k];best=k;}else if(newAns[k]>second)second=newAns[k];});
@@ -2910,5 +2840,5 @@ var CSS = [
 ".jfl-mc.on{border-color:var(--ac);background:var(--ac);color:white}",
 ".jfl-footer{font-size:11px;color:var(--tx3);font-weight:500}",
 "@media(min-width:600px){.jfl-root{max-width:600px}.jfl-cta{font-size:17px;padding:14px}.jfl-cta-hero{padding:22px 16px}.jfl-btn{font-size:15px;padding:12px 18px}.jfl-card{padding:16px}.jfl-chip{font-size:15px;padding:13px 16px}.jfl-pill{font-size:15px;padding:9px 16px}.jfl-stat{padding:16px 12px}.jfl-stat-n{font-size:22px}.jfl-stat-l{font-size:14px}.jfl-label{font-size:13px}}",
-"@media(prefers-reduced-motion:reduce){.fade,.pop,.tada,.float-in,.podium-pop,.stagger-1,.stagger-2,.stagger-3,.slot-roll,.spin{animation:none !important}.jfl-cta-hero,.insightsShimmer,.crown-glow{animation:none !important}}",
+"@media(prefers-reduced-motion:reduce){.fade,.pop,.tada,.float-in,.podium-pop,.stagger-1,.stagger-2,.stagger-3,.slot-roll,.spin,.landingPulse,.chipBounce{animation:none !important}.jfl-cta-hero,.insightsShimmer,.crown-glow{animation:none !important}[style*=\"animation\"]{animation:none !important}}",
 ].join("\n");

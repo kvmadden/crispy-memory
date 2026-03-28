@@ -302,7 +302,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
       {/* how-it-works flow */}
       <div style={Object.assign({},cardStyle,{borderRadius:20,padding:"16px 20px",width:"100%",maxWidth:340})}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
-          {[{e:"🫶",l:"Squad"},{e:"🌀",l:"Vibes"},{e:"😋",l:"Yum"}].map(function(step,si){
+          {[{e:"👥",l:"Squad"},{e:"🌀",l:"Vibes"},{e:"😋",l:"Yum"}].map(function(step,si){
             return <React.Fragment key={si}>
               {si>0&&<div style={{flex:1,height:3,margin:"0 -2px",marginBottom:16,borderRadius:2,background:"linear-gradient(90deg,var(--ac),var(--ac)) no-repeat left/0% 100%,transparent",animation:"lineFill"+si+" 7s ease-in-out infinite"}}></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>

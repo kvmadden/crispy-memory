@@ -441,7 +441,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
       {/* ── Stats row ── */}
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
         <button className="jfl-stat float-in" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"favs"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid var(--ac)",animationDelay:".2s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#E8458A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return r.fav;}).length}</div><div className="jfl-stat-l">Favorites</div></button>
-        <button className="jfl-stat float-in" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"active"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid #D4A574",animationDelay:".3s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#D4A574,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return!r.bo;}).length}</div><div className="jfl-stat-l">In Rotation</div></button>
+        <button className="jfl-stat float-in" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"active"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid var(--grn)",animationDelay:".3s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#D4A574,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return!r.bo;}).length}</div><div className="jfl-stat-l">In Rotation</div></button>
         <button className="jfl-stat float-in" onClick={function(){go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid",borderImage:"linear-gradient(135deg,#F472B6,#C4956A) 1",animationDelay:".4s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.reduce(function(s,r){return s+r.to;},0)}</div><div className="jfl-stat-l">Total Orders</div></button>
       </div>
 
@@ -2698,7 +2698,7 @@ return(
                   <div style={{fontSize:11,color:"var(--tx2)",fontStyle:"italic",flex:1}}>{"\u201C"+rule.ask+"\u201D"}</div>
                   <div style={{display:"flex",gap:6,marginLeft:8,flexShrink:0}}>
                     <button className="jfl-btn" style={{fontSize:10,padding:"3px 8px"}} onClick={function(){setObvEditIdx(idx);}}>Edit</button>
-                    <button className="jfl-btn" style={{fontSize:10,padding:"3px 8px",color:"#F87171",borderColor:"#F87171"}} onClick={function(){if(confirm("Remove this obvious choice?"))removeRule(idx);}}>Remove</button>
+                    <button className="jfl-btn" style={{fontSize:10,padding:"3px 8px",color:"var(--red)",borderColor:"var(--red)"}} onClick={function(){if(confirm("Remove this obvious choice?"))removeRule(idx);}}>Remove</button>
                   </div>
                 </div>
               </div>}

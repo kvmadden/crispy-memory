@@ -2835,7 +2835,7 @@ return(
 var CSS = [
 ":root,.theme-dark{--bg0:#0D1117;--bg1:#161B22;--bg2:#1C2129;--bdr:#30363D;--tx1:#E6EDF3;--tx2:#8B949E;--tx3:#484F58;--ac:#F472B6;--grn:#D4A574;--yel:#FBBF24;--red:#F87171}",
 ".theme-light{--bg0:#F5E6E0;--bg1:#FFFFFF;--bg2:#F0DDD6;--bdr:#D9B8AA;--tx1:#2A1215;--tx2:#6B3A3A;--tx3:#9A7070;--ac:#C91A5E;--grn:#A07828;--yel:#B8860B;--red:#C0392B}",
-".theme-light .insightsShimmer{color:#8B6914 !important}",
+".theme-light .insightsShimmer{color:#7A5518 !important;background:linear-gradient(135deg,rgba(160,120,40,.12),rgba(190,150,60,.3),rgba(160,120,40,.12)) !important;border-color:rgba(160,120,40,.35) !important}",
 ".theme-light .jfl-cta{background:linear-gradient(135deg,#E8458A,#D4956A);text-shadow:0 1px 3px rgba(0,0,0,.15)}",
 ".theme-light .jfl-cta-hero{box-shadow:0 3px 16px rgba(214,36,107,.25)}",
 "@keyframes ctaGlowLight{0%,100%{box-shadow:0 3px 16px rgba(214,36,107,.2)}50%{box-shadow:0 5px 28px rgba(214,36,107,.4),0 0 40px rgba(212,149,106,.15)}}",

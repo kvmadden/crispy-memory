@@ -815,7 +815,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         {/* Filter bar */}
         <div style={{display:"flex",gap:6,marginBottom:10,paddingBottom:10,borderBottom:"1px solid var(--bdr)"}}>
           {[{id:"all",l:"All"},{id:"favs",l:"Favorites"},{id:"active",l:"Active"}].map(function(f){return <button key={f.id} onClick={function(){setSel(function(s){return Object.assign({},s,{hf:f.id});});}} style={{padding:"5px 14px",borderRadius:8,border:"1px solid "+(sel.hf===f.id?"var(--ac)":"var(--bdr)"),background:sel.hf===f.id?"rgba(244,114,182,.15)":"var(--bg1)",color:sel.hf===f.id?"var(--ac)":"var(--tx2)",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{f.l}</button>;})}
-          <button onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"insights"});});}} style={{padding:"5px 14px",borderRadius:8,border:sel.hf==="insights"?"1px solid #C4956A":"1px solid #C4956A",background:sel.hf==="insights"?"linear-gradient(135deg,#C4956A,#D4A574)":"linear-gradient(135deg,rgba(196,149,106,.2),rgba(212,165,116,.15))",color:sel.hf==="insights"?"#fff":"#8B6914",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",letterSpacing:.3,boxShadow:sel.hf==="insights"?"0 2px 8px rgba(196,149,106,.4)":"0 2px 6px rgba(196,149,106,.2)",textShadow:sel.hf==="insights"?"0 1px 2px rgba(0,0,0,.2)":"none"}}>{"\u2728 Insights"}</button>
+          <button className={sel.hf==="insights"?"":"insightsShimmer"} onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"insights"});});}} style={{padding:"6px 16px",borderRadius:20,border:sel.hf==="insights"?"none":"1px solid rgba(196,149,106,.6)",background:sel.hf==="insights"?"linear-gradient(135deg,#C4956A,#D4A574)":"linear-gradient(135deg,#D4A574,#E8C48A,#D4A574)",backgroundSize:sel.hf==="insights"?"100% 100%":"200% 100%",color:sel.hf==="insights"?"#fff":"#7A5518",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",letterSpacing:.3,boxShadow:sel.hf==="insights"?"0 2px 8px rgba(196,149,106,.4)":"0 2px 10px rgba(196,149,106,.25),inset 0 1px 0 rgba(255,255,255,.3)",textShadow:sel.hf==="insights"?"0 1px 2px rgba(0,0,0,.2)":"0 1px 0 rgba(255,255,255,.4)"}}>{"\u2728 Insights"}</button>
         </div>
 
         {/* ═══ INSIGHTS VIEW ═══ */}
@@ -2851,6 +2851,8 @@ var CSS = [
 "@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}",
 "@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}",
 "@keyframes spin{to{transform:rotate(360deg)}}",
+"@keyframes insightsShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}",
+".insightsShimmer{animation:insightsShimmer 3s ease-in-out infinite}",
 "@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}",
 "@keyframes slideOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-40px)}}",
 "@keyframes slotRoll{0%{transform:translateY(100%);opacity:0}15%{transform:translateY(0);opacity:1}85%{transform:translateY(0);opacity:1}100%{transform:translateY(-100%);opacity:0}}",

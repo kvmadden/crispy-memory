@@ -455,27 +455,19 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     {/* ═══ STEP 1 ═══ */}
   {vw==="step1"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     <TopBar title="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>
-    {/* ── Crew builder bar ── */}
-    {sel.sp.length>0&&<div style={{padding:"8px 16px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",display:"flex",alignItems:"center",gap:4,flexShrink:0}}>
-      <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",marginRight:4,flexShrink:0}}>Crew</span>
-      <div style={{display:"flex",gap:4,flex:1,overflow:"auto"}}>
-        {sel.sp.map(function(id){var p=allPpl.find(function(x){return x.id===id;});if(!p)return null;return <span key={id} className="pop" style={{display:"inline-flex",alignItems:"center",gap:3,padding:"3px 8px",borderRadius:12,background:"rgba(244,114,182,.1)",border:"1px solid rgba(244,114,182,.2)",fontSize:11,fontWeight:600,color:"var(--ac)",whiteSpace:"nowrap",flexShrink:0}}>
-          <span style={{fontSize:14}}>{p.emoji}</span>
-          <span>{p.name.split(" ")[0]}</span>
-          <button onClick={function(e){e.stopPropagation();togP(id);}} style={{background:"none",border:"none",color:"var(--ac)",cursor:"pointer",fontSize:10,padding:"0 2px",fontFamily:"inherit",opacity:.6}} aria-label={"Remove "+p.name}>{"\u2715"}</button>
-        </span>;})}
-        {(sel.xa>0||sel.xk>0)&&<span style={{display:"inline-flex",alignItems:"center",padding:"3px 8px",borderRadius:12,background:"var(--bg1)",border:"1px solid var(--bdr)",fontSize:11,fontWeight:500,color:"var(--tx3)",whiteSpace:"nowrap",flexShrink:0}}>{"+"+(sel.xa+sel.xk)+" extra"}</span>}
-      </div>
-      <span style={{fontSize:12,fontWeight:700,color:"var(--tx1)",flexShrink:0}}>{sel.sp.length+(sel.xa||0)+(sel.xk||0)}</span>
-    </div>}
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
-      <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
+      <div className="jfl-label" style={{marginBottom:8}}>Quick select</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-        {groups.map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
+        {groups.filter(function(g){return g.id==="couple"||g.id==="family";}).map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
       </div>
-      <div className="jfl-label" style={{marginTop:16,marginBottom:8}}>Or pick individually</div>
+      {sel._showAllGroups&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:8}}>
+        {groups.filter(function(g){return g.id!=="couple"&&g.id!=="family";}).map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
+      </div>}
+      {!sel._showAllGroups&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllGroups:true});});}} style={{marginTop:6,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)",padding:0,textAlign:"left"}}>{groups.length-2+" more groups \u203A"}</button>}
+      <div className="jfl-label" style={{marginTop:14,marginBottom:8}}>Or pick individually</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?0.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];var sorted=ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});var core=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;});var rest=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)<0;});var visible=sel._showAllPeople?sorted:core.concat(rest.filter(function(p){return sel.sp.indexOf(p.id)>=0;}));return visible;})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {!sel._showAllPeople&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllPeople:true});});}} style={{padding:"6px 12px",borderRadius:20,border:"1px dashed var(--bdr)",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)"}}>{ppl.length-5+" more \u203A"}</button>}
       </div>
       {sel.sp.length>0&&<div style={{marginTop:12,fontSize:12,color:"var(--tx3)",fontWeight:500}}>{sel.sp.length+(sel.xa||sel.xk?("+"+(sel.xa+sel.xk)):"")+" people"+(sel.kf||sel.xk>0?" \u00B7 Kid-safe active":"")}</div>}
       <div style={{marginTop:12}}>
@@ -534,15 +526,19 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
   {vw==="quickpick"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     <TopBar title={"Quick pick: "+mctx.label} sub="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
-      <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
+      <div className="jfl-label" style={{marginBottom:8}}>Quick select</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-        {groups.map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
+        {groups.filter(function(g){return g.id==="couple"||g.id==="family";}).map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
       </div>
-      <div className="jfl-label" style={{marginTop:16,marginBottom:8}}>Or pick individually</div>
+      {sel._showAllGroups&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:8}}>
+        {groups.filter(function(g){return g.id!=="couple"&&g.id!=="family";}).map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
+      </div>}
+      {!sel._showAllGroups&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllGroups:true});});}} style={{marginTop:6,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)",padding:0,textAlign:"left"}}>{groups.length-2+" more groups \u203A"}</button>}
+      <div className="jfl-label" style={{marginTop:14,marginBottom:8}}>Or pick individually</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?0.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];var sorted=ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});var core=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;});var rest=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)<0;});var visible=sel._showAllPeople?sorted:core.concat(rest.filter(function(p){return sel.sp.indexOf(p.id)>=0;}));return visible;})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {!sel._showAllPeople&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllPeople:true});});}} style={{padding:"6px 12px",borderRadius:20,border:"1px dashed var(--bdr)",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)"}}>{ppl.length-5+" more \u203A"}</button>}
       </div>
-      {sel.sp.length>0&&<div style={{marginTop:12,fontSize:12,color:"var(--tx3)",fontWeight:500}}>{sel.sp.length+(sel.xa||sel.xk?("+"+(sel.xa+sel.xk)):"")+" people"+(sel.kf||sel.xk>0?" \u00B7 Kid-safe active":"")}</div>}
       <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setBusy(true);setTimeout(function(){var qs=_selWithCtx(sel);setRes(top3(scoreAll(_filterSkips(rests),qs,allPpl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);}}} disabled={sel.sp.length===0} aria-disabled={sel.sp.length===0} style={{opacity:sel.sp.length===0?.3:1,transition:"opacity .3s"}}>{"Get "+mctx.label+" Recommendation"}</button></div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>

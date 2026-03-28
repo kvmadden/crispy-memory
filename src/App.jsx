@@ -214,7 +214,7 @@ return(
   {aboutOpen&&(function(){var _abt=gs2.theme||"auto";var _abDk=_abt==="dark"||(_abt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:999,display:"flex",justifyContent:"flex-end"}}>
     <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:_abDk?"rgba(0,0,0,.7)":"rgba(0,0,0,.3)",backdropFilter:"blur(4px)",cursor:"pointer"}} onClick={function(){setAboutOpen(false);}}></div>
     <div className="slide-in" style={{position:"relative",width:"85%",maxWidth:340,background:_abDk?"linear-gradient(180deg,#0D1117 0%,#131920 40%,#161B22 100%)":"linear-gradient(180deg,#FAF0EC 0%,#F5E6E0 40%,#F0DDD6 100%)",height:"100%",overflow:"auto",boxShadow:_abDk?"-8px 0 40px rgba(0,0,0,.5)":"-8px 0 40px rgba(0,0,0,.12)",borderLeft:_abDk?"1px solid rgba(244,114,182,.08)":"1px solid rgba(200,150,130,.2)"}}>
-      <button onClick={function(){setAboutOpen(false);}} style={{position:"absolute",top:16,right:16,background:_abDk?"rgba(255,255,255,.05)":"rgba(0,0,0,.05)",border:_abDk?"1px solid rgba(255,255,255,.08)":"1px solid rgba(0,0,0,.08)",borderRadius:20,width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",zIndex:1}} aria-label="Close">{"\u2715"}</button>
+      <button onClick={function(){setAboutOpen(false);}} style={{position:"absolute",top:16,right:16,background:_abDk?"rgba(255,255,255,.05)":"rgba(0,0,0,.05)",border:_abDk?"1px solid rgba(255,255,255,.08)":"1px solid rgba(0,0,0,.08)",borderRadius:20,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",zIndex:1}} aria-label="Close">{"\u2715"}</button>
       <div style={{padding:"40px 20px 24px",textAlign:"center",background:_abDk?"radial-gradient(ellipse at 50% 0%,rgba(244,114,182,.08) 0%,transparent 70%)":"radial-gradient(ellipse at 50% 0%,rgba(201,26,94,.06) 0%,transparent 70%)"}}>
         <div style={{fontSize:32,fontWeight:800,letterSpacing:-1,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
         <div style={{fontSize:11,fontWeight:700,color:"var(--tx2)",marginTop:3,letterSpacing:2,textTransform:"uppercase"}}>Food Logic</div>
@@ -487,16 +487,16 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           <div style={{flex:1,display:"flex",alignItems:"center",gap:8,background:"var(--bg1)",borderRadius:10,padding:"8px 12px",border:"1px solid var(--bdr)"}}>
             <span style={{fontSize:14}}>{"\uD83E\uDDD1"}</span>
             <span style={{fontSize:11,fontWeight:500,color:"var(--tx2)",flex:1}}>Adults</span>
-            <button className="jfl-btn" aria-label="Decrease extra adults" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:Math.max(0,(s.xa||0)-1)});});}}>−</button>
+            <button className="jfl-btn" aria-label="Decrease extra adults" style={{width:36,height:36,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:Math.max(0,(s.xa||0)-1)});});}}>−</button>
             <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",minWidth:16,textAlign:"center"}}>{sel.xa||0}</span>
-            <button className="jfl-btn" aria-label="Increase extra adults" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:(s.xa||0)+1});});}}>+</button>
+            <button className="jfl-btn" aria-label="Increase extra adults" style={{width:36,height:36,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:(s.xa||0)+1});});}}>+</button>
           </div>
           <div style={{flex:1,display:"flex",alignItems:"center",gap:8,background:"var(--bg1)",borderRadius:10,padding:"8px 12px",border:"1px solid var(--bdr)"}}>
             <span style={{fontSize:14}}>{"\uD83E\uDDD2"}</span>
             <span style={{fontSize:11,fontWeight:500,color:"var(--tx2)",flex:1}}>Kids</span>
-            <button className="jfl-btn" aria-label="Decrease extra kids" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:Math.max(0,(s.xk||0)-1)});});}}>−</button>
+            <button className="jfl-btn" aria-label="Decrease extra kids" style={{width:36,height:36,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:Math.max(0,(s.xk||0)-1)});});}}>−</button>
             <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",minWidth:16,textAlign:"center"}}>{sel.xk||0}</span>
-            <button className="jfl-btn" aria-label="Increase extra kids" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:(s.xk||0)+1});});}}>+</button>
+            <button className="jfl-btn" aria-label="Increase extra kids" style={{width:36,height:36,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:(s.xk||0)+1});});}}>+</button>
           </div>
         </div>
       </div>

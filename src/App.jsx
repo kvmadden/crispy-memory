@@ -304,10 +304,10 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
           {[{e:"👥",l:"Squad"},{e:"✨",l:"Vibes"},{e:"🍽️",l:"Yum"}].map(function(step,si){
             return <React.Fragment key={si}>
-              {si>0&&<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16,animation:"symFill"+si+" 4.5s ease-in-out infinite"}}><span style={{fontSize:18,fontWeight:800,color:"var(--ac)"}}>{si===1?"+":"="}</span></div>}
+              {si>0&&<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16,animation:"symFill"+si+" 6s ease-in-out infinite"}}><span style={{fontSize:28,fontWeight:800,color:"var(--ac)"}}>{si===1?"+":"="}</span></div>}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:60}}>
-                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 4.5s ease-in-out infinite"}}>{step.e}</div>
-                <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",animation:"labelOn"+si+" 4.5s ease-in-out infinite"}}>{step.l}</span>
+                <div style={{width:40,height:40,borderRadius:"50%",background:isDk?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,animation:"stepOn"+si+" 6s ease-in-out infinite"}}>{step.e}</div>
+                <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",animation:"labelOn"+si+" 6s ease-in-out infinite"}}>{step.l}</span>
               </div>
             </React.Fragment>;
           })}

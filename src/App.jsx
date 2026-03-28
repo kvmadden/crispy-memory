@@ -2028,6 +2028,7 @@ if(newDisagrees>=2&&voters.length>=2){
 var tags2=getQuizTags();var meal2=mctx.meal;
 var avail2=QUIZ_QS.filter(function(q2,idx){if(used.indexOf(idx)>=0)return false;if(!q2.w.some(function(t){return tags2.indexOf(t)>=0;}))return false;if(q2.m!=="all"){var meals2=q2.m.split(",");if(meals2.indexOf(meal2)<0)return false;}return true;});
 var h2hQs2=avail2.sort(function(){return Math.random()-.5;}).slice(0,5);
+if(h2hQs2.length===0){resolve();return;}
 setH2H({qs:h2hQs2,qi:0,votes:{},perPerson:{}});
 setH2hIntro(true);
 return;

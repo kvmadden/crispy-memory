@@ -199,6 +199,7 @@ var LANDING_ROWS=useMemo(function(){var s=7919;var ri=0;return[[13,22,38,false],
 var isSoloResult=(sel.sp||[]).length<=1&&!(sel.xa||0)&&!(sel.xk||0);
 var vcfg=isSoloResult?{low:{c:"var(--grn)",l:"Strong Match"},moderate:{c:"var(--yel)",l:"Decent Match"},high:{c:"var(--red)",l:"Weak Match"}}:{low:{c:"var(--grn)",l:"Low Veto Risk"},moderate:{c:"var(--yel)",l:"Moderate Risk"},high:{c:"var(--red)",l:"High Risk"}};
 var ccfg={high:{l:"High Confidence",c:"var(--grn)"},medium:{l:"Moderate",c:"var(--yel)"},low:{l:"Low",c:"var(--tx3)"}};
+var fpData=useMemo(function(){var fpSel={sp:["jenna"],mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",ar:false,kf:false,go:false,lo:false,_alreadyHad:alreadyHad};var sc=scoreAll(_filterSkips(rests),fpSel,ppl,hist,mctx,gs2);if(!sc||sc.length<1)return null;var fp=sc[0];if(fp.score<55)return null;var gap=sc.length>1?(fp.score-sc[1].score):20;var prob=gap>15?"High likelihood":gap>8?"Probable choice":"Possible choice";return{fp:fp,prob:prob};},[rests,ppl,hist,mctx,gs2,alreadyHad,_filterSkips]);
 
 /* Top bar shared across all views */
 
@@ -214,7 +215,7 @@ return(
   {aboutOpen&&(function(){var _abt=gs2.theme||"auto";var _abDk=_abt==="dark"||(_abt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:999,display:"flex",justifyContent:"flex-end"}}>
     <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:_abDk?"rgba(0,0,0,.7)":"rgba(0,0,0,.3)",backdropFilter:"blur(4px)",cursor:"pointer"}} onClick={function(){setAboutOpen(false);}}></div>
     <div className="slide-in" style={{position:"relative",width:"85%",maxWidth:340,background:_abDk?"linear-gradient(180deg,#0D1117 0%,#131920 40%,#161B22 100%)":"linear-gradient(180deg,#FAF0EC 0%,#F5E6E0 40%,#F0DDD6 100%)",height:"100%",overflow:"auto",boxShadow:_abDk?"-8px 0 40px rgba(0,0,0,.5)":"-8px 0 40px rgba(0,0,0,.12)",borderLeft:_abDk?"1px solid rgba(244,114,182,.08)":"1px solid rgba(200,150,130,.2)"}}>
-      <button onClick={function(){setAboutOpen(false);}} style={{position:"absolute",top:16,right:16,background:_abDk?"rgba(255,255,255,.05)":"rgba(0,0,0,.05)",border:_abDk?"1px solid rgba(255,255,255,.08)":"1px solid rgba(0,0,0,.08)",borderRadius:20,width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",zIndex:1}} aria-label="Close">{"\u2715"}</button>
+      <button onClick={function(){setAboutOpen(false);}} style={{position:"absolute",top:16,right:16,background:_abDk?"rgba(255,255,255,.05)":"rgba(0,0,0,.05)",border:_abDk?"1px solid rgba(255,255,255,.08)":"1px solid rgba(0,0,0,.08)",borderRadius:20,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",zIndex:1}} aria-label="Close">{"\u2715"}</button>
       <div style={{padding:"40px 20px 24px",textAlign:"center",background:_abDk?"radial-gradient(ellipse at 50% 0%,rgba(244,114,182,.08) 0%,transparent 70%)":"radial-gradient(ellipse at 50% 0%,rgba(201,26,94,.06) 0%,transparent 70%)"}}>
         <div style={{fontSize:32,fontWeight:800,letterSpacing:-1,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div>
         <div style={{fontSize:11,fontWeight:700,color:"var(--tx2)",marginTop:3,letterSpacing:2,textTransform:"uppercase"}}>Food Logic</div>
@@ -335,7 +336,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     {/* ── footer ── */}
     <div style={{padding:"8px 28px 16px",textAlign:"center",flexShrink:0,position:"relative",zIndex:1}}>
       <div style={{fontSize:9,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase",opacity:.5}}>{"\u00A9 2026 Madden Frameworks"}</div>
-      <div style={{fontSize:11,color:"var(--tx3)",marginTop:3,fontStyle:"italic",opacity:.4}}>{"Built different. Eats better."}</div>
+      <div style={{fontSize:11,color:"var(--tx3)",marginTop:3,fontStyle:"italic",opacity:.4}}>{"Smart systems. Full stomachs."}</div>
     </div>
   </div>;})()}
 
@@ -355,30 +356,26 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     </div>
 
     {/* ── Main content ── */}
-    <div style={{flex:1,padding:"8px 16px 0",display:"flex",flexDirection:"column",gap:8,overflow:"auto"}}>
+    <div style={{flex:1,padding:"6px 16px 0",display:"flex",flexDirection:"column",gap:6,overflow:"auto"}}>
 
       {/* ── Meal selector ── */}
       {(function(){var meals=[{id:"breakfast",l:"Brkfst"},{id:"brunch",l:"Brunch"},{id:"lunch",l:"Lunch"},{id:"dinner",l:"Dinner"},{id:"latenight",l:"Late"}];
         return <div style={{display:"flex",gap:4}}>
-          {meals.map(function(m){var on=mctx.meal===m.id;return <button key={m.id} onClick={function(){setMealOverride(mctx.meal===m.id?null:m.id);}} style={{flex:1,padding:"7px 0",borderRadius:8,border:on?"1px solid var(--ac)":"1px solid var(--bdr)",background:on?"rgba(244,114,182,.12)":"var(--bg1)",color:on?"var(--ac)":"var(--tx3)",fontSize:11,fontWeight:on?700:600,cursor:"pointer",fontFamily:"inherit",transition:"all .12s",textAlign:"center"}}>
+          {meals.map(function(m){var on=mctx.meal===m.id;return <button key={m.id} onClick={function(){setMealOverride(mctx.meal===m.id?null:m.id);}} style={{flex:1,padding:"5px 0",borderRadius:8,border:on?"1px solid var(--ac)":"1px solid var(--bdr)",background:on?"rgba(244,114,182,.12)":"var(--bg1)",color:on?"var(--ac)":"var(--tx3)",fontSize:11,fontWeight:on?700:600,cursor:"pointer",fontFamily:"inherit",transition:"all .12s",textAlign:"center"}}>
             {m.l}
           </button>;})}
         </div>;})()}
 
-      {/* Already had today */}
-      {alreadyHad?(function(){var ahr=rests.find(function(r){return r.id===alreadyHad;});return <button onClick={function(){setAlreadyHad(null);}} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 12px",borderRadius:8,border:"1px solid rgba(251,191,36,.25)",background:"rgba(251,191,36,.06)",cursor:"pointer",fontFamily:"inherit",width:"100%",textAlign:"left"}}><span style={{fontSize:14}}>{ahr?ahr.emoji:"\uD83C\uDF7D"}</span><span style={{fontSize:11,fontWeight:600,color:"var(--yel)",flex:1}}>{"Already had "+(ahr?ahr.sn||ahr.name:"?")+" today"}</span><span style={{fontSize:10,color:"var(--tx3)"}}>{"\u2715 clear"}</span></button>;})():<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAlreadyHad:true});});}} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:8,border:"1px solid var(--bdr)",background:"var(--bg1)",cursor:"pointer",fontFamily:"inherit",width:"100%",textAlign:"left"}}><span style={{fontSize:11}}>{"🍽️"}</span><span style={{fontSize:11,fontWeight:500,color:"var(--tx3)"}}>{"Already ate somewhere today?"}</span></button>}
-      {sel._showAlreadyHad&&!alreadyHad&&<div className="fade" style={{display:"flex",flexWrap:"wrap",gap:4,padding:"4px 0"}}>{rests.filter(function(r){return!r.bo&&r.to>0;}).sort(function(a,b){return(b.to90||b.to)-(a.to90||a.to);}).slice(0,12).map(function(r){return <button key={r.id} onClick={function(){setAlreadyHad(r.id);setSel(function(s){var n=Object.assign({},s);delete n._showAlreadyHad;return n;});}} style={{padding:"4px 8px",borderRadius:6,border:"1px solid var(--bdr)",background:"var(--bg2)",cursor:"pointer",fontFamily:"inherit",fontSize:10,fontWeight:600,color:"var(--tx2)",display:"flex",alignItems:"center",gap:4}}><span>{r.emoji}</span><span>{r.sn||r.name}</span></button>;})}<button onClick={function(){setSel(function(s){var n=Object.assign({},s);delete n._showAlreadyHad;return n;});}} style={{padding:"4px 8px",borderRadius:6,border:"none",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:10,color:"var(--tx3)"}}>{"cancel"}</button></div>}
       {needsRefresh&&<div style={{background:"rgba(251,191,36,.1)",border:"1px solid rgba(251,191,36,.3)",borderRadius:8,padding:"6px 12px",display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:12}}>⚠</span><div style={{fontSize:11,color:"var(--yel)",fontWeight:600}}>{"Data refresh recommended · Last import: "+dataRefresh}</div></div>}
 
       {/* ── Fast Path card ── */}
-      {(function(){var fpSel={sp:["jenna"],mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",ar:false,kf:false,go:false,lo:false,_alreadyHad:alreadyHad};var sc=scoreAll(_filterSkips(rests),fpSel,ppl,hist,mctx,gs2);if(!sc||sc.length<1)return null;var fp=sc[0];if(fp.score<55)return null;var gap=sc.length>1?(fp.score-sc[1].score):20;var prob=gap>15?"High likelihood":gap>8?"Probable choice":"Possible choice";
-        return <button onClick={function(){setSel(function(s){return Object.assign({},s,{mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",kf:true});});go("quickpick");}} className="jfl-card float-in" style={{cursor:"pointer",padding:"10px 14px",border:"1px solid rgba(244,114,182,.25)",background:"rgba(244,114,182,.04)",textAlign:"left",width:"100%",fontFamily:"inherit",display:"flex",alignItems:"center",gap:8,animationDelay:".15s"}}>
+      {fpData&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",kf:true});});go("quickpick");}} className="jfl-card float-in" style={{cursor:"pointer",padding:"10px 14px",border:"1px solid rgba(244,114,182,.25)",background:"rgba(244,114,182,.04)",textAlign:"left",width:"100%",fontFamily:"inherit",display:"flex",alignItems:"center",gap:8,animationDelay:".15s"}}>
           <span style={{fontSize:11,color:"var(--ac)"}}>●</span>
-          <span style={{fontSize:12,fontWeight:700,color:"var(--ac)",textTransform:"uppercase",letterSpacing:.5}}>{prob}</span>
-          <span style={{fontSize:20}}>{fp.r.emoji}</span>
-          <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",flex:1}}>{fp.r.sn||fp.r.name}</span>
+          <span style={{fontSize:12,fontWeight:700,color:"var(--ac)",textTransform:"uppercase",letterSpacing:.5}}>{fpData.prob}</span>
+          <span style={{fontSize:20}}>{fpData.fp.r.emoji}</span>
+          <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",flex:1}}>{fpData.fp.r.sn||fpData.fp.r.name}</span>
           <span style={{fontSize:12,color:"var(--tx3)",fontWeight:500}}>Tap to go →</span>
-        </button>;})()}
+        </button>}
 
       {/* ── Hero CTA ── */}
       <div style={{display:"flex",gap:8}}>
@@ -393,7 +390,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
       <div className="jfl-card" style={{padding:"8px 10px"}}>
         <div className="jfl-label" style={{marginBottom:6,display:"flex",alignItems:"center",gap:6}}><div style={{width:14,height:1,background:"var(--ac)",opacity:.5}}></div>Quick Resolves</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-        {(function(){var mc=mctx;var src=qrCustom||QR_DEFAULTS;var visible=src.filter(function(q){return !q.meals||q.meals.length===0||q.meals.indexOf(mc.meal)>=0;});return visible.slice(0,4);})().map(function(q,i){var names=q.g.map(function(id){var p=ppl.find(function(pp){return pp.id===id;});return p?p.name.split(" ")[0]:id;});var sub=names.length>3?names.slice(0,2).join(", ")+" +"+String(names.length-2):names.join(", ");return <button key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 10px",borderRadius:8,border:"1px solid var(--bdr)",background:"var(--bg1)",cursor:"pointer",fontFamily:"inherit",textAlign:"left"}} onClick={function(){var hk=q.g.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:q.g,mood:q.m,kf:hk,go:q.g.length>4,xa:0,xk:0,qrLabel:q.l,qrEmoji:q.e});});go("qrConfirm");}}><span style={{fontSize:16}}>{q.e}</span><div><div style={{fontSize:12,fontWeight:600,color:"var(--tx2)"}}>{q.l}</div><div style={{fontSize:10,color:"var(--tx3)",marginTop:1}}>{sub}</div></div></button>;})}
+        {(function(){var mc=mctx;var src=qrCustom||QR_DEFAULTS;var visible=src.filter(function(q){return !q.meals||q.meals.length===0||q.meals.indexOf(mc.meal)>=0;});return visible.slice(0,4);})().map(function(q,i){var names=q.g.map(function(id){var p=ppl.find(function(pp){return pp.id===id;});return p?p.name.split(" ")[0]:id;});var sub=names.length>3?names.slice(0,2).join(", ")+" +"+String(names.length-2):names.join(", ");return <button key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",borderRadius:8,border:"1px solid var(--bdr)",background:"var(--bg1)",cursor:"pointer",fontFamily:"inherit",textAlign:"left"}} onClick={function(){var hk=q.g.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:q.g,mood:q.m,kf:hk,go:q.g.length>4,xa:0,xk:0,qrLabel:q.l,qrEmoji:q.e});});go("qrConfirm");}}><span style={{fontSize:16}}>{q.e}</span><div><div style={{fontSize:12,fontWeight:600,color:"var(--tx2)"}}>{q.l}</div><div style={{fontSize:10,color:"var(--tx3)",marginTop:1}}>{sub}</div></div></button>;})}
         </div>
       </div>
 
@@ -441,12 +438,12 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
       {/* ── Stats row ── */}
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
         <button className="jfl-stat float-in" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"favs"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid var(--ac)",animationDelay:".2s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#E8458A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return r.fav;}).length}</div><div className="jfl-stat-l">Favorites</div></button>
-        <button className="jfl-stat float-in" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"active"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid #D4A574",animationDelay:".3s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#D4A574,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return!r.bo;}).length}</div><div className="jfl-stat-l">In Rotation</div></button>
+        <button className="jfl-stat float-in" onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"active"});});go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid var(--grn)",animationDelay:".3s"}}><div style={{fontSize:18,fontWeight:700,background:isDk?"linear-gradient(135deg,#D4A574,#C4956A)":"linear-gradient(135deg,#A07828,#8A6520)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.filter(function(r){return!r.bo;}).length}</div><div className="jfl-stat-l">In Rotation</div></button>
         <button className="jfl-stat float-in" onClick={function(){go("history");}} style={{cursor:"pointer",padding:"8px 6px",borderTop:"2px solid",borderImage:"linear-gradient(135deg,#F472B6,#C4956A) 1",animationDelay:".4s"}}><div style={{fontSize:18,fontWeight:700,background:"linear-gradient(135deg,#F472B6,#C4956A)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{rests.reduce(function(s,r){return s+r.to;},0)}</div><div className="jfl-stat-l">Total Orders</div></button>
       </div>
 
       {/* ── Smart nudges ── */}
-      {(function(){var nudges=[];/* Cuisine diversity */var recent=hist.slice(0,8);if(recent.length>=4){var cats={};recent.forEach(function(h){var r=rests.find(function(x){return x.id===h.rid;});if(r&&r.cat){cats[r.cat]=(cats[r.cat]||0)+1;}});Object.keys(cats).forEach(function(c){if(cats[c]>=3){var cName={"fast-food":"fast food","fast-casual":"fast casual","casual-dining":"casual dining","coffee-snack":"coffee & snacks"}[c]||c;nudges.push({e:"\uD83D\uDD01",t:"You\u2019ve had "+cName+" "+cats[c]+" of your last "+recent.length+" orders. Mix it up?"});}});}/* DOW insight */var today=new Date().getDay();var dayName=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][today];var todayHist=hist.filter(function(h){return new Date(h.date).getDay()===today;});if(todayHist.length>=3){var topRid=null,topCt=0,ridCt={};todayHist.forEach(function(h){ridCt[h.rid]=(ridCt[h.rid]||0)+1;if(ridCt[h.rid]>topCt){topCt=ridCt[h.rid];topRid=h.rid;}});if(topCt>=2){var tr=rests.find(function(x){return x.id===topRid;});if(tr)nudges.push({e:tr.emoji,t:tr.sn||tr.name+" is your go-to "+dayName+" pick."});}}/* Anniversary callouts */var todayStr=new Date().toISOString().slice(5,10);hist.forEach(function(h){if(!h.date)return;var hd=h.date.slice(5,10);var hy=parseInt(h.date.slice(0,4));var cy=new Date().getFullYear();if(hd===todayStr&&hy<cy){var yrs=cy-hy;nudges.push({e:"\uD83C\uDF82",t:yrs+(yrs===1?" year":" years")+" ago today you first ordered from "+h.name+"."});}});/* Streak callout */rests.forEach(function(r){if(r.streak>=3&&r.to>=5)nudges.push({e:"\uD83D\uDD25",t:(r.sn||r.name)+" is on a "+r.streak+"-pick streak."});});if(nudges.length<1)return null;var nudge=nudges[0];return <div className="jfl-card float-in" style={{padding:"8px 12px",display:"flex",alignItems:"center",gap:8,animationDelay:".5s"}}>
+      {(function(){var nudges=[];/* Cuisine diversity */var recent=hist.slice(0,8);if(recent.length>=4){var cats={};recent.forEach(function(h){var r=rests.find(function(x){return x.id===h.rid;});if(r&&r.cat){cats[r.cat]=(cats[r.cat]||0)+1;}});Object.keys(cats).forEach(function(c){if(cats[c]>=3){var cName={"fast-food":"fast food","fast-casual":"fast casual","casual-dining":"casual dining","coffee-snack":"coffee & snacks"}[c]||c;nudges.push({e:"\uD83D\uDD01",t:"You\u2019ve had "+cName+" "+cats[c]+" of your last "+recent.length+" orders. Mix it up?"});}});}/* DOW insight */var today=new Date().getDay();var dayName=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][today];var todayHist=hist.filter(function(h){return new Date(h.date).getDay()===today;});if(todayHist.length>=3){var topRid=null,topCt=0,ridCt={};todayHist.forEach(function(h){ridCt[h.rid]=(ridCt[h.rid]||0)+1;if(ridCt[h.rid]>topCt){topCt=ridCt[h.rid];topRid=h.rid;}});if(topCt>=2){var tr=rests.find(function(x){return x.id===topRid;});if(tr)nudges.push({e:tr.emoji,t:tr.sn||tr.name+" is your go-to "+dayName+" pick."});}}/* Anniversary callouts */var todayStr=new Date().toISOString().slice(5,10);hist.forEach(function(h){if(!h.date)return;var hd=h.date.slice(5,10);var hy=parseInt(h.date.slice(0,4));var cy=new Date().getFullYear();if(hd===todayStr&&hy<cy){var yrs=cy-hy;nudges.push({e:"\uD83C\uDF82",t:yrs+(yrs===1?" year":" years")+" ago today you first ordered from "+h.name+"."});}});if(nudges.length<1)return null;var nudge=nudges[0];return <div className="jfl-card float-in" style={{padding:"8px 12px",display:"flex",alignItems:"center",gap:8,animationDelay:".5s"}}>
         <span style={{fontSize:16}}>{nudge.e}</span>
         <span style={{fontSize:11,fontWeight:500,color:"var(--tx2)",flex:1,lineHeight:"1.4"}}>{nudge.t}</span>
       </div>;})()}
@@ -458,27 +455,19 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
     {/* ═══ STEP 1 ═══ */}
   {vw==="step1"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     <TopBar title="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>
-    {/* ── Crew builder bar ── */}
-    {sel.sp.length>0&&<div style={{padding:"8px 16px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",display:"flex",alignItems:"center",gap:4,flexShrink:0}}>
-      <span style={{fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:.5,textTransform:"uppercase",marginRight:4,flexShrink:0}}>Crew</span>
-      <div style={{display:"flex",gap:4,flex:1,overflow:"auto"}}>
-        {sel.sp.map(function(id){var p=allPpl.find(function(x){return x.id===id;});if(!p)return null;return <span key={id} className="pop" style={{display:"inline-flex",alignItems:"center",gap:3,padding:"3px 8px",borderRadius:12,background:"rgba(244,114,182,.1)",border:"1px solid rgba(244,114,182,.2)",fontSize:11,fontWeight:600,color:"var(--ac)",whiteSpace:"nowrap",flexShrink:0}}>
-          <span style={{fontSize:14}}>{p.emoji}</span>
-          <span>{p.name.split(" ")[0]}</span>
-          <button onClick={function(e){e.stopPropagation();togP(id);}} style={{background:"none",border:"none",color:"var(--ac)",cursor:"pointer",fontSize:10,padding:"0 2px",fontFamily:"inherit",opacity:.6}} aria-label={"Remove "+p.name}>{"\u2715"}</button>
-        </span>;})}
-        {(sel.xa>0||sel.xk>0)&&<span style={{display:"inline-flex",alignItems:"center",padding:"3px 8px",borderRadius:12,background:"var(--bg1)",border:"1px solid var(--bdr)",fontSize:11,fontWeight:500,color:"var(--tx3)",whiteSpace:"nowrap",flexShrink:0}}>{"+"+(sel.xa+sel.xk)+" extra"}</span>}
-      </div>
-      <span style={{fontSize:12,fontWeight:700,color:"var(--tx1)",flexShrink:0}}>{sel.sp.length+(sel.xa||0)+(sel.xk||0)}</span>
-    </div>}
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
-      <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
+      <div className="jfl-label" style={{marginBottom:8}}>Quick select</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-        {groups.map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
+        {groups.filter(function(g){return g.id==="couple"||g.id==="family";}).map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
       </div>
-      <div className="jfl-label" style={{marginTop:16,marginBottom:8}}>Or pick individually</div>
+      {sel._showAllGroups&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:8}}>
+        {groups.filter(function(g){return g.id!=="couple"&&g.id!=="family";}).map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
+      </div>}
+      {!sel._showAllGroups&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllGroups:true});});}} style={{marginTop:6,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)",padding:0,textAlign:"left"}}>{groups.length-2+" more groups \u203A"}</button>}
+      <div className="jfl-label" style={{marginTop:14,marginBottom:8}}>Or pick individually</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?0.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];var sorted=ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});var core=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;});var rest=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)<0;});var visible=sel._showAllPeople?sorted:core.concat(rest.filter(function(p){return sel.sp.indexOf(p.id)>=0;}));return visible;})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {!sel._showAllPeople&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllPeople:true});});}} style={{padding:"6px 12px",borderRadius:20,border:"1px dashed var(--bdr)",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)"}}>{ppl.length-5+" more \u203A"}</button>}
       </div>
       {sel.sp.length>0&&<div style={{marginTop:12,fontSize:12,color:"var(--tx3)",fontWeight:500}}>{sel.sp.length+(sel.xa||sel.xk?("+"+(sel.xa+sel.xk)):"")+" people"+(sel.kf||sel.xk>0?" \u00B7 Kid-safe active":"")}</div>}
       <div style={{marginTop:12}}>
@@ -487,16 +476,16 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           <div style={{flex:1,display:"flex",alignItems:"center",gap:8,background:"var(--bg1)",borderRadius:10,padding:"8px 12px",border:"1px solid var(--bdr)"}}>
             <span style={{fontSize:14}}>{"\uD83E\uDDD1"}</span>
             <span style={{fontSize:11,fontWeight:500,color:"var(--tx2)",flex:1}}>Adults</span>
-            <button className="jfl-btn" aria-label="Decrease extra adults" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:Math.max(0,(s.xa||0)-1)});});}}>−</button>
+            <button className="jfl-btn" aria-label="Decrease extra adults" style={{width:36,height:36,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:Math.max(0,(s.xa||0)-1)});});}}>−</button>
             <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",minWidth:16,textAlign:"center"}}>{sel.xa||0}</span>
-            <button className="jfl-btn" aria-label="Increase extra adults" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:(s.xa||0)+1});});}}>+</button>
+            <button className="jfl-btn" aria-label="Increase extra adults" style={{width:36,height:36,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xa:(s.xa||0)+1});});}}>+</button>
           </div>
           <div style={{flex:1,display:"flex",alignItems:"center",gap:8,background:"var(--bg1)",borderRadius:10,padding:"8px 12px",border:"1px solid var(--bdr)"}}>
             <span style={{fontSize:14}}>{"\uD83E\uDDD2"}</span>
             <span style={{fontSize:11,fontWeight:500,color:"var(--tx2)",flex:1}}>Kids</span>
-            <button className="jfl-btn" aria-label="Decrease extra kids" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:Math.max(0,(s.xk||0)-1)});});}}>−</button>
+            <button className="jfl-btn" aria-label="Decrease extra kids" style={{width:36,height:36,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:Math.max(0,(s.xk||0)-1)});});}}>−</button>
             <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)",minWidth:16,textAlign:"center"}}>{sel.xk||0}</span>
-            <button className="jfl-btn" aria-label="Increase extra kids" style={{width:28,height:28,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:(s.xk||0)+1});});}}>+</button>
+            <button className="jfl-btn" aria-label="Increase extra kids" style={{width:36,height:36,padding:0,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={function(){setSel(function(s){return Object.assign({},s,{xk:(s.xk||0)+1});});}}>+</button>
           </div>
         </div>
       </div>
@@ -523,7 +512,12 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         <button onClick={function(){setSel(function(s){var n=Object.assign({},s);delete n._guestEdit;return n;});}} style={{fontSize:10,fontWeight:600,color:"var(--ac)",background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:"4px 0"}}>Done</button>
       </div>;})()}
       {guests.length>0&&!sel._guestEdit&&<div style={{display:"flex",flexWrap:"wrap",gap:4,marginTop:4}}>{guests.map(function(g){return <button key={g.id} onClick={function(){setSel(function(s){return Object.assign({},s,{_guestEdit:g.id});});}} style={{padding:"3px 8px",borderRadius:6,border:"1px solid var(--bdr)",background:"var(--bg2)",cursor:"pointer",fontFamily:"inherit",fontSize:9,color:"var(--tx3)"}}>{"\u2699 "+g.name}</button>;})}</div>}
-      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});var ob=getObvious(sel,rests,mctx,activeObvRules);if(ob){setSel(function(s){return Object.assign({},s,{ob:ob});});go("intercept");}else{go("step2");}}}} disabled={sel.sp.length===0} aria-disabled={sel.sp.length===0} style={{opacity:sel.sp.length===0?.3:1,transition:"opacity .3s",flexDirection:"row",gap:0,justifyContent:"center"}}><span style={{opacity:.55}}>{"Next:"}</span><span style={{padding:"0 6px"}}>{"Choose Mood"}</span><span style={{opacity:.55}}>{"→"}</span></button></div>
+      {/* Already had today */}
+      <div style={{marginTop:"auto",paddingTop:12,paddingBottom:10,display:"flex",flexDirection:"column",gap:8}}>
+      {alreadyHad?(function(){var ahr=rests.find(function(r){return r.id===alreadyHad;});return <button onClick={function(){setAlreadyHad(null);}} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 12px",borderRadius:8,border:"1px solid rgba(251,191,36,.25)",background:"rgba(251,191,36,.06)",cursor:"pointer",fontFamily:"inherit",width:"100%",textAlign:"left"}}><span style={{fontSize:14}}>{ahr?ahr.emoji:"\uD83C\uDF7D"}</span><span style={{fontSize:11,fontWeight:600,color:"var(--yel)",flex:1}}>{"Already had "+(ahr?ahr.sn||ahr.name:"?")+" today"}</span><span style={{fontSize:10,color:"var(--tx3)"}}>{"\u2715 clear"}</span></button>;})():<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAlreadyHad:true});});}} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:8,border:"1px solid var(--bdr)",background:"var(--bg1)",cursor:"pointer",fontFamily:"inherit",width:"100%",textAlign:"left"}}><span style={{fontSize:11}}>{"🍽️"}</span><span style={{fontSize:11,fontWeight:500,color:"var(--tx3)"}}>{"Already ate somewhere today?"}</span></button>}
+      {sel._showAlreadyHad&&!alreadyHad&&<div className="fade" style={{display:"flex",flexWrap:"wrap",gap:4,padding:"4px 0"}}>{rests.filter(function(r){return!r.bo&&r.to>0;}).sort(function(a,b){return(b.to90||b.to)-(a.to90||a.to);}).slice(0,12).map(function(r){return <button key={r.id} onClick={function(){setAlreadyHad(r.id);setSel(function(s){var n=Object.assign({},s);delete n._showAlreadyHad;return n;});}} style={{padding:"4px 8px",borderRadius:6,border:"1px solid var(--bdr)",background:"var(--bg2)",cursor:"pointer",fontFamily:"inherit",fontSize:10,fontWeight:600,color:"var(--tx2)",display:"flex",alignItems:"center",gap:4}}><span>{r.emoji}</span><span>{r.sn||r.name}</span></button>;})}<button onClick={function(){setSel(function(s){var n=Object.assign({},s);delete n._showAlreadyHad;return n;});}} style={{padding:"4px 8px",borderRadius:6,border:"none",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:10,color:"var(--tx3)"}}>{"cancel"}</button></div>}
+      <button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setSel(function(s){return Object.assign({},s,{qrLabel:null,qrEmoji:null});});var ob=getObvious(sel,rests,mctx,activeObvRules);if(ob){setSel(function(s){return Object.assign({},s,{ob:ob});});go("intercept");}else{go("step2");}}}} disabled={sel.sp.length===0} aria-disabled={sel.sp.length===0} style={{opacity:sel.sp.length===0?.3:1,transition:"opacity .3s",flexDirection:"row",gap:0,justifyContent:"center"}}><span style={{opacity:.55}}>{"Next:"}</span><span style={{padding:"0 6px"}}>{"Choose Mood"}</span><span style={{opacity:.55}}>{"→"}</span></button>
+      </div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>
   </div>}
@@ -532,15 +526,19 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
   {vw==="quickpick"&&<div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
     <TopBar title={"Quick pick: "+mctx.label} sub="Who's eating?" back={function(){go("dashboard");}}  onTheme={cycleTheme} theme={gs2.theme||"auto"} onInfo={function(){setAboutOpen(true);}} onLogo={function(){setLogoConfirm(true);}}/>
     <div style={{flex:1,padding:"16px",display:"flex",flexDirection:"column",overflow:"auto"}}>
-      <div className="jfl-label" style={{marginBottom:10}}>Quick select</div>
+      <div className="jfl-label" style={{marginBottom:8}}>Quick select</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-        {groups.map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
+        {groups.filter(function(g){return g.id==="couple"||g.id==="family";}).map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
       </div>
-      <div className="jfl-label" style={{marginTop:16,marginBottom:8}}>Or pick individually</div>
+      {sel._showAllGroups&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:8}}>
+        {groups.filter(function(g){return g.id!=="couple"&&g.id!=="family";}).map(function(g){var on=JSON.stringify(sel.sp.slice().sort())===JSON.stringify(g.people.slice().sort());return <button key={g.id} className={on?"jfl-chip on":"jfl-chip"} onClick={function(){setGrp(g.people);}}><span style={{fontSize:18}}>{g.emoji}</span><span>{g.name}</span></button>;})}
+      </div>}
+      {!sel._showAllGroups&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllGroups:true});});}} style={{marginTop:6,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)",padding:0,textAlign:"left"}}>{groups.length-2+" more groups \u203A"}</button>}
+      <div className="jfl-label" style={{marginTop:14,marginBottom:8}}>Or pick individually</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];return ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;var isCore=["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} style={{opacity:(!on&&!isCore)?0.4:1}} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];var sorted=ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});var core=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;});var rest=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)<0;});var visible=sel._showAllPeople?sorted:core.concat(rest.filter(function(p){return sel.sp.indexOf(p.id)>=0;}));return visible;})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
+        {!sel._showAllPeople&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllPeople:true});});}} style={{padding:"6px 12px",borderRadius:20,border:"1px dashed var(--bdr)",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)"}}>{ppl.length-5+" more \u203A"}</button>}
       </div>
-      {sel.sp.length>0&&<div style={{marginTop:12,fontSize:12,color:"var(--tx3)",fontWeight:500}}>{sel.sp.length+(sel.xa||sel.xk?("+"+(sel.xa+sel.xk)):"")+" people"+(sel.kf||sel.xk>0?" \u00B7 Kid-safe active":"")}</div>}
       <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setBusy(true);setTimeout(function(){var qs=_selWithCtx(sel);setRes(top3(scoreAll(_filterSkips(rests),qs,allPpl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);}}} disabled={sel.sp.length===0} aria-disabled={sel.sp.length===0} style={{opacity:sel.sp.length===0?.3:1,transition:"opacity .3s"}}>{"Get "+mctx.label+" Recommendation"}</button></div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>
@@ -885,7 +883,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
         {/* Filter bar */}
         <div style={{display:"flex",gap:6,marginBottom:10,paddingBottom:10,borderBottom:"1px solid var(--bdr)"}}>
           {[{id:"all",l:"All"},{id:"favs",l:"Favorites"},{id:"active",l:"Active"}].map(function(f){return <button key={f.id} onClick={function(){setSel(function(s){return Object.assign({},s,{hf:f.id});});}} style={{padding:"5px 14px",borderRadius:8,border:"1px solid "+(sel.hf===f.id?"var(--ac)":"var(--bdr)"),background:sel.hf===f.id?"rgba(244,114,182,.15)":"var(--bg1)",color:sel.hf===f.id?"var(--ac)":"var(--tx2)",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{f.l}</button>;})}
-          <button className={sel.hf==="insights"?"":"insightsShimmer"} onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"insights"});});}} style={{padding:"6px 16px",borderRadius:20,border:sel.hf==="insights"?"none":"1px solid rgba(196,149,106,.5)",background:sel.hf==="insights"?"linear-gradient(135deg,#C4956A,#D4A574)":"linear-gradient(90deg,rgba(196,149,106,.15),rgba(212,165,116,.3),rgba(196,149,106,.15))",backgroundSize:sel.hf==="insights"?"100% 100%":"200% 100%",color:sel.hf==="insights"?"#fff":"#D4A574",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",letterSpacing:.3,boxShadow:sel.hf==="insights"?"0 2px 8px rgba(196,149,106,.4)":"none",textShadow:sel.hf==="insights"?"0 1px 2px rgba(0,0,0,.2)":"none"}}>{"\u2728 Insights"}</button>
+          <button className={sel.hf==="insights"?"":"insightsShimmer"} onClick={function(){setSel(function(s){return Object.assign({},s,{hf:"insights"});});}} style={{padding:"6px 16px",borderRadius:20,border:sel.hf==="insights"?"none":"1px solid rgba(196,149,106,.5)",background:sel.hf==="insights"?(isDk?"linear-gradient(135deg,#C4956A,#D4A574)":"linear-gradient(135deg,#A07828,#8A6520)"):"linear-gradient(90deg,rgba(196,149,106,.15),rgba(212,165,116,.3),rgba(196,149,106,.15))",backgroundSize:sel.hf==="insights"?"100% 100%":"200% 100%",color:sel.hf==="insights"?"#fff":"var(--grn)",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",letterSpacing:.3,boxShadow:sel.hf==="insights"?(isDk?"0 2px 8px rgba(196,149,106,.4)":"0 2px 8px rgba(160,120,40,.3)"):"none",textShadow:sel.hf==="insights"?"0 1px 2px rgba(0,0,0,.2)":"none"}}>{"\u2728 Insights"}</button>
         </div>
 
         {/* ═══ INSIGHTS VIEW ═══ */}
@@ -896,7 +894,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
           var totalOrders2=rests.reduce(function(s,r){return s+r.to;},0);
           var hot=rests.filter(function(r){return(r.to90||0)>=3&&!r.bo;}).sort(function(a,b){return(b.to90||0)-(a.to90||0);}).slice(0,6);
           var quiet=rests.filter(function(r){return r.to>5&&(r.to90||0)===0&&!r.bo;}).sort(function(a,b){return(b.to||0)-(a.to||0);}).slice(0,6);
-          var streaking=rests.filter(function(r){return(r.streak||0)>=3&&(r.lo||999)<90&&!r.bo;}).sort(function(a,b){return(b.streak||0)-(a.streak||0);}).slice(0,4);
+
           var now90=Date.now()-90*86400000;
           var newFinds=rests.filter(function(r){if(r.bo||!r.fd)return false;var fd=new Date(r.fd+"T12:00:00").getTime();return fd>=now90;}).sort(function(a,b){return new Date(b.fd+"T12:00:00").getTime()-new Date(a.fd+"T12:00:00").getTime();}).slice(0,4);
           var rediscovered=rests.filter(function(r){if(r.bo||(r.to90||0)<1)return false;var prev=r.to-(r.to90||0);if(prev<1)return false;var recentOnly=(r.to365||0)<=(r.to90||0);var hadOlder=r.to>(r.to365||0);return recentOnly&&hadOlder;}).sort(function(a,b){return(b.to90||0)-(a.to90||0);}).slice(0,4);
@@ -912,7 +910,6 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
           var sections=[
             {key:"hot",e:"\uD83D\uDD25",t:"Hot right now",d:"3+ orders in last 90 days",items:hot,c:"var(--grn)",fmt:function(r){return(r.to90||0)+" in last 90 days";}},
-            {key:"streak",e:"\uD83D\uDCC8",t:"On a streak",d:"3+ consecutive, recent",items:streaking,c:"var(--ac)",fmt:function(r){return(r.streak||0)+" in a row";}},
             {key:"new",e:"\uD83C\uDF1F",t:"New Finds",d:"First order in last 90 days",items:newFinds,c:"var(--yel)",fmt:function(r){return r.to+(r.to===1?" order":" orders");}},
             {key:"redis",e:"\uD83D\uDC9C",t:"Rediscovered",d:"Back after 1yr+ away",items:rediscovered,c:"#C084FC",fmt:function(r){return(r.to90||0)+" in last 90 days";}},
             {key:"quiet",e:"\uD83D\uDCA4",t:"Gone quiet",d:"5+ lifetime orders, none in last 90 days",items:quiet,c:"var(--tx2)",fmt:function(r){return r.to+" orders \u00B7 last "+fmtDate(r.ld);}}
@@ -948,7 +945,7 @@ var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedi
 
             {/* Category cards - smart sorted, compact */}
             {(function(){
-              var orderedKeys=["hot","streak","new","redis","quiet"];
+              var orderedKeys=["hot","new","redis","quiet"];
               var withData=orderedKeys.filter(function(k){var s=sections.find(function(x){return x.key===k;});return s&&s.items.length>0;});
               var withoutData=orderedKeys.filter(function(k){var s=sections.find(function(x){return x.key===k;});return s&&s.items.length===0;});
               var sorted=withData.concat(withoutData);
@@ -1803,7 +1800,7 @@ return <div className="fade">
 </div>
 {/* Greeting */}
 <div style={{fontSize:26,fontWeight:700,color:"var(--tx1)",textAlign:"center",lineHeight:"1.3"}}>{greeting}</div>
-<div style={{fontSize:18,color:"var(--tx2)",textAlign:"center",marginTop:8}}>{totalPeople===1?"what kind of "+mctx.label.toLowerCase()+" are you feeling?":totalPeople===2?"what kind of "+mctx.label.toLowerCase()+" are you two feeling?":"what kind of "+mctx.label.toLowerCase()+" is everyone feeling?"}</div>
+<div style={{fontSize:18,color:"var(--tx2)",textAlign:"center",marginTop:8}}>{totalPeople===1?"what kind of "+mctx.label.toLowerCase()+" are you feeling?":totalPeople===2?"what kind of "+mctx.label.toLowerCase()+" are you two feeling?":"what kind of "+mctx.label.toLowerCase()+" are we feeling?"}</div>
 
 
     {/* Two big option cards */}
@@ -2698,7 +2695,7 @@ return(
                   <div style={{fontSize:11,color:"var(--tx2)",fontStyle:"italic",flex:1}}>{"\u201C"+rule.ask+"\u201D"}</div>
                   <div style={{display:"flex",gap:6,marginLeft:8,flexShrink:0}}>
                     <button className="jfl-btn" style={{fontSize:10,padding:"3px 8px"}} onClick={function(){setObvEditIdx(idx);}}>Edit</button>
-                    <button className="jfl-btn" style={{fontSize:10,padding:"3px 8px",color:"#F87171",borderColor:"#F87171"}} onClick={function(){if(confirm("Remove this obvious choice?"))removeRule(idx);}}>Remove</button>
+                    <button className="jfl-btn" style={{fontSize:10,padding:"3px 8px",color:"var(--red)",borderColor:"var(--red)"}} onClick={function(){if(confirm("Remove this obvious choice?"))removeRule(idx);}}>Remove</button>
                   </div>
                 </div>
               </div>}

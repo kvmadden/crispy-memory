@@ -907,8 +907,10 @@ return(
           var repeatPct=totalAll>0?Math.round(repeatCount/totalAll*100):0;
           var recent90=rests.filter(function(r){return(r.to90||0)>0;}).length;
 
+          var streaking=rests.filter(function(r){return r.streak>=3&&!r.bo;}).sort(function(a,b){return b.streak-a.streak;});
           var sections=[
             {key:"hot",e:"\uD83D\uDD25",t:"Hot right now",d:"3+ orders in last 90 days",items:hot,c:"var(--grn)",fmt:function(r){return(r.to90||0)+" in last 90 days";}},
+            {key:"streak",e:"\uD83D\uDCAB",t:"On a streak",d:"3+ consecutive orders",items:streaking,c:"var(--ac)",fmt:function(r){return r.streak+" in a row";}},
             {key:"new",e:"\uD83C\uDF1F",t:"New Finds",d:"First order in last 90 days",items:newFinds,c:"var(--yel)",fmt:function(r){return r.to+(r.to===1?" order":" orders");}},
             {key:"redis",e:"\uD83D\uDC9C",t:"Rediscovered",d:"Back after 1yr+ away",items:rediscovered,c:"#C084FC",fmt:function(r){return(r.to90||0)+" in last 90 days";}},
             {key:"quiet",e:"\uD83D\uDCA4",t:"Gone quiet",d:"5+ lifetime orders, none in last 90 days",items:quiet,c:"var(--tx2)",fmt:function(r){return r.to+" orders \u00B7 last "+fmtDate(r.ld);}}
@@ -944,7 +946,7 @@ return(
 
             {/* Category cards - smart sorted, compact */}
             {(function(){
-              var orderedKeys=["hot","new","redis","quiet"];
+              var orderedKeys=["hot","streak","new","redis","quiet"];
               var withData=orderedKeys.filter(function(k){var s=sections.find(function(x){return x.key===k;});return s&&s.items.length>0;});
               var withoutData=orderedKeys.filter(function(k){var s=sections.find(function(x){return x.key===k;});return s&&s.items.length===0;});
               var sorted=withData.concat(withoutData);

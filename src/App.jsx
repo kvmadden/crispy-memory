@@ -700,7 +700,6 @@ return(
         <div className="pop" style={{fontSize:14,color:"var(--tx1)",fontStyle:"italic",marginTop:8,textAlign:"center",fontWeight:500,animationDelay:".35s"}}>{res.vetoFlavor}</div>
 
         {/* Tags */}
-        <div className="pop" style={{display:"flex",flexWrap:"wrap",gap:5,justifyContent:"center",marginTop:8,animationDelay:".4s"}}>{(res.tags||[]).slice(0,4).map(function(t){var c=TC[t]||["var(--bg2)","var(--tx2)"];return <span key={t} style={{fontSize:10,fontWeight:600,padding:"4px 10px",borderRadius:20,background:c[0],color:c[1]}}>{t}</span>;})}</div>
 
         {/* Suggested order - now before DoorDash */}
         {res.order&&<div className="jfl-card pop" style={{marginTop:10,padding:"10px 12px",animationDelay:".45s"}}>
@@ -787,7 +786,6 @@ return(
         <div style={{fontSize:15,color:"var(--tx1)",fontStyle:"italic",marginTop:10,textAlign:"center",fontWeight:500}}>{res.vetoFlavor}</div>
 
         {/* Tags */}
-        <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center",marginTop:10}}>{(res.tags||[]).slice(0,4).map(function(t){var c=TC[t]||["var(--bg2)","var(--tx2)"];return <span key={t} style={{fontSize:11,fontWeight:600,padding:"5px 12px",borderRadius:20,background:c[0],color:c[1]}}>{t}</span>;})}</div>
 
         {/* Suggested order - same layout as option 1 */}
         {res.order&&<div className="jfl-card" style={{marginTop:10,padding:"10px 12px"}}>
@@ -1352,7 +1350,7 @@ var QUIZ_QS=[
 {q:"Is this a Kevin-sneaks-Taco-Bell-at-midnight situation?",e:"🥷",y:{tg:3},n:{b:1},w:["couple","fam5"],m:"latenight",ct:"mexican"},
 {q:"Are {you} going to order the same thing {you} always get?",e:"🥩",y:{sd:2},n:{r:1,b:1},w:["kevin"],m:"lunch",ct:"subs"},
 {q:"Is Jenna going to pick the healthy place before we even finish this quiz?",e:"🧑‍🍳",y:{h:2,sd:2},n:{r:1,c:1},w:["couple","fam5"],m:"dinner",ct:"healthy"},
-{q:"Is Jenna in one of her healthy moods right now?",e:"🧘",y:{h:3},n:{st:2,c:1},w:["couple","fam5"],m:"all"},
+{q:"Are {you} leaning healthy tonight?",e:"🥗",y:{h:3},n:{st:2,c:1},w:["any"],m:"dinner"},
 {q:"Does it seem like Jenna would veto anything without a salad option?",e:"🙅",y:{h:2},n:{c:2},w:["couple","fam5"],m:"dinner"},
 {q:"Do we think Jenna already knows what she wants?",e:"🤔",y:{sd:3},n:{r:2},w:["couple","fam5"],m:"all"},
 {q:"Do we think Jenna would actually enjoy a cheeseburger tonight?",e:"🍔",y:{c:2},n:{h:2},w:["couple","fam5"],m:"dinner",ct:"burgers"},

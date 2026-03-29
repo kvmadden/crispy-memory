@@ -383,7 +383,7 @@ return(
         <span style={{fontSize:15,fontWeight:700,textShadow:"0 1px 4px rgba(0,0,0,.25)"}}>{mctx.cta}</span>
         <span key={flavIdx} className="float-in" style={{fontSize:11,fontWeight:500,opacity:.8,marginTop:2,textShadow:"0 1px 3px rgba(0,0,0,.3)"}}>{HERO_FLAVORS[flavIdx]}</span>
       </button>
-      <button className="jfl-cta" style={{flex:1,padding:"12px 8px",fontSize:24,borderRadius:14}} onClick={function(){setSel(function(s){return Object.assign({},s,{sp:["kevin","jenna"],mood:"roulette",budget:"normal",speed:"normal",fam:"surprise",kf:false,go:false,xa:0,xk:0});});setBusy(true);setTimeout(function(){var surpriseSel={sp:["kevin","jenna"],mood:"roulette",budget:"normal",speed:"normal",fam:"surprise",kf:false,go:false,xa:0,xk:0,_alreadyHad:alreadyHad,_sessionSkips:sessionSkips};setRes(top3(scoreAll(_filterSkips(rests),surpriseSel,allPpl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);}} aria-label="Surprise me" title="Surprise me">{"\uD83C\uDFB2"}</button>
+      <button className="jfl-cta" style={{flex:1,padding:"10px 8px",borderRadius:14,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2}} onClick={function(){setSel(function(s){return Object.assign({},s,{sp:["kevin","jenna"],mood:"roulette",budget:"normal",speed:"normal",fam:"surprise",kf:false,go:false,xa:0,xk:0});});setBusy(true);setTimeout(function(){var surpriseSel={sp:["kevin","jenna"],mood:"roulette",budget:"normal",speed:"normal",fam:"surprise",kf:false,go:false,xa:0,xk:0,_alreadyHad:alreadyHad,_sessionSkips:sessionSkips};setRes(top3(scoreAll(_filterSkips(rests),surpriseSel,allPpl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);}} aria-label="Surprise me" title="Surprise me"><span style={{fontSize:22}}>{"\uD83C\uDFB2"}</span><span style={{fontSize:9,fontWeight:600,opacity:.85}}>Surprise</span></button>
       </div>
 
       {/* ── Quick Resolve ── */}
@@ -662,10 +662,9 @@ return(
     return <div className="slide-in" key={res.rid+"-"+resIdx} style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
       <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",flexShrink:0}}>
         <div style={{zIndex:1,cursor:"pointer"}} onClick={function(){setLogoConfirm(true);}}><div style={{fontSize:20,fontWeight:800,letterSpacing:-.8,lineHeight:1}}><span style={{color:"var(--ac)"}}>Jenna</span><span style={{color:"var(--tx1)"}}>rate</span></div><div style={{fontSize:9,fontWeight:1000,color:"var(--tx2)",marginTop:2,letterSpacing:1.8,textTransform:"uppercase",textAlign:"center",maxWidth:82}}>Food Logic</div></div>
-        <div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-          <span style={{fontSize:14,fontWeight:700,color:"var(--tx1)"}}>{mctx.emoji+" "+mctx.label+" Resolved"}</span>
-          <span style={{width:1,height:12,background:"var(--bdr)",display:"inline-block"}}></span>
-          <span style={{fontSize:12,fontWeight:400,color:"var(--tx3)"}}>{"Option "+(resIdx+1)+" of "+results.length}</span>
+        <div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",padding:"0 90px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:1}}>
+          <span style={{fontSize:13,fontWeight:700,color:"var(--tx1)",whiteSpace:"nowrap"}}>{mctx.label+" Resolved"}</span>
+          <span style={{fontSize:10,fontWeight:400,color:"var(--tx3)"}}>{"Option "+(resIdx+1)+" of "+results.length}</span>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:10,zIndex:1}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);var _ib=_d?{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.1)"}:{background:"rgba(0,0,0,.06)",border:"1px solid rgba(0,0,0,.08)"};var _ibs=Object.assign({},_ib,{borderRadius:10,padding:6,cursor:"pointer",fontSize:18,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",width:34,height:34});return <><button onClick={cycleTheme} style={Object.assign({},_ibs,{opacity:.8})}>{_d?"🌙":"☀️"}</button><button onClick={function(){setAboutOpen(true);}} style={_ibs}>{"ℹ️"}</button></>;})()}
         </div>

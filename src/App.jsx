@@ -202,6 +202,7 @@ var ccfg={high:{l:"High Confidence",c:"var(--grn)"},medium:{l:"Moderate",c:"var(
 var fpData=useMemo(function(){var fpSel={sp:["jenna"],mood:"safe-default",budget:"normal",speed:"normal",fam:"familiar",ar:false,kf:false,go:false,lo:false,_alreadyHad:alreadyHad};var sc=scoreAll(_filterSkips(rests),fpSel,ppl,hist,mctx,gs2);if(!sc||sc.length<1)return null;var fp=sc[0];if(fp.score<55)return null;var gap=sc.length>1?(fp.score-sc[1].score):20;var prob=gap>15?"High likelihood":gap>8?"Probable choice":"Possible choice";return{fp:fp,prob:prob};},[rests,ppl,hist,mctx,gs2,alreadyHad,_filterSkips]);
 
 /* Top bar shared across all views */
+var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);
 
 return(
 <div className={"jfl-root theme-"+(gs2.theme||"auto")}>
@@ -269,7 +270,6 @@ return(
 {/* ═══ LANDING ═══ */}
   {vw==="landing"&&(function(){
     var ROWS=LANDING_ROWS;
-var _lt=gs2.theme||"auto";var isDk=_lt==="dark"||(_lt==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);
     var cardStyle=isDk?{background:"rgba(255,255,255,.02)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,.08)"}:{background:"rgba(255,255,255,.55)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,.6)",boxShadow:"0 4px 24px rgba(120,40,60,.08)"};
     var emojiOp=isDk?0.45:0.55;
     return <div className="fade" style={{display:"flex",flexDirection:"column",height:"100dvh",background:"var(--bg0)",overflow:"hidden",position:"relative"}}>

@@ -682,9 +682,7 @@ return(
             {rest.fav&&<span style={{width:1,height:10,background:"var(--bdr)",display:"inline-block"}}></span>}
             <span style={{fontSize:12,color:"var(--tx2)"}}>{"~"+res.eta+" min delivery"}</span>
           </div>
-          <div className="pop" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:5,marginTop:6,animationDelay:".28s"}}>
-            {(function(){var md=MOODS.find(function(m){return m.id===sel.mood;})||{emoji:"\u2696\uFE0F",label:"Balanced",c:"#4A9EFF"};return [<span key="e" style={{fontSize:13}}>{md.emoji}</span>,<span key="l" style={{fontSize:11,fontWeight:600,color:md.c}}>{md.label}</span>];})()}
-          </div>
+        <div className="pop" style={{display:"flex",flexWrap:"wrap",gap:5,justifyContent:"center",marginTop:8,animationDelay:".4s"}}>{(res.tags||[]).slice(0,4).map(function(t){var c=TC[t]||["var(--bg2)","var(--tx2)"];return <span key={t} style={{fontSize:10,fontWeight:600,padding:"4px 10px",borderRadius:20,background:c[0],color:c[1]}}>{t}</span>;})}</div>
         </div>
 
         {/* Power meter */}
@@ -771,9 +769,7 @@ return(
             {rest.fav&&<span style={{width:1,height:10,background:"var(--bdr)",display:"inline-block"}}></span>}
             <span style={{fontSize:12,color:"var(--tx2)"}}>{"~"+res.eta+" min delivery"}</span>
           </div>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:5,marginTop:6}}>
-            {(function(){var md=MOODS.find(function(m){return m.id===sel.mood;})||{emoji:"\u2696\uFE0F",label:"Balanced",c:"#4A9EFF"};return [<span key="e" style={{fontSize:13}}>{md.emoji}</span>,<span key="l" style={{fontSize:11,fontWeight:600,color:md.c}}>{md.label}</span>];})()}
-          </div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center",marginTop:10}}>{(res.tags||[]).slice(0,4).map(function(t){var c=TC[t]||["var(--bg2)","var(--tx2)"];return <span key={t} style={{fontSize:11,fontWeight:600,padding:"5px 12px",borderRadius:20,background:c[0],color:c[1]}}>{t}</span>;})}</div>
         </div>
 
         {/* Power meter */}

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import Papa from "papaparse";
 
 /* Jennarate: Food Logic by Madden Frameworks */
+function fisherYates(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr;}
 
 var MEAL_DEFS=[
 {id:"breakfast",label:"Breakfast",greeting:"Good morning",cta:"Resolve Breakfast",sub:"Start the day right",emoji:"\u2600\uFE0F",treatOk:false,lightBias:true},
@@ -17,7 +18,7 @@ if(override){
 var md=MEAL_DEFS.find(function(m){return m.id===override;});
 if(md)return Object.assign({},md,{meal:md.id});
 }
-var h=new Date().getHours();
+var now=new Date();var h=now.getHours()+now.getMinutes()/60;
 var times=customTimes||DEFAULT_MEAL_TIMES;
 var order=["breakfast","brunch","lunch","dinner","latenight"];
 for(var i=0;i<order.length;i++){
@@ -28,7 +29,7 @@ var s=range[0],e=range[1];
 if(s<e){if(h>=s&&h<e){var d=MEAL_DEFS.find(function(m){return m.id===mid;});if(d){return Object.assign({},d,{meal:d.id});}}}
 else{if(h>=s||h<e){var d2=MEAL_DEFS.find(function(m){return m.id===mid;});if(d2)return Object.assign({},d2,{meal:d2.id});}}
 }
-return{meal:"latenight",label:"Late Night",greeting:"Can't sleep?",cta:"Resolve a Late Night Run",sub:"We don't ask questions at this hour",emoji:"\uD83E\uDD89",treatOk:true,lightBias:true};
+return{meal:"latenight",label:"Late Night",greeting:"Can't sleep?",cta:"Resolve a Late Night Run",sub:"We don't ask questions at this hour",emoji:"\uD83E\uDD89",treatOk:true,lightBias:false};
 }
 
 var GLOBAL_DEFAULTS={femaleWeight:true,dessertPenalty:true,h2hFemale:true,theme:"auto"};
@@ -79,7 +80,7 @@ var RESOLVE_DELAY=900;
 function haptic(ms){try{if(navigator.vibrate)navigator.vibrate(ms||10);}catch(e){}}
 
 /* SCORING ENGINE */
-function scoreAll(rr,sel,ppl,hist,mc,gs2){try{if(!gs2)gs2=GLOBAL_DEFAULTS;var kidIds=ppl.filter(function(p){return p.age!=="adult";}).map(function(p){return p.id;});var hasKids=sel.sp.some(function(id){return kidIds.indexOf(id)>=0;})||(sel.xk||0)>0;var xa=sel.xa||0,xk=sel.xk||0;var gs=sel.sp.length+xa+xk,isGrp=gs>3,isSolo=gs===1,isT=sel.mood==="sweet-treat";var rm={};(hist||[]).forEach(function(h){if(!rm[h.rid])rm[h.rid]={u:0,d:0};if(h.rating==="up")rm[h.rid].u++;if(h.rating==="down")rm[h.rid].d++;});var mwm={healthy:{h:3,c:-1,t:-1},balanced:{h:1.2,c:1,t:.5},comfort:{h:-.5,c:3,t:.5},"trash-goblin":{h:-2,c:2.5,t:1},"sweet-treat":{h:-1,c:.5,t:4},"kid-peace":{h:0,c:1,t:.5},"crowd-survival":{h:0,c:1,t:0},"safe-default":{h:.5,c:.5,t:0},roulette:{h:0,c:0,t:0}};var bm={cheap:1,normal:2,flexible:3,feast:4},sm={fast:1,normal:2};var FEMALE_IDS_S=ppl.filter(function(p){return p.g==="f";}).map(function(p){return p.id;});var gtp={adv:.5,hc:.5,sp:.5,meat:.5,sweet:.5};(function(){var members=sel.sp.map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(Boolean);if(members.length>0){var sums={adv:0,hc:0,sp:0,meat:0,sweet:0},tw=0;members.forEach(function(p){var w=(gs2.femaleWeight&&FEMALE_IDS_S.indexOf(p.id)>=0)?1.3:1;["adv","hc","sp","meat","sweet"].forEach(function(k){sums[k]+=(p[k]||.5)*w;});tw+=w;});if(tw>0)["adv","hc","sp","meat","sweet"].forEach(function(k){gtp[k]=sums[k]/tw;});}})();var sc=rr.filter(function(r){return!r.bo&&isOpenNow(r.id);}).map(function(r){r=Object.assign({hs:.5,cs:.5,ts:.3,ks:.5,gs:.5,ls:.3,rs:.5,ss:.5,bl:2,sl:2,to:0,orders:[],tags:[],ctx:[]},r);var s=50,re=[],co=[];var mw=mwm[sel.mood]||{};var ms=(mw.h||0)*r.hs*10+(mw.c||0)*r.cs*10+(mw.t||0)*r.ts*10;s+=ms;if(ms>8)re.push("Strong mood fit");var tps=0;tps+=(gtp.hc-.5)*r.hs*12;tps+=((1-gtp.hc)-.5)*r.cs*8;tps+=(gtp.sweet-.5)*r.ts*10;tps+=(gtp.adv-.5)*(1-r.rs)*8;tps+=((1-gtp.adv)-.5)*r.rs*6;if(r.cat==="burgers"||r.cat==="fast-food")tps+=(gtp.meat-.5)*8;if(r.cat==="healthy")tps+=(gtp.hc-.5)*10;s+=tps;if(tps>5)re.push("Good taste fit");if(tps<-5)co.push("Taste mismatch");if(r.spicy===true||r.spicy===2){var avgSp=gtp.sp||.5;if(avgSp<.3){s-=8;co.push("Too spicy for this group");}else if(avgSp>=.6)s+=3;}if(r.spicy==="optional"){var avgSp2=gtp.sp||.5;if(avgSp2>=.6)s+=2;}if(sel.mood==="roulette")s+=(Math.random()-.3)*22;var bt=bm[sel.budget]||2,bd=Math.abs(r.bl-bt);if(bd===0){s+=8;re.push("Budget aligned");}else if(bd===1)s+=2;else{s-=bd*6;co.push("Budget mismatch");}var st=sm[sel.speed]||2;if(r.sl<=st){s+=5;if(sel.speed==="fast"&&r.sl===1)re.push("Fast path");}else{s-=8;co.push("Speed concern");}if(sel.kf||hasKids){s+=r.ks*15-5;if(r.ks>=.7)re.push("Kid-safe");if(r.ks<.4){s-=12;co.push("Low kid compat");}}if(isGrp||sel.go){s+=r.gs*12-3;if(r.gs>=.7)re.push("Group-compatible");if(r.gs<.4)co.push("Complex group order");}if(isSolo){if(r.ss<.4)s+=3;if(r.bl<=2)s+=3;}if(gs===2&&!hasKids)s+=r.rs*5;if(sel.lo){s+=r.ls*10;if(r.ls>=.6)re.push("High leftover yield");}if(isGrp)s+=r.ss*8;if(r.fav){s+=8;re.push("Household favorite");}if(sel.fam==="safe"){s+=r.rs*12;if(r.rs>=.8)re.push("Proven reliable");}else if(sel.fam==="surprise"){s+=(1-r.rs)*8;if(r.to<4)re.push("Low frequency");}else s+=r.rs*5;/* Staleness: penalize restaurants with zero recent orders */if(r.to365!=null&&r.to365===0&&r.to>0){s-=8;co.push("Haven\u2019t ordered in a while");}if(r.to>10&&(r.to90||0)>0)s+=3;if(isT&&r.ts<.5)s-=15;if(gs2.dessertPenalty&&!isT&&r.cat==="dessert")s-=12;if(gs2.dessertPenalty&&!isT&&r.cat==="coffee-snack")s-=8;if(gs2.dessertPenalty&&!isT&&r.ts>=0.8&&r.cat!=="dessert")s-=8;if(sel.mood==="kid-peace"){s+=r.ks*18-5;s+=r.rs*8;}if(sel.mood==="safe-default"){s+=r.rs*15;if(r.fav)s+=10;}var rb=rm[r.id];if(rb){s+=rb.u*3;s-=rb.d*4;}if(!mc)mc=getMealContext();var mf=MEAL_FIT[r.id];if(mf){var fit=mf[mc.meal]!=null?mf[mc.meal]:0.5;if(fit>=0.8){s+=10;re.push("Good for "+mc.label.toLowerCase());}else if(fit>=0.4){s+=(fit-0.5)*15;}else if(fit>=0.15){s-=15;co.push("Unusual for "+mc.label.toLowerCase());}else{s-=30;co.push("Wrong time of day");}}if(mc.treatOk&&r.ts>=0.7)s+=5;if(mc.lightBias&&r.hs>=0.6)s+=4;if(mc.lightBias&&r.cs>=0.8)s-=3;var df=DOW_FIT[r.id];if(df){var today=new Date().getDay();var todayIdx=today===0?6:today-1;var dowPct=df[todayIdx]||0;var avg=1/7;var dowSample=Math.min(r.to,30);var dowWeight=dowSample/30;var dowRaw=(dowPct-avg)*35*dowWeight;var dowCapped=Math.max(-10,Math.min(10,dowRaw));s+=dowCapped;if(dowPct>avg*1.5&&dowSample>=5)re.push("Popular on "+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][todayIdx]+"s");if(dowPct===0&&dowSample>=10){s-=5;co.push("Never ordered on "+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][todayIdx]+"s");}}/* ── Data-driven modifiers ── */var hasJ=sel.sp.indexOf("jenna")>=0,hasK=sel.sp.indexOf("kevin")>=0,kSolo=isSolo&&hasK,jInvolved=hasJ||sel.sp.some(function(id){return FEMALE_IDS_S.indexOf(id)>=0;});/* Person mods: apply each selected person's restaurant/category modifiers */sel.sp.forEach(function(pid){var person=ppl.find(function(p){return p.id===pid;});if(!person||!person.mods)return;person.mods.forEach(function(mod){if(mod.rid&&mod.rid===r.id){if(mod.solo&&!kSolo)return;s+=mod.w;if(mod.w>0)re.push(mod.label);if(mod.w<0)co.push(mod.label);}else if(mod.cat&&mod.cat===r.cat){if(mod.solo&&!kSolo)return;s+=mod.w;if(mod.w>0)re.push(mod.label);if(mod.w<0)co.push(mod.label);}});});/* Restaurant ctx rules */if(r.ctx){r.ctx.forEach(function(cx){var applies=false;if(cx.when==="always")applies=true;if(cx.when==="kids"&&hasKids)applies=true;if(cx.when==="couple"&&!hasKids&&gs===2)applies=true;if(cx.when==="solo"&&isSolo)applies=true;if(cx.when==="group"&&isGrp)applies=true;if(cx.when==="female"&&jInvolved&&!kSolo)applies=true;if(cx.when==="latenight"&&mc.meal==="latenight")applies=true;if(cx.when==="breakfast"&&mc.meal==="breakfast")applies=true;if(cx.when==="brunch"&&mc.meal==="brunch")applies=true;if(cx.when==="mood-comfort"&&sel.mood==="comfort")applies=true;if(cx.when==="mood-trash-goblin"&&sel.mood==="trash-goblin")applies=true;if(cx.when==="mood-healthy"&&sel.mood==="healthy")applies=true;if(cx.when==="mood-other"&&sel.mood!=="healthy")applies=true;if(applies){s+=cx.w;if(cx.w>0)re.push(cx.label);if(cx.w<0)co.push(cx.label);}});}/* Global: kids restaurant boosts */if(hasKids){if(r.id==="culvers"||r.id==="mcdonalds"||r.id==="wendys")s+=4;if(r.id==="cantina")s+=3;if(r.id==="taco-bell")s+=2;if(r.id==="ho-king"||r.id==="new-china"||r.id==="thai-ruby")s+=3;if(r.id==="panera"||r.id==="jersey-mikes")s+=3;}/* ── Cuisine tag boost from quiz ── */var ct=sel.ct||"";if(ct){var catMap={"burgers":["burgers","fast-food"],"asian":["asian"],"indian":["indian"],"subs":["subs"],"pizza":["pizza"],"wings":["wings"],"bbq":["bbq"],"italian":["italian"],"mexican":["mexican","fast-food"],"smoothie":["healthy"],"breakfast":["breakfast"],"donuts":["breakfast","coffee-snack"],"froyo":["dessert"],"healthy":["healthy"],"premium":[],"budget":[],"solo_late":[]};var matchCats=catMap[ct]||[];if(matchCats.indexOf(r.cat)>=0){s+=12;re.push("Matches your craving");}if(ct==="premium"&&r.bl>=3)s+=8;if(ct==="budget"&&r.bl<=1)s+=8;if(ct==="solo_late"&&mc.meal==="latenight")s+=5;}/* ── Seasonal awareness (Florida) ── */var sMonth=new Date().getMonth();var isHotSzn=sMonth>=4&&sMonth<=8;var isMildSzn=sMonth>=10||sMonth<=1;if(isHotSzn){if(r.cat==="dessert"||r.ts>=.7)s+=4;if(r.hs>=.6)s+=3;if(r.cs>=.8)s-=3;re.length<4&&r.ts>=.7&&re.push("Summer treat weather");}if(isMildSzn){if(r.cs>=.7)s+=3;if(r.cat==="bbq")s+=2;re.length<4&&r.cs>=.7&&re.push("Cool-weather comfort");}/* ── Already had today penalty ── */if(sel._alreadyHad&&sel._alreadyHad===r.id){s-=30;co.push("Already had this today");}if(sel._alreadyHad){var ahRest=rr.find(function(x){return x.id===sel._alreadyHad;});if(ahRest&&ahRest.cat===r.cat&&r.id!==sel._alreadyHad){s-=10;co.push("Same cuisine as earlier");}}var vs=0;if(hasKids&&r.ks<.5)vs+=2;if(isGrp&&r.gs<.5)vs+=2;if(sel.mood==="healthy"&&r.hs<.4)vs++;if(bd>1)vs++;if(r.rs<.6)vs++;var vr=vs<=1?"low":vs<=3?"moderate":"high";var vtx=isSolo?{low:["Solid choice.","This one\u2019s a lock.","No-brainer.","You know you want this.","Strong pick."],moderate:["Decent option.","Could go either way.","Not your usual, but viable.","Worth considering.","On the radar."],high:["Risky pick.","Outside your comfort zone.","Bold move.","Might regret this one.","Adventurous."]}:{low:["Consensus likely.","Low household resistance.","Stable output.","Low friction.","Safe to proceed."],moderate:["Minor resistance possible.","Defensible, not unanimous.","Someone may want alternatives.","Moderate veto risk.","Proceed with awareness."],high:["Consensus unlikely.","Bold input for this group.","May trigger renegotiation.","Prepare a fallback.","High variance."]};var vfa=vtx[vr];var rHash=0;for(var ci=0;ci<r.id.length;ci++)rHash=(rHash*31+r.id.charCodeAt(ci))%vfa.length;var vf=vfa[Math.abs(rHash)%vfa.length];/* Easter eggs */if(r.id==="fresh-kitchen"&&jInvolved&&isSolo)vf="You already knew, didn\u2019t you?";if(r.id==="fresh-kitchen"&&jInvolved&&!isSolo)vf="Jenna\u2019s calling the shots here.";if(r.id==="taco-bell"&&kSolo&&mc.meal==="latenight")vf="Between you and God.";if(r.id==="crumbl")vf="You deserve this and you know it.";if(r.id==="sweetfrog")vf="It\u2019s froyo. It\u2019s basically health food.";if(r.id==="cold-stone")vf="Go big. No one\u2019s judging.";if(r.id==="ice-sssscreamin")vf="Calories don\u2019t count after 9pm.";if(r.id==="twistee-treat")vf="Sometimes you just need soft serve. No explanation needed.";if(r.id==="peach-cobbler")vf="Life is short. Eat the cobbler.";if(r.id==="krispy-kreme")vf="A dozen is a serving size if you believe in yourself.";if(r.id==="insomnia-cookies")vf="It\u2019s not insomnia if you planned it.";if(r.id==="dairy-queen")vf="Blizzards count as dinner if you\u2019re brave enough.";if(r.id==="shake-bar")vf="Milkshakes are just cold soup. Embrace it.";if(r.id==="chick-fil-a"&&vr==="low")vf="Is anyone surprised?";/* Late night roast mode (after 11pm + trash-goblin) */if(sel.mood==="trash-goblin"&&new Date().getHours()>=23){var lnr={"taco-bell":"Absolutely unhinged behavior. Respect.","mcdonalds":"The golden arches called. They said they\u2019re worried about you.","wendys":"Sir, it\u2019s almost midnight. Have some dignity. Just kidding, get the Baconator.","culvers":"Getting cheese curds at this hour is either genius or a cry for help.","five-guys":"You\u2019re really about to spend $47 at Five Guys at midnight, huh.","chick-fil-a":"It\u2019s closed and you know it. This is just pain.","dominos":"Rock bottom has a basement and it has a pizza tracker.","pizza-hut":"Stuffed crust at midnight. Your ancestors are watching.","popeyes":"Biscuit at midnight? Actually, can\u2019t argue with that."};if(lnr[r.id])vf=lnr[r.id];}var scn=isT?"treat":isSolo?"solo":hasKids?(isGrp?"group":"family"):(gs>3?"group":"couple");var curMeal=mc?mc.meal:"dinner";var mealMatch=function(ml){return ml===curMeal||(curMeal==="brunch"&&ml==="breakfast");};var bo=r.orders.find(function(o){return o.sc===scn&&o.ml&&mealMatch(o.ml);})||r.orders.find(function(o){return o.ml&&mealMatch(o.ml);})||r.orders.find(function(o){return o.sc===scn&&!o.ml;})||r.orders.find(function(o){return o.sc===scn;})||r.orders.find(function(o){return o.sc==="couple"&&!o.ml;})||r.orders[0]||null;var conf=s>75?"high":s>55?"medium":"low";return{rid:r.id,r:r,score:Math.round(s*10)/10,reasons:re.slice(0,4),concerns:co.slice(0,3),vetoRisk:vr,vetoFlavor:vf,confidence:conf,order:bo,tags:r.tags,eta:getETA(r.id),ddLink:getDDLink(r.id)};});sc.sort(function(a,b){return b.score-a.score;});return sc;}catch(e){return[];}}
+function scoreAll(rr,sel,ppl,hist,mc,gs2){try{if(!gs2)gs2=GLOBAL_DEFAULTS;var kidIds=ppl.filter(function(p){return p.age!=="adult";}).map(function(p){return p.id;});var hasKids=sel.sp.some(function(id){return kidIds.indexOf(id)>=0;})||(sel.xk||0)>0;var xa=sel.xa||0,xk=sel.xk||0;var gs=sel.sp.length+xa+xk,isGrp=gs>3,isSolo=gs===1,isT=sel.mood==="sweet-treat";var rm={};(hist||[]).forEach(function(h){if(!rm[h.rid])rm[h.rid]={u:0,d:0};if(h.rating==="up")rm[h.rid].u++;if(h.rating==="down")rm[h.rid].d++;});var mwm={healthy:{h:3,c:-1,t:-1},balanced:{h:1.2,c:1,t:.5},comfort:{h:-.5,c:3,t:.5},"trash-goblin":{h:-2,c:2.5,t:1},"sweet-treat":{h:-1,c:.5,t:4},"kid-peace":{h:0,c:1,t:.5},"crowd-survival":{h:0,c:1,t:0},"safe-default":{h:.5,c:.5,t:0},roulette:{h:0,c:0,t:0}};var bm={cheap:1,normal:2,flexible:3,feast:4},sm={fast:1,normal:2};var FEMALE_IDS_S=ppl.filter(function(p){return p.g==="f";}).map(function(p){return p.id;});var gtp={adv:.5,hc:.5,sp:.5,meat:.5,sweet:.5};(function(){var members=sel.sp.map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(Boolean);if(members.length>0){var sums={adv:0,hc:0,sp:0,meat:0,sweet:0},tw=0;members.forEach(function(p){var w=(gs2.femaleWeight&&FEMALE_IDS_S.indexOf(p.id)>=0)?1.3:1;["adv","hc","sp","meat","sweet"].forEach(function(k){sums[k]+=(p[k]||.5)*w;});tw+=w;});if(tw>0)["adv","hc","sp","meat","sweet"].forEach(function(k){gtp[k]=sums[k]/tw;});}})();var sc=rr.filter(function(r){return!r.bo&&isOpenNow(r.id);}).map(function(r){r=Object.assign({hs:.5,cs:.5,ts:.3,ks:.5,gs:.5,ls:.3,rs:.5,ss:.5,bl:2,sl:2,to:0,orders:[],tags:[],ctx:[]},r);var s=50,re=[],co=[];var mw=mwm[sel.mood]||{};var ms=(mw.h||0)*r.hs*10+(mw.c||0)*r.cs*10+(mw.t||0)*r.ts*10;s+=ms;if(ms>8)re.push("Strong mood fit");var tps=0;tps+=(gtp.hc-.5)*r.hs*12;tps+=((1-gtp.hc)-.5)*r.cs*8;tps+=(gtp.sweet-.5)*r.ts*10;tps+=(gtp.adv-.5)*(1-r.rs)*8;tps+=((1-gtp.adv)-.5)*r.rs*6;if(r.cat==="burgers"||r.cat==="fast-food")tps+=(gtp.meat-.5)*8;if(r.cat==="healthy")tps+=(gtp.hc-.5)*10;s+=tps;if(tps>5)re.push("Good taste fit");if(tps<-5)co.push("Taste mismatch");if(r.spicy===true||r.spicy===2){var avgSp=gtp.sp||.5;if(avgSp<.3){s-=8;co.push("Too spicy for this group");}else if(avgSp>=.6)s+=3;}if(r.spicy==="optional"){var avgSp2=gtp.sp||.5;if(avgSp2>=.6)s+=2;}if(sel.mood==="roulette")s+=(Math.random()-.5)*22;var bt=bm[sel.budget]||2,bd=Math.abs(r.bl-bt);if(bd===0){s+=8;re.push("Budget aligned");}else if(bd===1)s+=2;else{s-=bd*6;co.push("Budget mismatch");}var st=sm[sel.speed]||2;if(r.sl<=st){s+=5;if(sel.speed==="fast"&&r.sl===1)re.push("Fast path");}else{s-=8;co.push("Speed concern");}if(sel.kf||hasKids){s+=r.ks*15-5;if(r.ks>=.7)re.push("Kid-safe");if(r.ks<.4){s-=12;co.push("Low kid compat");}}if(isGrp||sel.go){s+=r.gs*12-3;if(r.gs>=.7)re.push("Group-compatible");if(r.gs<.4)co.push("Complex group order");}if(isSolo){if(r.ss<.4)s+=3;if(r.bl<=2)s+=3;}if(gs===2&&!hasKids)s+=r.rs*5;if(sel.lo){s+=r.ls*10;if(r.ls>=.6)re.push("High leftover yield");}if(isGrp)s+=r.ss*8;if(r.fav){s+=8;re.push("Household favorite");}if(sel.fam==="safe"){s+=r.rs*12;if(r.rs>=.8)re.push("Proven reliable");}else if(sel.fam==="surprise"){s+=(1-r.rs)*8;if(r.to<4)re.push("Low frequency");}else s+=r.rs*5;/* Staleness: penalize restaurants with zero recent orders */if(r.to365!=null&&r.to365===0&&r.to>0){s-=8;co.push("Haven\u2019t ordered in a while");}if(r.to>10&&(r.to90||0)>0)s+=3;if(isT&&r.ts<.5)s-=15;if(gs2.dessertPenalty&&!isT&&r.cat==="dessert")s-=12;if(gs2.dessertPenalty&&!isT&&r.cat==="coffee-snack")s-=8;if(gs2.dessertPenalty&&!isT&&r.ts>=0.8&&r.cat!=="dessert")s-=8;if(sel.mood==="kid-peace"){s+=r.ks*18-5;s+=r.rs*8;}if(sel.mood==="safe-default"){s+=r.rs*15;if(r.fav)s+=10;}var rb=rm[r.id];if(rb){s+=rb.u*3;s-=rb.d*4;}if(!mc)mc=getMealContext();var mf=MEAL_FIT[r.id];if(mf){var fit=mf[mc.meal]!=null?mf[mc.meal]:0.5;if(fit>=0.8){s+=10;re.push("Good for "+mc.label.toLowerCase());}else if(fit>=0.4){s+=(fit-0.5)*15;}else if(fit>=0.15){s+=(fit-0.4)*60-15;co.push("Unusual for "+mc.label.toLowerCase());}else{s-=30;co.push("Wrong time of day");}}if(mc.treatOk&&r.ts>=0.7)s+=5;if(mc.lightBias&&r.hs>=0.6)s+=4;if(mc.lightBias&&r.cs>=0.8)s-=3;var df=DOW_FIT[r.id];if(df){var today=new Date().getDay();var todayIdx=today===0?6:today-1;var dowPct=df[todayIdx]||0;var avg=1/7;var dowSample=Math.min(r.to,30);var dowWeight=dowSample/30;var dowRaw=(dowPct-avg)*35*dowWeight;var dowCapped=Math.max(-10,Math.min(10,dowRaw));s+=dowCapped;if(dowPct>avg*1.5&&dowSample>=5)re.push("Popular on "+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][todayIdx]+"s");if(dowPct===0&&dowSample>=10){s-=5;co.push("Never ordered on "+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][todayIdx]+"s");}}/* ── Data-driven modifiers ── */var hasJ=sel.sp.indexOf("jenna")>=0,hasK=sel.sp.indexOf("kevin")>=0,kSolo=isSolo&&hasK,hasFemale=sel.sp.some(function(id){return FEMALE_IDS_S.indexOf(id)>=0;}),jInvolved=hasJ||hasFemale;/* Person mods: apply each selected person's restaurant/category modifiers */sel.sp.forEach(function(pid){var person=ppl.find(function(p){return p.id===pid;});if(!person||!person.mods)return;person.mods.forEach(function(mod){if(mod.rid&&mod.rid===r.id){if(mod.solo&&!kSolo)return;s+=mod.w;if(mod.w>0)re.push(mod.label);if(mod.w<0)co.push(mod.label);}else if(mod.cat&&mod.cat===r.cat){if(mod.solo&&!kSolo)return;s+=mod.w;if(mod.w>0)re.push(mod.label);if(mod.w<0)co.push(mod.label);}});});/* Restaurant ctx rules */if(r.ctx){r.ctx.forEach(function(cx){var applies=false;if(cx.when==="always")applies=true;if(cx.when==="kids"&&hasKids)applies=true;if(cx.when==="couple"&&!hasKids&&gs===2)applies=true;if(cx.when==="solo"&&isSolo)applies=true;if(cx.when==="group"&&isGrp)applies=true;if(cx.when==="female"&&jInvolved&&!kSolo)applies=true;if(cx.when==="latenight"&&mc.meal==="latenight")applies=true;if(cx.when==="breakfast"&&mc.meal==="breakfast")applies=true;if(cx.when==="brunch"&&mc.meal==="brunch")applies=true;if(cx.when==="mood-comfort"&&sel.mood==="comfort")applies=true;if(cx.when==="mood-trash-goblin"&&sel.mood==="trash-goblin")applies=true;if(cx.when==="mood-healthy"&&sel.mood==="healthy")applies=true;if(cx.when==="mood-other"&&["healthy","comfort","trash-goblin","sweet-treat","kid-peace","crowd-survival"].indexOf(sel.mood)<0)applies=true;if(applies){s+=cx.w;if(cx.w>0)re.push(cx.label);if(cx.w<0)co.push(cx.label);}});}/* Global: kids restaurant boosts */if(hasKids){if(r.id==="culvers"||r.id==="mcdonalds"||r.id==="wendys")s+=4;if(r.id==="cantina")s+=3;if(r.id==="taco-bell")s+=2;if(r.id==="ho-king"||r.id==="new-china"||r.id==="thai-ruby")s+=3;if(r.id==="panera"||r.id==="jersey-mikes")s+=3;}/* ── Cuisine tag boost from quiz ── */var ct=sel.ct||"";if(ct){var catMap={"burgers":["burgers"],"asian":["asian"],"indian":["indian"],"subs":["subs"],"pizza":["pizza"],"wings":["wings"],"bbq":["bbq"],"italian":["italian"],"mexican":["mexican"],"smoothie":["healthy"],"breakfast":["breakfast"],"donuts":["breakfast","coffee-snack"],"froyo":["dessert"],"healthy":["healthy"],"premium":[],"budget":[],"solo_late":[]};var matchCats=catMap[ct]||[];if(matchCats.indexOf(r.cat)>=0){s+=12;re.push("Matches your craving");}if(ct==="premium"&&r.bl>=3)s+=8;if(ct==="budget"&&r.bl<=1)s+=8;if(ct==="solo_late"&&mc.meal==="latenight")s+=5;}/* ── Seasonal awareness (Florida) ── */var sMonth=new Date().getMonth();var isHotSzn=sMonth>=4&&sMonth<=8;var isMildSzn=sMonth>=10||sMonth<=1;if(isHotSzn){if(r.cat==="dessert"||r.ts>=.7)s+=4;if(r.hs>=.6)s+=3;if(r.cs>=.8)s-=3;re.length<4&&r.ts>=.7&&re.push("Summer treat weather");}if(isMildSzn){if(r.cs>=.7)s+=3;if(r.cat==="bbq")s+=2;re.length<4&&r.cs>=.7&&re.push("Cool-weather comfort");}/* ── Already had today penalty ── */if(sel._alreadyHad&&sel._alreadyHad===r.id){s-=30;co.push("Already had this today");}if(sel._alreadyHad){var ahRest=rr.find(function(x){return x.id===sel._alreadyHad;});if(ahRest&&ahRest.cat===r.cat&&r.id!==sel._alreadyHad){s-=10;co.push("Same cuisine as earlier");}}var vs=0;if(hasKids&&r.ks<.5)vs+=2;if(isGrp&&r.gs<.5)vs+=2;if(sel.mood==="healthy"&&r.hs<.4)vs++;if(bd>1)vs++;if(r.rs<.6)vs++;var vr=vs<=1?"low":vs<=3?"moderate":"high";var vtx=isSolo?{low:["Solid choice.","This one\u2019s a lock.","No-brainer.","You know you want this.","Strong pick."],moderate:["Decent option.","Could go either way.","Not your usual, but viable.","Worth considering.","On the radar."],high:["Risky pick.","Outside your comfort zone.","Bold move.","Might regret this one.","Adventurous."]}:{low:["Consensus likely.","Low household resistance.","Stable output.","Low friction.","Safe to proceed."],moderate:["Minor resistance possible.","Defensible, not unanimous.","Someone may want alternatives.","Moderate veto risk.","Proceed with awareness."],high:["Consensus unlikely.","Bold input for this group.","May trigger renegotiation.","Prepare a fallback.","High variance."]};var vfa=vtx[vr];var rHash=0;for(var ci=0;ci<r.id.length;ci++)rHash=(rHash*31+r.id.charCodeAt(ci))%vfa.length;var vf=vfa[Math.abs(rHash)%vfa.length];/* Easter eggs */if(r.id==="fresh-kitchen"&&hasJ&&isSolo)vf="You already knew, didn\u2019t you?";if(r.id==="fresh-kitchen"&&hasJ&&!isSolo)vf="Jenna\u2019s calling the shots here.";if(r.id==="taco-bell"&&kSolo&&mc.meal==="latenight")vf="Between you and God.";if(r.id==="crumbl")vf="You deserve this and you know it.";if(r.id==="sweetfrog")vf="It\u2019s froyo. It\u2019s basically health food.";if(r.id==="cold-stone")vf="Go big. No one\u2019s judging.";if(r.id==="ice-sssscreamin")vf="Calories don\u2019t count after 9pm.";if(r.id==="twistee-treat")vf="Sometimes you just need soft serve. No explanation needed.";if(r.id==="peach-cobbler")vf="Life is short. Eat the cobbler.";if(r.id==="krispy-kreme")vf="A dozen is a serving size if you believe in yourself.";if(r.id==="insomnia-cookies")vf="It\u2019s not insomnia if you planned it.";if(r.id==="dairy-queen")vf="Blizzards count as dinner if you\u2019re brave enough.";if(r.id==="shake-bar")vf="Milkshakes are just cold soup. Embrace it.";if(r.id==="chick-fil-a"&&vr==="low")vf="Is anyone surprised?";/* Late night roast mode (after 11pm + trash-goblin) */if(sel.mood==="trash-goblin"&&new Date().getHours()>=23){var lnr={"taco-bell":"Absolutely unhinged behavior. Respect.","mcdonalds":"The golden arches called. They said they\u2019re worried about you.","wendys":"Sir, it\u2019s almost midnight. Have some dignity. Just kidding, get the Baconator.","culvers":"Getting cheese curds at this hour is either genius or a cry for help.","five-guys":"You\u2019re really about to spend $47 at Five Guys at midnight, huh.","chick-fil-a":"It\u2019s closed and you know it. This is just pain.","dominos":"Rock bottom has a basement and it has a pizza tracker.","pizza-hut":"Stuffed crust at midnight. Your ancestors are watching.","popeyes":"Biscuit at midnight? Actually, can\u2019t argue with that."};if(lnr[r.id])vf=lnr[r.id];}var scn=isT?"treat":isSolo?"solo":hasKids?(isGrp?"group":"family"):(gs>3?"group":"couple");var curMeal=mc?mc.meal:"dinner";var mealMatch=function(ml){return ml===curMeal||(curMeal==="brunch"&&ml==="breakfast");};var bo=r.orders.find(function(o){return o.sc===scn&&o.ml&&mealMatch(o.ml);})||r.orders.find(function(o){return o.sc===scn&&!o.ml;})||r.orders.find(function(o){return o.sc===scn;})||r.orders.find(function(o){return o.ml&&mealMatch(o.ml);})||r.orders.find(function(o){return o.sc==="couple"&&!o.ml;})||r.orders[0]||null;var conf=s>75?"high":s>55?"medium":"low";return{rid:r.id,r:r,score:Math.round(s*10)/10,reasons:re.slice(0,4),concerns:co.slice(0,3),vetoRisk:vr,vetoFlavor:vf,confidence:conf,order:bo,tags:r.tags,eta:getETA(r.id),ddLink:getDDLink(r.id)};});sc.sort(function(a,b){return b.score-a.score;});return sc;}catch(e){return[];}}
 function top3(sc){if(sc.length<3)return sc.slice(0,3);var w=sc[0],wc=w.r.cat;var b1=sc.slice(1).find(function(s){return s.r.cat!==wc;})||sc[1]||null;if(!b1)return[w];var b2=sc.slice(1).find(function(s){return s.rid!==b1.rid&&s.r.cat!==wc&&s.r.cat!==b1.r.cat;})||sc.find(function(s){return s.rid!==w.rid&&s.rid!==b1.rid;})||sc[2]||null;return[w,b1,b2].filter(Boolean);}
 
 var SK="jfl-v3";function ld(){try{var d=JSON.parse(localStorage.getItem(SK));if(d&&d.p){d.p=d.p.map(function(p){if(p.role&&!p.freq){var rm={primary:"core",kids:"core",extended:"extended",occasional:"occasional"};p.freq=rm[p.role]||"occasional";p.age=p.role==="kids"?"child":"adult";delete p.role;}if(!p.freq)p.freq="occasional";if(!p.age)p.age="adult";if(!p.g){var femIds=["jenna","madi","emmy","jenna-mom","kevin-mom","zoe","leah","tara","amanda","zara"];p.g=femIds.indexOf(p.id)>=0?"f":"m";}return p;});}return d;}catch(e){return null;}}function sv(d){try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){if(e&&e.name==="QuotaExceededError")console.warn("localStorage quota exceeded — data not saved");else console.warn("Save failed:",e);}}
@@ -147,7 +148,7 @@ var saved=useMemo(function(){return ld();},[]);
 /* Merge new fields from RESTS defaults into saved restaurants */
 var mergedR=useMemo(function(){var base=saved&&saved.r?saved.r:RESTS;var result=base.map(function(r){var def=RESTS.find(function(d){return d.id===r.id;});if(!def)return r;var upd={};if(typeof r.to90==="undefined"&&typeof def.to90!=="undefined")upd.to90=def.to90;if(typeof r.to365==="undefined"&&typeof def.to365!=="undefined")upd.to365=def.to365;if(typeof r.acS==="undefined"&&typeof def.acS!=="undefined")upd.acS=def.acS;if(typeof r.acC==="undefined"&&typeof def.acC!=="undefined")upd.acC=def.acC;if(typeof r.acF==="undefined"&&typeof def.acF!=="undefined")upd.acF=def.acF;if(typeof r.acG==="undefined"&&typeof def.acG!=="undefined")upd.acG=def.acG;if(typeof r.fd==="undefined"&&typeof def.fd!=="undefined")upd.fd=def.fd;if(typeof r.streak==="undefined"&&typeof def.streak!=="undefined")upd.streak=def.streak;if(typeof r.adv==="undefined"&&typeof def.adv!=="undefined"){upd.adv=def.adv;upd.hc=def.hc;upd.sp=def.sp;upd.meat=def.meat;upd.sweet=def.sweet;}return Object.keys(upd).length>0?Object.assign({},r,upd):r;});RESTS.forEach(function(def){if(!result.find(function(r){return r.id===def.id;}))result.push(def);});return result;},[saved]);
 var _1=useState(mergedR);var rests=_1[0],setR=_1[1];
-var mergedP=useMemo(function(){var base=saved&&saved.p?saved.p:PEOPLE;return base.map(function(p){var def=PEOPLE.find(function(d){return d.id===p.id;});if(!def)return p;var upd={};if(typeof p.adv==="undefined"&&typeof def.adv!=="undefined"){upd.adv=def.adv;upd.hc=def.hc;upd.sp=def.sp;upd.meat=def.meat;upd.sweet=def.sweet;}return Object.keys(upd).length>0?Object.assign({},p,upd):p;});},[saved]);
+var mergedP=useMemo(function(){var base=saved&&saved.p?saved.p:PEOPLE;var result=base.map(function(p){var def=PEOPLE.find(function(d){return d.id===p.id;});if(!def)return p;var upd={};if(typeof p.adv==="undefined"&&typeof def.adv!=="undefined"){upd.adv=def.adv;upd.hc=def.hc;upd.sp=def.sp;upd.meat=def.meat;upd.sweet=def.sweet;}return Object.keys(upd).length>0?Object.assign({},p,upd):p;});PEOPLE.forEach(function(def){if(!result.find(function(p){return p.id===def.id;}))result.push(def);});return result;},[saved]);
 var _2=useState(mergedP);var ppl=_2[0],setPpl=_2[1];
 var _gs=useState(saved&&saved.gs&&typeof saved.gs==="object"&&!Array.isArray(saved.gs)?Object.assign({},GLOBAL_DEFAULTS,saved.gs):Object.assign({},GLOBAL_DEFAULTS));var gs2=_gs[0],setGs2=_gs[1];
 var _3=useState(saved&&Array.isArray(saved.h)?saved.h:[]);var hist=_3[0],setH=_3[1];
@@ -158,7 +159,7 @@ var _flav=useState(0);var flavIdx=_flav[0],setFlavIdx=_flav[1];
 var HERO_FLAVORS=["67 restaurants. 1 answer.","Let the algorithm decide.","No more scrolling DoorDash.","Your taste profile has opinions."];
 useEffect(function(){var t=setInterval(function(){setFlavIdx(function(i){return(i+1)%4;});},6000);return function(){clearInterval(t);};},[]);
 var _5=useState(null);var results=_5[0],setRes=_5[1];
-var _6=useState(0);var rrc=_6[0],setRrc=_6[1];
+/* rrc (reroll counter) removed - was never read */
 var _6b=useState(0);var resIdx=_6b[0],setResIdx=_6b[1];
 var _7=useState(false);var busy=_7[0],setBusy=_7[1];
 var _8=useState({sp:["kevin","jenna"],mood:"balanced",budget:"normal",speed:"normal",fam:"familiar",ar:false,kf:false,go:false,lo:false,xa:0,xk:0,hf:"all",hfPrev:"all",hrid:null,hsort:"name"});var sel=_8[0],setSel=_8[1];
@@ -173,24 +174,24 @@ var activeObvRules=obvRules||OBVIOUS_RULES;
 var _15=useState("90d");var moFilter=_15[0],setMoFilter=_15[1];
 var _16=useState(false);var whyOpen=_16[0],setWhyOpen=_16[1];
 var _17=useState({});var hExp=_17[0],setHExp=_17[1];
-var _nt=useState([]);var sessionSkips=_nt[0],setSessionSkips=_nt[1];
+var _nt=useState([]);var sessionSkips=_nt[0],setSessionSkips=_nt[1];var sessionSkipsRef=useRef(sessionSkips);sessionSkipsRef.current=sessionSkips;
 var _ah=useState(null);var alreadyHad=_ah[0],setAlreadyHad=_ah[1];
 var _guests=useState([]);var guests=_guests[0],setGuests=_guests[1];
 var allPpl=useMemo(function(){return ppl.concat(guests);},[ppl,guests]);
 useEffect(function(){sv({r:rests,p:ppl,h:hist,dr:dataRefresh,g:groups,qr:qrCustom,mt:customMealTimes,ob:obvRules,gs:gs2});},[rests,ppl,hist,dataRefresh,groups,qrCustom,customMealTimes,obvRules,gs2]);
-useEffect(function(){var t=gs2.theme||"auto";var isDark=t==="dark"||(t==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);document.body.style.background=isDark?"#0D1117":"#F5E6E0";},[gs2.theme]);
+useEffect(function(){var t=gs2.theme||"auto";function applyBg(){var isDark=t==="dark"||(t==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);document.body.style.background=isDark?"#0D1117":"#F5E6E0";}applyBg();if(t==="auto"&&window.matchMedia){var mql=window.matchMedia("(prefers-color-scheme:light)");var handler=function(){applyBg();};mql.addEventListener("change",handler);return function(){mql.removeEventListener("change",handler);};};},[gs2.theme]);
 var mctx=useMemo(function(){return getMealContext(mealOverride,customMealTimes);},[mealOverride,customMealTimes]);
 var kidIds=useMemo(function(){return ppl.filter(function(p){return p.age!=="adult";}).map(function(p){return p.id;});},[ppl]);
 var up=useCallback(function(k,v){setSel(function(s){var n=Object.assign({},s);n[k]=v;return n;});},[]);
-var cycleTheme=useCallback(function(){setGs2(function(prev){var cur=prev.theme||"auto";var isDark=cur==="dark"||(cur==="auto"&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return Object.assign({},prev,{theme:isDark?"light":"dark"});});},[]);
+var cycleTheme=useCallback(function(){setGs2(function(prev){var cur=prev.theme||"auto";var next=cur==="auto"?"light":cur==="light"?"dark":"auto";return Object.assign({},prev,{theme:next});});},[]);
 var setGrp=useCallback(function(pp){var hk=pp.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:pp,kf:hk,go:pp.length>4,xa:0,xk:0});});},[kidIds]);
 var togP=useCallback(function(id){haptic();setSel(function(s){var has=s.sp.indexOf(id)>=0;var np=has?s.sp.filter(function(i){return i!==id;}):s.sp.concat([id]);var hk=np.some(function(pid){return kidIds.indexOf(pid)>=0;});return Object.assign({},s,{sp:np,kf:hk,go:np.length>4});});},[kidIds]);
-var _selWithCtx=useCallback(function(s){return Object.assign({},s,{_alreadyHad:alreadyHad,_sessionSkips:sessionSkips});},[alreadyHad,sessionSkips]);
-var _filterSkips=useCallback(function(rr){if(!sessionSkips||sessionSkips.length===0)return rr;return rr.filter(function(r){return sessionSkips.indexOf(r.id)<0;});},[sessionSkips]);
-var resolve=useCallback(function(){haptic(15);setBusy(true);setTimeout(function(){var s=_selWithCtx(selRef.current);setRes(top3(scoreAll(_filterSkips(rests),s,allPpl,hist,getMealContext(mealOverride,customMealTimes),gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);},[rests,allPpl,hist,mealOverride,customMealTimes,gs2,_selWithCtx,_filterSkips]);
-var reroll=useCallback(function(ch){var s=_selWithCtx(selRef.current);var sc=scoreAll(_filterSkips(rests),s,allPpl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?0.2:0.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,allPpl,hist,mealOverride,customMealTimes,gs2,_selWithCtx,_filterSkips]);
-var deadlock=useCallback(function(){var s=selRef.current;var ds=Object.assign({},_selWithCtx(s),{sp:["kevin","jenna"],fam:"safe",mood:"safe-default"});var sc=scoreAll(_filterSkips(rests),ds,allPpl,hist,getMealContext(mealOverride,customMealTimes),gs2);var vwt={low:0,moderate:1,high:2};sc.sort(function(a,b){if(vwt[a.vetoRisk]!==vwt[b.vetoRisk])return vwt[a.vetoRisk]-vwt[b.vetoRisk];return b.score-a.score;});setRes(top3(sc));setRrc(function(c){return c+1;});setResIdx(0);},[rests,ppl,hist,mealOverride,customMealTimes,gs2]);
-var pick=useCallback(function(res){haptic(20);var s=selRef.current;setH(function(h){return[{id:Date.now().toString(),rid:res.rid,name:res.r.name,emoji:res.r.emoji,date:new Date().toISOString(),people:s.sp,mood:s.mood,order:res.order,rating:null}].concat(h);});setR(function(rs){return rs.map(function(re){return re.id===res.rid?Object.assign({},re,{to:re.to+1,lo:0,streak:re.streak+1}):re;});});go("dashboard");setRes(null);},[]);
+var _selWithCtx=useCallback(function(s){return Object.assign({},s,{_alreadyHad:alreadyHad,_sessionSkips:sessionSkipsRef.current});},[alreadyHad]);
+var _filterSkips=useCallback(function(rr){var ss=sessionSkipsRef.current;if(!ss||ss.length===0)return rr;return rr.filter(function(r){return ss.indexOf(r.id)<0;});},[])
+var resolve=useCallback(function(){haptic(15);setBusy(true);setTimeout(function(){var s=_selWithCtx(selRef.current);setRes(top3(scoreAll(_filterSkips(rests),s,allPpl,hist,getMealContext(mealOverride,customMealTimes),gs2)));setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);},[rests,allPpl,hist,mealOverride,customMealTimes,gs2,_selWithCtx,_filterSkips]);
+var reroll=useCallback(function(ch){var s=_selWithCtx(selRef.current);var sc=scoreAll(_filterSkips(rests),s,allPpl,hist,getMealContext(mealOverride,customMealTimes),gs2).map(function(x){return Object.assign({},x,{score:x.score+(Math.random()-(ch?0.2:0.4))*(ch?25:15)});});sc.sort(function(a,b){return b.score-a.score;});setRes(top3(sc));setResIdx(0);},[rests,allPpl,hist,mealOverride,customMealTimes,gs2,_selWithCtx,_filterSkips]);
+var deadlock=useCallback(function(){var s=selRef.current;var ds=Object.assign({},_selWithCtx(s),{sp:["kevin","jenna"],fam:"safe",mood:"safe-default"});var sc=scoreAll(_filterSkips(rests),ds,allPpl,hist,getMealContext(mealOverride,customMealTimes),gs2);var vwt={low:0,moderate:1,high:2};sc.sort(function(a,b){if(vwt[a.vetoRisk]!==vwt[b.vetoRisk])return vwt[a.vetoRisk]-vwt[b.vetoRisk];return b.score-a.score;});setRes(top3(sc));setResIdx(0);},[rests,allPpl,hist,mealOverride,customMealTimes,gs2,_selWithCtx,_filterSkips]);
+var pick=useCallback(function(res){haptic(20);var s=selRef.current;setH(function(h){return[{id:Date.now().toString(),rid:res.rid,name:res.r.name,emoji:res.r.emoji,date:new Date().toISOString(),people:s.sp,mood:s.mood,order:res.order,rating:null}].concat(h);});setR(function(rs){return rs.map(function(re){if(re.id===res.rid){return Object.assign({},re,{to:(re.to||0)+1,lo:0,streak:(re.streak||0)+1,ld:new Date().toISOString().slice(0,10),to90:(re.to90||0)+1,to365:(re.to365||0)+1});}return Object.assign({},re,{streak:0});});});go("dashboard");setRes(null);},[]);
 var burn=useCallback(function(id){setR(function(rs){return rs.map(function(r){return r.id===id?Object.assign({},r,{bo:true}):r;});});reroll(false);},[reroll]);
 var daysSinceRefresh=Math.floor((Date.now()-new Date(dataRefresh).getTime())/(1000*60*60*24));
 var needsRefresh=daysSinceRefresh>=90;
@@ -350,8 +351,7 @@ return(
       </div>
       <div style={{position:"absolute",left:0,right:0,textAlign:"center",pointerEvents:"none",fontSize:10,fontWeight:700,color:"var(--tx3)",letterSpacing:2,textTransform:"uppercase"}}>Madden Frameworks</div>
       <div style={{display:"flex",alignItems:"center",gap:10,zIndex:1}}>
-        <button onClick={cycleTheme} style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:6,cursor:"pointer",fontSize:18,opacity:.8,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",width:34,height:34}}>{(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);return _d?"🌙":"☀️";})()}</button>
-        <button onClick={function(){setAboutOpen(true);}} style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:6,cursor:"pointer",fontSize:18,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",width:34,height:34}}>{"ℹ️"}</button>
+        {(function(){var _d=gs2.theme==="dark"||((!gs2.theme||gs2.theme==="auto")&&window.matchMedia&&!window.matchMedia("(prefers-color-scheme:light)").matches);var _ib=_d?{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.1)"}:{background:"rgba(0,0,0,.06)",border:"1px solid rgba(0,0,0,.08)"};var _ibs=Object.assign({},_ib,{borderRadius:10,padding:6,cursor:"pointer",fontSize:18,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",width:34,height:34});return <><button onClick={cycleTheme} style={Object.assign({},_ibs,{opacity:.8})}>{_d?"🌙":"☀️"}</button><button onClick={function(){setAboutOpen(true);}} style={_ibs}>{"ℹ️"}</button></>;})()}
       </div>
     </div>
 
@@ -383,7 +383,7 @@ return(
         <span style={{fontSize:15,fontWeight:700,textShadow:"0 1px 4px rgba(0,0,0,.25)"}}>{mctx.cta}</span>
         <span key={flavIdx} className="float-in" style={{fontSize:11,fontWeight:500,opacity:.8,marginTop:2,textShadow:"0 1px 3px rgba(0,0,0,.3)"}}>{HERO_FLAVORS[flavIdx]}</span>
       </button>
-      <button className="jfl-cta" style={{flex:1,padding:"10px 8px",borderRadius:14,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2}} onClick={function(){setSel(function(s){return Object.assign({},s,{sp:["kevin","jenna"],mood:"roulette",budget:"normal",speed:"normal",fam:"surprise",kf:false,go:false,xa:0,xk:0});});setBusy(true);setTimeout(function(){var surpriseSel={sp:["kevin","jenna"],mood:"roulette",budget:"normal",speed:"normal",fam:"surprise",kf:false,go:false,xa:0,xk:0,_alreadyHad:alreadyHad,_sessionSkips:sessionSkips};setRes(top3(scoreAll(_filterSkips(rests),surpriseSel,allPpl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);}} aria-label="Surprise me" title="Surprise me"><span style={{fontSize:22}}>{"\uD83C\uDFB2"}</span><span style={{fontSize:11,fontWeight:700,opacity:.9}}>Surprise</span></button>
+      <button className="jfl-cta" style={{flex:1,padding:"10px 8px",borderRadius:14,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2}} onClick={function(){setSel(function(s){return Object.assign({},s,{sp:["kevin","jenna"],mood:"roulette",budget:"normal",speed:"normal",fam:"surprise",kf:false,go:false,xa:0,xk:0});});setBusy(true);setTimeout(function(){var surpriseSel={sp:["kevin","jenna"],mood:"roulette",budget:"normal",speed:"normal",fam:"surprise",kf:false,go:false,xa:0,xk:0,_alreadyHad:alreadyHad,_sessionSkips:sessionSkips};setRes(top3(scoreAll(_filterSkips(rests),surpriseSel,allPpl,hist,mctx,gs2)));setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);}} aria-label="Surprise me" title="Surprise me"><span style={{fontSize:22}}>{"\uD83C\uDFB2"}</span><span style={{fontSize:11,fontWeight:700,opacity:.9}}>Surprise</span></button>
       </div>
 
       {/* ── Quick Resolve ── */}
@@ -443,7 +443,7 @@ return(
       </div>
 
       {/* ── Smart nudges ── */}
-      {(function(){var nudges=[];/* Cuisine diversity */var recent=hist.slice(0,8);if(recent.length>=4){var cats={};recent.forEach(function(h){var r=rests.find(function(x){return x.id===h.rid;});if(r&&r.cat){cats[r.cat]=(cats[r.cat]||0)+1;}});Object.keys(cats).forEach(function(c){if(cats[c]>=3){var cName={"fast-food":"fast food","fast-casual":"fast casual","casual-dining":"casual dining","coffee-snack":"coffee & snacks"}[c]||c;nudges.push({e:"\uD83D\uDD01",t:"You\u2019ve had "+cName+" "+cats[c]+" of your last "+recent.length+" orders. Mix it up?"});}});}/* DOW insight */var today=new Date().getDay();var dayName=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][today];var todayHist=hist.filter(function(h){return new Date(h.date).getDay()===today;});if(todayHist.length>=3){var topRid=null,topCt=0,ridCt={};todayHist.forEach(function(h){ridCt[h.rid]=(ridCt[h.rid]||0)+1;if(ridCt[h.rid]>topCt){topCt=ridCt[h.rid];topRid=h.rid;}});if(topCt>=2){var tr=rests.find(function(x){return x.id===topRid;});if(tr)nudges.push({e:tr.emoji,t:tr.sn||tr.name+" is your go-to "+dayName+" pick."});}}/* Anniversary callouts */var todayStr=new Date().toISOString().slice(5,10);hist.forEach(function(h){if(!h.date)return;var hd=h.date.slice(5,10);var hy=parseInt(h.date.slice(0,4));var cy=new Date().getFullYear();if(hd===todayStr&&hy<cy){var yrs=cy-hy;nudges.push({e:"\uD83C\uDF82",t:yrs+(yrs===1?" year":" years")+" ago today you first ordered from "+h.name+"."});}});if(nudges.length<1)return null;var nudge=nudges[0];return <div className="jfl-card float-in" style={{padding:"8px 12px",display:"flex",alignItems:"center",gap:8,animationDelay:".5s"}}>
+      {(function(){var nudges=[];/* Cuisine diversity */var recent=hist.slice(0,8);if(recent.length>=4){var cats={};recent.forEach(function(h){var r=rests.find(function(x){return x.id===h.rid;});if(r&&r.cat){cats[r.cat]=(cats[r.cat]||0)+1;}});Object.keys(cats).forEach(function(c){if(cats[c]>=3){var cName={"fast-food":"fast food","fast-casual":"fast casual","casual-dining":"casual dining","coffee-snack":"coffee & snacks"}[c]||c;nudges.push({e:"\uD83D\uDD01",t:"You\u2019ve had "+cName+" "+cats[c]+" of your last "+recent.length+" orders. Mix it up?"});}});}/* DOW insight */var today=new Date().getDay();var dayName=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][today];var todayHist=hist.filter(function(h){return new Date(h.date).getDay()===today;});if(todayHist.length>=3){var topRid=null,topCt=0,ridCt={};todayHist.forEach(function(h){ridCt[h.rid]=(ridCt[h.rid]||0)+1;if(ridCt[h.rid]>topCt){topCt=ridCt[h.rid];topRid=h.rid;}});if(topCt>=2){var tr=rests.find(function(x){return x.id===topRid;});if(tr)nudges.push({e:tr.emoji,t:tr.sn||tr.name+" is your go-to "+dayName+" pick."});}}/* Anniversary callouts */var todayStr=new Date().toISOString().slice(5,10);var anniSeen={};hist.forEach(function(h){if(!h.date)return;var hd=h.date.slice(5,10);var hy=parseInt(h.date.slice(0,4));var cy=new Date().getFullYear();if(hd===todayStr&&hy<cy&&!anniSeen[h.rid]){anniSeen[h.rid]=1;var yrs=cy-hy;nudges.push({e:"\uD83C\uDF82",t:yrs+(yrs===1?" year":" years")+" ago today you first ordered from "+h.name+"."});}});if(nudges.length<1)return null;var nudge=nudges[0];return <div className="jfl-card float-in" style={{padding:"8px 12px",display:"flex",alignItems:"center",gap:8,animationDelay:".5s"}}>
         <span style={{fontSize:16}}>{nudge.e}</span>
         <span style={{fontSize:11,fontWeight:500,color:"var(--tx2)",flex:1,lineHeight:"1.4"}}>{nudge.t}</span>
       </div>;})()}
@@ -539,7 +539,7 @@ return(
         {(function(){var po=["kevin","jenna","madi","jack","emmy","jenna-mom","jenna-dad","kevin-mom","zoe","derek","wyatt","beckham","zara","leah","corey","tara","tyler","amanda"];var sorted=ppl.slice().sort(function(a,b){var ai=po.indexOf(a.id),bi=po.indexOf(b.id);if(ai<0)ai=999;if(bi<0)bi=999;return ai-bi;});var core=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)>=0;});var rest=sorted.filter(function(p){return["kevin","jenna","madi","jack","emmy"].indexOf(p.id)<0;});var visible=sel._showAllPeople?sorted:core.concat(rest.filter(function(p){return sel.sp.indexOf(p.id)>=0;}));return visible;})().map(function(p){var on=sel.sp.indexOf(p.id)>=0;return <button key={p.id} className={on?"jfl-pill on":"jfl-pill"} onClick={function(){togP(p.id);}}>{p.emoji+" "+p.name}</button>;})}
         {!sel._showAllPeople&&<button onClick={function(){setSel(function(s){return Object.assign({},s,{_showAllPeople:true});});}} style={{padding:"6px 12px",borderRadius:20,border:"1px dashed var(--bdr)",background:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:500,color:"var(--tx3)"}}>{ppl.length-5+" more \u203A"}</button>}
       </div>
-      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setBusy(true);setTimeout(function(){var qs=_selWithCtx(sel);setRes(top3(scoreAll(_filterSkips(rests),qs,allPpl,hist,mctx,gs2)));setRrc(0);setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);}}} disabled={sel.sp.length===0} aria-disabled={sel.sp.length===0} style={{opacity:sel.sp.length===0?.3:1,transition:"opacity .3s"}}>{"Get "+mctx.label+" Recommendation"}</button></div>
+      <div style={{marginTop:"auto",paddingTop:20,paddingBottom:10}}><button className="jfl-cta" onClick={function(){if(sel.sp.length>0){setBusy(true);setTimeout(function(){var qs=_selWithCtx(sel);setRes(top3(scoreAll(_filterSkips(rests),qs,allPpl,hist,mctx,gs2)));setResIdx(0);setBusy(false);go("results");},RESOLVE_DELAY);}}} disabled={sel.sp.length===0} aria-disabled={sel.sp.length===0} style={{opacity:sel.sp.length===0?.3:1,transition:"opacity .3s"}}>{"Get "+mctx.label+" Recommendation"}</button></div>
     </div>
     <BottomNav go={go} active="decide" setSel={setSel}/>
   </div>}
@@ -594,7 +594,7 @@ return(
               <span style={{fontSize:17,fontWeight:700}}>Yes, obviously</span>
             </button>
             <button className="jfl-btn" style={{padding:16,fontSize:16}} onClick={function(){setAccepted(false);}}>
-              <span style={{fontWeight:600,color:"var(--tx1)"}}>{isSolo1?"No, I want something else":isDuo1?"No, we want something else":"No, we want something else"}</span>
+              <span style={{fontWeight:600,color:"var(--tx1)"}}>{isSolo1?"No, I want something else":"No, we want something else"}</span>
             </button>
           </div>
         </div>}
@@ -657,7 +657,7 @@ return(
     }
 
     var res=results[resIdx];var rest=res.r;var w=resIdx===0;
-    var v=vcfg[res.vetoRisk],cf=ccfg[res.confidence],sn=Math.min(Math.max((res.score-20)/80,0),1);
+    var v=vcfg[res.vetoRisk]||vcfg.moderate,cf=ccfg[res.confidence]||ccfg.medium,sn=Math.min(Math.max((res.score-20)/80,0),1);
 
     return <div className="slide-in" key={res.rid+"-"+resIdx} style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
       <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 16px 5px",background:"var(--bg2)",borderBottom:"1px solid var(--bdr)",flexShrink:0}}>
@@ -746,11 +746,11 @@ return(
         {/* Bottom buttons */}
         {!whyOpen&&<div style={{display:"flex",gap:6,marginTop:8}}>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:600,background:"rgba(244,114,182,.06)",border:"1px solid rgba(244,114,182,.15)",borderRadius:10,color:"var(--ac)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setWhyOpen(true);}}>{"Why this?"}</button>
-          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{"Not feeling this one"}</button>
+          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{"Not feeling this one"}</button>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>}
         {whyOpen&&<div style={{display:"flex",gap:6,marginTop:8}}>
-          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{"Not feeling this one"}</button>
+          <button style={{flex:2,padding:10,fontSize:11,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{"Not feeling this one"}</button>
           <button style={{flex:1,padding:10,fontSize:11,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.6}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>}
         <button style={{width:"100%",padding:8,fontSize:10,fontWeight:500,marginTop:6,background:"none",border:"1px solid var(--bdr)",borderRadius:8,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.5}} onClick={function(){setSessionSkips(function(sk){return sk.concat([res.rid]);});reroll(false);}}>{"Not tonight \u2014 skip for this session"}</button>
@@ -814,7 +814,7 @@ return(
         {/* Three action buttons - proportional */}
         <div style={{display:"flex",gap:6,marginTop:10}}>
           <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){if(resIdx>0)setResIdx(resIdx-1);}}>{resIdx===1?"Let me see option 1 again":"Option 2 wasn\u2019t so bad"}</button>
-          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){if(resIdx+1<results.length){setResIdx(resIdx+1);setWhyOpen(false);}else{go("dashboard");}}}>{resIdx===1?"No, not feeling this either":"Nope, this won\u2019t do either"}</button>
+          <button style={{flex:3,padding:"10px 4px",fontSize:10,fontWeight:600,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx2)",cursor:"pointer",fontFamily:"inherit",lineHeight:"1.3"}} onClick={function(){setResIdx(resIdx+1);setWhyOpen(false);}}>{resIdx===1?"No, not feeling this either":"Nope, this won\u2019t do either"}</button>
           <button style={{flex:2,padding:"10px 4px",fontSize:10,fontWeight:500,background:"none",border:"1px solid var(--bdr)",borderRadius:10,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.5,lineHeight:"1.3"}} onClick={function(){go("dashboard");}}>{"Start over"}</button>
         </div>
         <button style={{width:"100%",padding:8,fontSize:10,fontWeight:500,marginTop:6,background:"none",border:"1px solid var(--bdr)",borderRadius:8,color:"var(--tx3)",cursor:"pointer",fontFamily:"inherit",opacity:.5}} onClick={function(){setSessionSkips(function(sk){return sk.concat([res.rid]);});reroll(false);}}>{"Not tonight \u2014 skip for this session"}</button>
@@ -1548,7 +1548,6 @@ var _p2ct=useState(0);var p2count=_p2ct[0],setP2count=_p2ct[1];/* phase 2 answer
 var _dc=useState(false);var directConfirm=_dc[0],setDirectConfirm=_dc[1];
 var _dis=useState(false);var dismiss=_dis[0],setDismiss=_dis[1];
 
-var FEMALE_IDS=["jenna","madi","emmy","jenna-mom","kevin-mom","zoe","leah","tara","amanda","zara"];
 var ppl=props.ppl||[];
 /* voters = non-baby/toddler people in the selection */
 var guestCount=(sel.xa||0)+(sel.xk||0);
@@ -1557,6 +1556,8 @@ var voters=(sel.sp||[]).map(function(id){return ppl.find(function(p){return p.id
 if(guestVoter)voters=voters.concat([guestVoter]);
 
 useEffect(function(){if(mode==="quiz"&&!qs&&(phase==="mood"||phase==="narrow"))pickQuestions([]);},[mode,phase,qs]);
+/* C2 fix: resolve when quiz produces empty question set */
+useEffect(function(){if(qs&&qs.length===0)resolve();},[qs,resolve]);
 
 function getQuizTags(){
 var sp=sel.sp||[];var has=function(id){return sp.indexOf(id)>=0;};
@@ -1629,14 +1630,14 @@ avail.forEach(function(q){var isP=personalNames.some(function(n){return q.q.inde
 if(currentPhase==="narrow"){
 var ctQuestions=[],otherQuestions=[];
 regular.forEach(function(q){if(q.ct)ctQuestions.push(q);else otherQuestions.push(q);});
-ctQuestions.sort(function(){return Math.random()-.5;});
-otherQuestions.sort(function(){return Math.random()-.5;});
+fisherYates(ctQuestions);
+fisherYates(otherQuestions);
 regular=ctQuestions.concat(otherQuestions);
 }else{
-regular.sort(function(){return Math.random()-.5;});
+fisherYates(regular);
 }
 /* Shuffle personality */
-personality.sort(function(){return Math.random()-.5;});
+fisherYates(personality);
 /* Pick max 1 personality + fill rest with regular, NO duplicate emojis */
 var picked=[];
 var usedEmojis=[];
@@ -1646,7 +1647,7 @@ for(var ri=0;ri<regular.length&&picked.length<3;ri++){if(canPick(regular[ri])){p
 /* If not enough regular, fill from personality */
 for(var pi=0;pi<personality.length&&picked.length<3;pi++){if(picked.indexOf(personality[pi])<0&&canPick(personality[pi])){picked.push(personality[pi]);usedEmojis.push(personality[pi].e);}}
 /* Shuffle final order so personality Q isn't always first */
-picked.sort(function(){return Math.random()-.5;});
+fisherYates(picked);
 setQs(picked);
 var newUsed=usedList.concat(picked.map(function(q){return q.q;}));
 setUsed(newUsed);
@@ -1880,7 +1881,7 @@ return <div className="fade">
 }
 
 if(!qs)return null;
-if(qs.length===0){resolve();return null;}
+if(qs.length===0){/* C2 fix: defer resolve to effect instead of calling during render */return null;}
 
 /* ═══ HEAD-TO-HEAD MODE ═══ */
 if(h2h){
@@ -1898,7 +1899,7 @@ function h2hVote(voterId,yes){
     var curQ=prev.qs[prev.qi];
     if(!np[voterId])np[voterId]={};
     /* undo old vote weights if changing answer */
-    if(oldVote!==undefined){
+    if(oldVote!=null){
       var ow=oldVote?curQ.y:curQ.n;
       Object.keys(ow).forEach(function(k){np[voterId][k]=(np[voterId][k]||0)-ow[k];});
     }
@@ -1918,7 +1919,7 @@ function resolveH2H(perPerson){
   var personMoods={};
   voters.forEach(function(v){
     var scores=perPerson[v.id]||{};
-    var best=null,bestS=0;
+    var best=null,bestS=-Infinity;
     Object.keys(scores).forEach(function(k){if(scores[k]>bestS){bestS=scores[k];best=k;}});
     personMoods[v.id]=best||"b";
   });
@@ -1929,14 +1930,16 @@ function resolveH2H(perPerson){
     if(!moodVotes[m])moodVotes[m]={count:0,females:0,people:[]};
     moodVotes[m].count++;
     moodVotes[m].people.push(v);
-    if(FEMALE_IDS.indexOf(v.id)>=0)moodVotes[m].females++;
+    if(v.g==="f")moodVotes[m].females++;
   });
   /* Find winner */
   var sorted=Object.keys(moodVotes).sort(function(a,b){
     if(moodVotes[b].count!==moodVotes[a].count)return moodVotes[b].count-moodVotes[a].count;
     if(props.h2hFemale&&moodVotes[b].females!==moodVotes[a].females)return moodVotes[b].females-moodVotes[a].females;
-    return Math.random()-.5;
+    return 0;
   });
+  /* Break remaining ties randomly */
+  var tiedStart=0;while(tiedStart<sorted.length){var tiedEnd=tiedStart+1;while(tiedEnd<sorted.length&&moodVotes[sorted[tiedEnd]].count===moodVotes[sorted[tiedStart]].count)tiedEnd++;if(tiedEnd-tiedStart>1)fisherYates(sorted.slice(tiedStart,tiedEnd));tiedStart=tiedEnd;}
   var winner=sorted[0];
   var moodId=QUIZ_MAP[winner]||"balanced";
   var mood=MOODS.find(function(m){return m.id===moodId;});
@@ -2029,9 +2032,6 @@ return <div className="fade">
 
 }
 
-var answeredThisRound=0;
-qs.forEach(function(q,i){var key=(phase==="narrow"?"n":"r")+round+"q"+i;if(ans["_"+key])answeredThisRound++;});
-
 return <div className="fade">
 <TopBar title={phase==="narrow"?"Narrowing it down":"Quick vibe check"} sub={sel.qrLabel?(sel.qrEmoji+" "+sel.qrLabel):(phase==="narrow"?"Almost there":"")}  onTheme={props.onTheme} theme={props.theme} onInfo={props.onInfo} onLogo={props.onLogo}/>
 <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",flex:1,overflow:"auto"}}>
@@ -2045,7 +2045,7 @@ return <div className="fade">
 <div style={{display:"flex",flexDirection:"column",gap:12}}>
 {qs.map(function(q,i){
 var key=(phase==="narrow"?"n":"r")+round+"q"+i;
-var a=ans["*"+key];
+var a=ans["_"+key];
 var pending=pend[i];
 var showButtons=!a;
 return <div key={key} className={"jfl-card stagger-"+(i+1)} style={{padding:16,transition:"opacity .3s"}}>
@@ -2065,11 +2065,11 @@ return <div key={key} className={"jfl-card stagger-"+(i+1)} style={{padding:16,t
 })}
 </div>
 {/* Submit button - always visible, lights up when ready */}
-{(function(){var allPending=pend[0]&&pend[1]&&pend[2];var anyUnanswered=qs.some(function(q,i){var key="*"+(phase==="narrow"?"n":"r")+round+"q"+i;return!ans[key];});var ready=allPending&&anyUnanswered;return <div style={{marginTop:16}}>
+{(function(){var allPending=qs.every(function(_,i){return!!pend[i];});var anyUnanswered=qs.some(function(q,i){var key="_"+(phase==="narrow"?"n":"r")+round+"q"+i;return!ans[key];});var ready=allPending&&anyUnanswered;return <div style={{marginTop:16}}>
 <button className="jfl-cta" style={{padding:14,fontSize:16,fontWeight:700,width:"100%",opacity:ready?1:.3,pointerEvents:ready?"auto":"none",transition:"opacity .3s"}} onClick={function(){
 var newAns=Object.assign({},ans);
 var newDisagrees=disagrees;
-for(var i=0;i<3;i++){
+for(var i=0;i<qs.length;i++){
 var p=pend[i];
 var yes=p==="y"?true:p==="n"?false:null;
 var key="_"+(phase==="narrow"?"n":"r")+round+"q"+i;
@@ -2088,8 +2088,8 @@ setPend({});
 /* Check for H2H trigger */
 if(newDisagrees>=2&&voters.length>=2){
 var tags2=getQuizTags();var meal2=mctx.meal;
-var avail2=QUIZ_QS.filter(function(q2,idx){if(used.indexOf(idx)>=0)return false;if(!q2.w.some(function(t){return tags2.indexOf(t)>=0;}))return false;if(q2.m!=="all"){var meals2=q2.m.split(",");if(meals2.indexOf(meal2)<0)return false;}return true;});
-var h2hQs2=avail2.sort(function(){return Math.random()-.5;}).slice(0,5);
+var avail2=QUIZ_QS.filter(function(q2,idx){if(used.indexOf(q2.q)>=0)return false;if(!q2.w.some(function(t){return tags2.indexOf(t)>=0;}))return false;if(q2.m!=="all"){var meals2=q2.m.split(",");if(meals2.indexOf(meal2)<0)return false;}return true;});
+var h2hQs2=fisherYates(avail2.slice()).slice(0,5);
 if(h2hQs2.length===0){resolve();return;}
 setH2H({qs:h2hQs2,qi:0,votes:{},perPerson:{}});
 setH2hIntro(true);
@@ -2103,10 +2103,10 @@ return;
 }
 /* Phase 1: check if mood can be determined */
 var totalAnswered=0;
-Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="_")totalAnswered++;});
+Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="_"&&k!=="_ct")totalAnswered++;});
 if(totalAnswered>=3){
 var best=null,bestScore=0,second=0;
-Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="*")return;if(newAns[k]>bestScore){second=bestScore;bestScore=newAns[k];best=k;}else if(newAns[k]>second)second=newAns[k];});
+Object.keys(newAns).forEach(function(k){if(k.charAt(0)==="_"||k==="_ct")return;if(typeof newAns[k]!=="number")return;if(newAns[k]>bestScore){second=bestScore;bestScore=newAns[k];best=k;}else if(newAns[k]>second)second=newAns[k];});
 var gap=bestScore-second;
 if((gap>=4&&totalAnswered>=3)||(gap>=2&&totalAnswered>=6)||(totalAnswered>=9)){
 var moodId=QUIZ_MAP[best]||"balanced";
@@ -2119,6 +2119,7 @@ return;
 }
 /* Not resolved yet - load next round */
 if(round<2){setRound(round+1);pickQuestions(usedRef.current);}
+else{/* Force resolve after 3 rounds */var moodId2=QUIZ_MAP[best]||"balanced";up("mood",moodId2);if(newAns._ct){var topCt3=null,topCtS3=0;Object.keys(newAns._ct).forEach(function(k){if(newAns._ct[k]>topCtS3){topCtS3=newAns._ct[k];topCt3=k;}});if(topCt3)up("ct",topCt3);}var mood3=MOODS.find(function(m){return m.id===moodId2;})||MOODS.find(function(m){return m.id==="balanced";});setResolved(mood3||{id:"balanced",emoji:"\u2696\uFE0F",label:"Balanced",desc:"A little of everything",c:"#4A9EFF"});}
 }}>{"Keep going \u2192"}</button>
 </div>;})()}
 </div>
@@ -2178,17 +2179,17 @@ var result=Papa.parse(text,{header:true,skipEmptyLines:true});
 if(!result.data||result.data.length===0){setUplStatus("error");setUplMsg("No data found.");return;}
 var cols=Object.keys(result.data[0]||{});
 var storeCol=cols.find(function(c){return/store.?name/i.test(c);});
-var dateCol=cols.find(function(c){return/created.?at|order.?date|date/i.test(c);});
+var dateCol=cols.find(function(c){return/created.?at|order.?date|^date$/i.test(c);});
 if(!storeCol){setUplStatus("error");setUplMsg("No STORE_NAME column found. Columns: "+cols.join(", "));return;}
-var agg={};
+var agg=Object.create(null);
 var subtotalCol=cols.find(function(c){return/subtotal/i.test(c);});
 var itemCol=cols.find(function(c){return/^item$/i.test(c);});
 var orderItems={};
 result.data.forEach(function(row){
 var name=(row[storeCol]||"").trim();
 if(!name)return;
-if(!agg[name])agg[name]={count:0,lastDate:null,firstDate:null,dates:[]};
-agg[name].count++;
+if(!agg[name])agg[name]={count:0,lastDate:null,firstDate:null,dates:[],orderKeys:{}};
+var orderKey=dateCol&&row[dateCol]?(row[dateCol]||"").slice(0,19):"row_"+agg[name].count;if(!agg[name].orderKeys[orderKey]){agg[name].orderKeys[orderKey]=1;agg[name].count++;}
 if(dateCol&&row[dateCol]){
 var d=new Date(row[dateCol]);
 if(!isNaN(d.getTime())){if(!agg[name].lastDate||d>agg[name].lastDate)agg[name].lastDate=d;if(!agg[name].firstDate||d<agg[name].firstDate)agg[name].firstDate=d;agg[name].dates.push(d);}
@@ -2229,6 +2230,7 @@ storePartyAvgs[o.store][party].n++;
 var now=new Date();
 var matched=0,unmatched=[];
 var restNames=rests.map(function(r){return{id:r.id,lower:r.name.toLowerCase()};});
+var allUpdates={};
 Object.keys(agg).forEach(function(storeName){
 var lower=storeName.toLowerCase();
 var match=restNames.find(function(rn){return lower.indexOf(rn.lower)>=0||rn.lower.indexOf(lower)>=0;});
@@ -2237,7 +2239,7 @@ matched++;
 var info=agg[storeName];
 var daysSince=info.lastDate?Math.max(0,Math.round((now-info.lastDate)/(1000*60*60*24))):999;
 var lastDateStr=info.lastDate?info.lastDate.toISOString().slice(0,10):null;
-var upd={to:info.count,lo:daysSince,ld:lastDateStr};
+var existingR=rests.find(function(r){return r.id===match.id;});var upd={to:(existingR?existingR.to||0:0)+info.count,lo:daysSince,ld:lastDateStr};
 var firstDateStr=info.firstDate?info.firstDate.toISOString().slice(0,10):null;
 if(firstDateStr)upd.fd=firstDateStr;
 var now90=new Date(now.getTime()-90*86400000),now365=new Date(now.getTime()-365*86400000);
@@ -2251,18 +2253,16 @@ if(pa.couple.n>0)upd.acC=Math.ceil(pa.couple.s/pa.couple.n/5)*5;
 if(pa.family.n>0)upd.acF=Math.ceil(pa.family.s/pa.family.n/5)*5;
 if(pa.group.n>0)upd.acG=Math.ceil(pa.group.s/pa.group.n/5)*5;
 }
-setR(function(rs){return rs.map(function(r){
-if(r.id===match.id)return Object.assign({},r,upd);
-return r;
-});});
+allUpdates[match.id]=upd;
 }else{
 unmatched.push(storeName);
 }
 });
+setR(function(rs){return rs.map(function(r){return allUpdates[r.id]?Object.assign({},r,allUpdates[r.id]):r;});});
 props.setDR(now.toISOString().slice(0,10));
 var totalOrders=0;Object.keys(agg).forEach(function(k){totalOrders+=agg[k].count;});
 var msg=totalOrders+" orders · "+Object.keys(agg).length+" restaurants · "+matched+" matched";
-if(unmatched.length>0)msg+="· "+unmatched.length+" unmatched";
+if(unmatched.length>0)msg+=" · "+unmatched.length+" unmatched";
 setUplStatus("done");setUplMsg(msg);
 }catch(err){
 setUplStatus("error");setUplMsg("Couldn\u2019t parse that file. Make sure it\u2019s a valid DoorDash CSV export.");
@@ -2285,7 +2285,7 @@ function Sheet(p){return <div style={{position:"absolute",top:0,left:0,right:0,b
   </div>;}
 
 function EmojiEdit(p){return <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-<input type="text" aria-label="Edit emoji" value={emIn||p.val} onChange={function(e){setEmIn(e.target.value);p.onChange(e.target.value);}} onFocus={function(){setEmIn(p.val);}} onBlur={function(){setEmIn("");}} style={{width:40,padding:"4px 6px",borderRadius:6,border:"1px solid var(--bdr)",background:"var(--bg2)",color:"var(--tx1)",fontSize:20,textAlign:"center",fontFamily:"inherit"}}/>
+<input type="text" aria-label="Edit emoji" value={emIn!=null?emIn:p.val} onChange={function(e){setEmIn(e.target.value);p.onChange(e.target.value);}} onFocus={function(){setEmIn(p.val);}} onBlur={function(){setEmIn("");}} style={{width:40,padding:"4px 6px",borderRadius:6,border:"1px solid var(--bdr)",background:"var(--bg2)",color:"var(--tx1)",fontSize:20,textAlign:"center",fontFamily:"inherit"}}/>
 
   </div>;}
 
@@ -2458,9 +2458,9 @@ return(
     <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:10}}>
       {ppl.map(function(p){var inG=selG.people.indexOf(p.id)>=0;return <button key={p.id} onClick={function(){setGroups(function(gs){return gs.map(function(g){if(g.id!==selG.id)return g;var np=inG?g.people.filter(function(x){return x!==p.id;}):g.people.concat([p.id]);return Object.assign({},g,{people:np});});});}} style={{padding:"4px 10px",borderRadius:6,border:"1px solid "+(inG?"var(--ac)":"var(--bdr)"),background:inG?"rgba(244,114,182,.15)":"var(--bg2)",color:inG?"var(--ac)":"var(--tx2)",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{p.emoji+" "+p.name}</button>;})}
     </div>
-    {(function(){var FEMALE_IDS=["jenna","madi","emmy","jenna-mom","kevin-mom","zoe","leah","tara","amanda","zara"];var members=selG.people.map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(Boolean);if(members.length<1)return null;
+    {(function(){var members=selG.people.map(function(id){return ppl.find(function(p){return p.id===id;});}).filter(Boolean);if(members.length<1)return null;
       var traits=[{k:"adv",l:"Adventurous",lo:"Picky",hi:"Explorer"},{k:"hc",l:"Health-conscious",lo:"Comfort",hi:"Clean"},{k:"sp",l:"Spice",lo:"Mild",hi:"Heat"},{k:"meat",l:"Meat pref",lo:"Chicken",hi:"Red meat"},{k:"sweet",l:"Sweet tooth",lo:"Savory",hi:"Sweet"}];
-      var avgs={};traits.forEach(function(t){var sum=0,wt=0;members.forEach(function(p){var w=FEMALE_IDS.indexOf(p.id)>=0?1.3:1;sum+=(p[t.k]||.5)*w;wt+=w;});avgs[t.k]=wt>0?sum/wt:.5;});
+      var avgs={};traits.forEach(function(t){var sum=0,wt=0;members.forEach(function(p){var w=p.g==="f"?1.3:1;sum+=(p[t.k]||.5)*w;wt+=w;});avgs[t.k]=wt>0?sum/wt:.5;});
       return <div style={{marginTop:4,marginBottom:12}}>
         <div style={{fontSize:12,fontWeight:700,color:"var(--tx2)",marginBottom:8}}>Group taste profile</div>
         <div style={{fontSize:11,color:"var(--tx3)",marginBottom:10}}>Weighted average · women count 1.3×</div>
@@ -2657,7 +2657,7 @@ return(
         var MEAL_LABELS={breakfast:"Breakfast",brunch:"Brunch",lunch:"Lunch",dinner:"Dinner",latenight:"Late Night"};
         function pplNames(sp){return sp.map(function(id){var p=props.ppl.find(function(pp){return pp.id===id;});return p?p.name:id;}).join(", ");}
         function restName(rid){var r=props.rests.find(function(rr){return rr.id===rid;});return r?r.emoji+" "+r.name:rid;}
-        function removeRule(idx){var nr=rules.slice();nr.splice(idx,1);props.setObvRules(nr);setObvEditIdx(null);}
+        function removeRule(idx){var nr=rules.slice();nr.splice(idx,1);props.setObvRules(nr);if(obvEditIdx===idx)setObvEditIdx(null);else if(obvEditIdx!==null&&obvEditIdx>idx)setObvEditIdx(obvEditIdx-1);}
         function updateField(idx,field,val){var nr=rules.map(function(r,i){if(i!==idx)return r;var u=Object.assign({},r);u[field]=val;return u;});props.setObvRules(nr);}
         function addRule(){var nr=rules.concat([{sp:["kevin"],spExact:true,rid:"chick-fil-a",meals:["dinner"],callout:"Let's be real.",ask:"You already know, right?",yes:"Knew it.",no:"Okay then."}]);props.setObvRules(nr);setObvEditIdx(nr.length-1);}
         function toggleMeal(idx,meal){var r=rules[idx];var meals=(r.meals||[]).slice();var mi=meals.indexOf(meal);if(mi>=0)meals.splice(mi,1);else meals.push(meal);updateField(idx,"meals",meals);}
@@ -2839,7 +2839,7 @@ var CSS = [
 ".theme-light .btm-nav{box-shadow:0 -4px 12px rgba(120,60,40,.08)}",
 ".btm-nav button:hover{opacity:.7}",
 ".theme-light .jfl-pill.on{background:linear-gradient(135deg,#E8458A,#D4956A)}",
-"@media(prefers-color-scheme:light){.theme-auto{--bg0:#FBF7F4;--bg1:#FFFFFF;--bg2:#F8F2ED;--bdr:#E5D5CA;--tx1:#1A1210;--tx2:#5C4A42;--tx3:#9A857A;--ac:#D6246B;--grn:#A07828;--yel:#B8860B;--red:#C0392B}.theme-auto .jfl-cta{background:linear-gradient(135deg,#E8458A,#D4956A);text-shadow:0 1px 3px rgba(0,0,0,.15)}.theme-auto .jfl-cta-hero{box-shadow:0 3px 16px rgba(214,36,107,.25);animation:ctaGlowLight 3s ease-in-out infinite}.theme-auto .jfl-card{border-color:#E0D0C5}.theme-auto .jfl-chip.on{border-color:#D6246B;background:rgba(214,36,107,.08);color:#D6246B}.theme-auto .jfl-pill.on{background:linear-gradient(135deg,#E8458A,#D4956A)}}",
+"@media(prefers-color-scheme:light){.theme-auto{--bg0:#FBF7F4;--bg1:#FFFFFF;--bg2:#F8F2ED;--bdr:#E5D5CA;--tx1:#1A1210;--tx2:#5C4A42;--tx3:#9A857A;--ac:#D6246B;--grn:#A07828;--yel:#B8860B;--red:#C0392B}.theme-auto .jfl-cta{background:linear-gradient(135deg,#E8458A,#D4956A);text-shadow:0 1px 3px rgba(0,0,0,.15)}.theme-auto .jfl-cta-hero{box-shadow:0 3px 16px rgba(214,36,107,.25);animation:ctaGlowLight 3s ease-in-out infinite}.theme-auto .jfl-card{border-color:#E0D0C5;box-shadow:0 2px 8px rgba(120,60,40,.06)}.theme-auto .jfl-chip.on{border-color:#D6246B;background:rgba(214,36,107,.08);color:#D6246B}.theme-auto .jfl-pill.on{background:linear-gradient(135deg,#E8458A,#D4956A)}.theme-auto .insightsShimmer{color:#7A5518 !important;border-color:rgba(160,120,40,.35) !important}.theme-auto .jfl-stat{box-shadow:0 2px 8px rgba(120,60,40,.06)}.theme-auto .btm-nav{box-shadow:0 -4px 12px rgba(120,60,40,.08)}}",
 "*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}",
 "html,body{height:100%;overflow:hidden}",
 "body{background:var(--bg0)}",
@@ -2875,7 +2875,7 @@ var CSS = [
 ".tada{animation:tada .5s ease-out both}",
 "button{touch-action:manipulation}","button:active{transform:scale(.97)}","button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}","input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ac);outline-offset:2px}","div::-webkit-scrollbar{display:none}",
 "input[type='range']{accent-color:var(--ac);width:100%}",
-".jfl-overlay{position:fixed;inset:0;background:rgba(13,17,23,.95);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center}",
+".jfl-overlay{position:fixed;inset:0;background:var(--bg0);opacity:.95;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center}",
 ".jfl-cta{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#F472B6,#C4956A);color:white;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;font-size:15px;font-weight:600;transition:transform .15s;text-shadow:0 1px 3px rgba(0,0,0,.25)}",
 ".jfl-cta:disabled{cursor:not-allowed;opacity:.35 !important;transform:none !important}",
 ".jfl-cta-hero{padding:18px 14px;border-radius:14px;box-shadow:0 2px 12px rgba(244,114,182,.2);animation:ctaGlow 3s ease-in-out infinite}",

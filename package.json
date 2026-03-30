@@ -1,10 +1,12 @@
 {
-  "name": "crispy-memory",
+  "name": "jennarate",
   "version": "1.0.0",
-  "description": "default repository",
+  "description": "Jennarate: Food Logic by Madden Frameworks",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",

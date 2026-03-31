@@ -387,7 +387,7 @@ return(
       </div>
 
       {/* ── Quick Resolve ── */}
-      {(function(){var mc=mctx;var src=qrCustom||QR_DEFAULTS;var visible=src.filter(function(q){return !q.meals||q.meals.length===0||q.meals.indexOf(mc.meal)>=0||(mc.meal==="brunch"&&q.meals.indexOf("breakfast")>=0);}).slice(0,4);if(visible.length===0)return null;return <div className="jfl-card" style={{padding:"8px 10px"}}>
+      {(function(){var mc=mctx;var src=(qrCustom&&qrCustom.length>0)?qrCustom:QR_DEFAULTS;var visible=src.filter(function(q){return !q.meals||q.meals.length===0||q.meals.indexOf(mc.meal)>=0||(mc.meal==="brunch"&&q.meals.indexOf("breakfast")>=0);}).slice(0,4);if(visible.length===0)return null;return <div className="jfl-card" style={{padding:"8px 10px"}}>
         <div className="jfl-label" style={{marginBottom:6,display:"flex",alignItems:"center",gap:6}}><div style={{width:14,height:1,background:"var(--ac)",opacity:.5}}></div>Quick Resolves</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
         {visible.map(function(q,i){var names=q.g.map(function(id){var p=ppl.find(function(pp){return pp.id===id;});return p?p.name.split(" ")[0]:id;});var jIdx=names.indexOf("Jenna");if(jIdx>0){names.splice(jIdx,1);names.unshift("Jenna");}var sub=names.length>3?names.slice(0,2).join(" & ")+" +"+String(names.length-2):names.length===2?names.join(" & "):names.length===3?names[0]+", "+names[1]+" & "+names[2]:names[0]||"";return <button key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",borderRadius:8,border:"1px solid var(--bdr)",background:"var(--bg1)",cursor:"pointer",fontFamily:"inherit",textAlign:"left"}} onClick={function(){var hk=q.g.some(function(id){return kidIds.indexOf(id)>=0;});setSel(function(s){return Object.assign({},s,{sp:q.g,mood:q.m,kf:hk,go:q.g.length>4,xa:0,xk:0,qrLabel:q.l,qrEmoji:q.e});});go("qrConfirm");}}><span style={{fontSize:16}}>{q.e}</span><div><div style={{fontSize:12,fontWeight:600,color:"var(--tx2)"}}>{q.l}</div><div style={{fontSize:10,color:"var(--tx3)",marginTop:1}}>{sub}</div></div></button>;})}
@@ -2158,7 +2158,7 @@ var _emIn=useState("");var emIn=_emIn[0],setEmIn=_emIn[1];
 var selR=selId?rests.find(function(r){return r.id===selId;}):null;
 var selP=selPId?ppl.find(function(p){return p.id===selPId;}):null;
 var selG=selGId?groups.find(function(g){return g.id===selGId;}):null;
-var qrList=qrCustom||QR_DEFAULTS;
+var qrList=(qrCustom&&qrCustom.length>0)?qrCustom:QR_DEFAULTS;
 var selQR=selQRIdx!==null?qrList[selQRIdx]:null;
 
 var _upl=useState("idle");var uplStatus=_upl[0],setUplStatus=_upl[1];
@@ -2447,7 +2447,7 @@ return(
         <button className="jfl-btn" style={{flex:1,fontSize:11}} onClick={function(){setShowAddMod(false);}}>Cancel</button>
       </div>
     </div>}
-    <button className="jfl-btn" style={{fontSize:11,color:"var(--red)",borderColor:"var(--red)",marginTop:12}} onClick={function(){if(confirm("Delete "+selP.name+"? This removes all their data and modifiers.")){if(confirm("Are you sure? This cannot be undone.")){var pid=selP.id;setPpl(function(ps){return ps.filter(function(pp){return pp.id!==pid;});});if(setSel)setSel(function(s){return Object.assign({},s,{sp:(s.sp||[]).filter(function(id){return id!==pid;})});});setGroups(function(gs){return gs.map(function(g){return Object.assign({},g,{people:g.people.filter(function(id){return id!==pid;})});});});if(setQR){var ql=qrCustom||[];var nq=ql.map(function(q){return Object.assign({},q,{g:(q.g||[]).filter(function(id){return id!==pid;})});});setQR(nq);}setSelPId(null);}}}}>Delete person</button>
+    <button className="jfl-btn" style={{fontSize:11,color:"var(--red)",borderColor:"var(--red)",marginTop:12}} onClick={function(){if(confirm("Delete "+selP.name+"? This removes all their data and modifiers.")){if(confirm("Are you sure? This cannot be undone.")){var pid=selP.id;setPpl(function(ps){return ps.filter(function(pp){return pp.id!==pid;});});if(setSel)setSel(function(s){return Object.assign({},s,{sp:(s.sp||[]).filter(function(id){return id!==pid;})});});setGroups(function(gs){return gs.map(function(g){return Object.assign({},g,{people:g.people.filter(function(id){return id!==pid;})});});});if(setQR){var ql=qrCustom||QR_DEFAULTS;var nq=ql.map(function(q){return Object.assign({},q,{g:(q.g||[]).filter(function(id){return id!==pid;})});});setQR(nq);}setSelPId(null);}}}}>Delete person</button>
   </Sheet>}
   {selG&&<Sheet icon={selG.emoji} title={selG.name} onClose={function(){setSelGId(null);}}>
     <div style={{display:"flex",gap:8,marginBottom:10}}>
